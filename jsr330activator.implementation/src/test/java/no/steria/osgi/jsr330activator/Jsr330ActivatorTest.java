@@ -13,13 +13,13 @@ import no.steria.osgi.jsr330activator.testbundle.HelloService;
 import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceImplementation;
 import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceProvider;
 
-import org.apache.sling.testing.mock.osgi.MockOsgi;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.wiring.BundleWiring;
+import org.springframework.osgi.mock.MockBundleContext;
 
 public class Jsr330ActivatorTest {
 
@@ -138,7 +138,7 @@ public class Jsr330ActivatorTest {
 
     @Test
     public void testRegisterServices() {
-    	BundleContext bundleContext = MockOsgi.newBundleContext();
+    	BundleContext bundleContext = new MockBundleContext();
 
     	// Verify that there is no HelloService before the registration
     	ServiceReference<?> helloBeforeActivation = bundleContext.getServiceReference(HelloService.class.getCanonicalName());
