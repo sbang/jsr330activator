@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,9 +13,12 @@ import no.steria.osgi.jsr330activator.testbundle.HelloService;
 import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceImplementation;
 import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceProvider;
 
+import org.apache.sling.testing.mock.osgi.MockOsgi;
 import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.wiring.BundleWiring;
 
 public class Jsr330ActivatorTest {
@@ -130,6 +134,25 @@ public class Jsr330ActivatorTest {
     	Map<Type, Class<?>> providers = activator.findProviders(classesInBundle);
     	assertEquals(1, providers.size());
     	assertEquals(HelloServiceProvider.class, providers.get(HelloService.class));
+    }
+
+    @Test
+    public void testRegisterServices() {
+    	BundleContext bundleContext = MockOsgi.newBundleContext();
+
+    	// Verify that there is no HelloService before the registration
+    	ServiceReference<?> helloBeforeActivation = bundleContext.getServiceReference(HelloService.class.getCanonicalName());
+    	assertNull(helloBeforeActivation);
+
+    	// Register the found services
+    	Map<Type, Class<?>> serviceImplementations = new HashMap<Type, Class<?>>();
+    	serviceImplementations.put(HelloService.class, HelloServiceProvider.class);
+    	Jsr330Activator activator = new Jsr330Activator();
+    	activator.registerServices(bundleContext, serviceImplementations);
+
+    	// Verify that the service can now be found
+    	ServiceReference<?> helloAfterActivation = bundleContext.getServiceReference(HelloService.class.getCanonicalName());
+    	assertNotNull(helloAfterActivation);
     }
 
 }

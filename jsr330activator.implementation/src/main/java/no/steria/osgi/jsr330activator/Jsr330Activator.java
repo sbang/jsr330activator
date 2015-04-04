@@ -1,5 +1,7 @@
 package no.steria.osgi.jsr330activator;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -7,6 +9,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -39,6 +42,9 @@ import org.osgi.framework.wiring.BundleWiring;
  *
  */
 public class Jsr330Activator implements BundleActivator {
+
+    private static final Class<?>[] emptyArgumentTypes = new Class<?>[0];
+    private static final Object[] emptyArgumentList = new Object[0];
 
     public void start(BundleContext context) throws Exception {
         // TODO add activation code here
@@ -92,6 +98,27 @@ public class Jsr330Activator implements BundleActivator {
         }
 
         return providers;
+    }
+
+    void registerServices(BundleContext bundleContext, Map<Type, Class<?>> serviceImplementations) {
+        for (Entry<Type, Class<?>> serviceImplementation : serviceImplementations.entrySet()) {
+            try {
+                Object provider = serviceImplementation.getValue().newInstance();
+                Method getMethod = serviceImplementation.getValue().getMethod("get", emptyArgumentTypes);
+                Object serviceImpl = getMethod.invoke(provider, emptyArgumentList);
+                if (serviceImplementation.getKey() instanceof Class) {
+                    Class<?> service = (Class<?>)serviceImplementation.getKey();
+                    String serviceName = service.getCanonicalName();
+                    bundleContext.registerService(serviceName, serviceImpl, null);
+                }
+            } catch (InstantiationException e) {
+            } catch (IllegalAccessException e) {
+            } catch (NoSuchMethodException e) {
+            } catch (SecurityException e) {
+            } catch (IllegalArgumentException e) {
+            } catch (InvocationTargetException e) {
+            }
+        }
     }
 
 }
