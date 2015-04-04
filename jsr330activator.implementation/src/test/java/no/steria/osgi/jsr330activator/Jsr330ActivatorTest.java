@@ -12,6 +12,7 @@ import java.util.Map;
 import no.steria.osgi.jsr330activator.testbundle.HelloService;
 import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceImplementation;
 import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceProvider;
+import no.steria.osgi.mocks.MockBundleContext;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +20,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.wiring.BundleWiring;
-import org.springframework.osgi.mock.MockBundleContext;
 
 public class Jsr330ActivatorTest {
 
