@@ -3,8 +3,14 @@ package no.steria.osgi.jsr330activator;
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+
+import no.steria.osgi.jsr330activator.testbundle.HelloService;
+import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceImplementation;
+import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceProvider;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -113,6 +119,17 @@ public class Jsr330ActivatorTest {
     	Jsr330Activator activator = new Jsr330Activator();
         List<Class<?>> bundleClasses = activator.scanBundleForClasses(bundle);
         assertEquals(0, bundleClasses.size());
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testFindProviders() {
+    	List<Class<?>> classesInBundle = Arrays.asList(HelloService.class, HelloServiceImplementation.class, HelloServiceProvider.class);
+
+    	Jsr330Activator activator = new Jsr330Activator();
+    	Map<Type, Class<?>> providers = activator.findProviders(classesInBundle);
+    	assertEquals(1, providers.size());
+    	assertEquals(HelloServiceProvider.class, providers.get(HelloService.class));
     }
 
 }

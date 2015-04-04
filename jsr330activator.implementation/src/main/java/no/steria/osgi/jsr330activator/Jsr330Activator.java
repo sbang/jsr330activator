@@ -1,8 +1,12 @@
 package no.steria.osgi.jsr330activator;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -65,6 +69,29 @@ public class Jsr330Activator implements BundleActivator {
     	} catch (SecurityException e) { }
 
         return classes;
+    }
+
+    Map<Type, Class<?>> findProviders(List<Class<?>> classesInBundle) {
+        Map<Type, Class<?>> providers = new HashMap<Type, Class<?>>();
+        for (Class<?> classInBundle : classesInBundle) {
+            Type[] genericInterfaces = classInBundle.getGenericInterfaces();
+            if (genericInterfaces.length > 0) {
+                Type genericInterface = genericInterfaces[0];
+                if (genericInterface instanceof ParameterizedType) {
+                    ParameterizedType parameterizedType = (ParameterizedType) genericInterface;
+                    Class<?> rawType = (Class<?>) parameterizedType.getRawType();
+                    if (Provider.class.equals(rawType)) {
+                        Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
+                        if (actualTypeArguments.length > 0) {
+                            Type providedService = actualTypeArguments[0];
+                            providers.put(providedService, classInBundle);
+                        }
+                    }
+                }
+            }
+        }
+
+        return providers;
     }
 
 }
