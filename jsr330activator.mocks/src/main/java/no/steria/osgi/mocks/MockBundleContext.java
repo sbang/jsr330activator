@@ -1,8 +1,11 @@
 package no.steria.osgi.mocks;
 
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -38,7 +41,7 @@ public class MockBundleContext extends MockBundleContextBase {
         MockServiceReference<Object> serviceReference = new MockServiceReference<Object>(getBundle());
         serviceRegistrations.put(clazz, serviceReference);
         serviceImplementations.put(serviceReference, service);
-        return null; // Don't use the return value in any of my tests
+        return new MockServiceRegistration<Object>(this, serviceReference);
     }
 
     @Override
@@ -50,6 +53,33 @@ public class MockBundleContext extends MockBundleContextBase {
     @Override
     public <S> S getService(ServiceReference<S> reference) {
         return (S) serviceImplementations.get(reference);
+    }
+
+    @Override
+    public boolean ungetService(ServiceReference<?> reference) {
+        boolean unregistrationSuccess = true;
+        if (serviceRegistrations.containsValue(reference)) {
+            List<String> serviceClassNames = new ArrayList<String>();
+            for (Entry<String, ServiceReference<?>> serviceRegistration : serviceRegistrations.entrySet()) {
+                if (reference.equals(serviceRegistration.getValue())) {
+                    serviceClassNames.add(serviceRegistration.getKey());
+                }
+            }
+
+            for (String serviceClassName : serviceClassNames) {
+                serviceRegistrations.remove(serviceClassName);
+            }
+        } else {
+            unregistrationSuccess = false;
+        }
+
+        if (serviceImplementations.containsKey(reference)) {
+            serviceImplementations.remove(reference);
+        } else {
+            unregistrationSuccess = false;
+        }
+
+        return unregistrationSuccess;
     }
 
 }
