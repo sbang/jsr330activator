@@ -1,6 +1,6 @@
-package no.steria.osgi.jsr330activator.testbundle.implementation;
+package no.steria.osgi.jsr330activator.testbundle1.implementation;
 
-import no.steria.osgi.jsr330activator.testbundle.HelloService;
+import no.steria.osgi.jsr330activator.testbundle1.HelloService;
 
 public class HelloServiceImplementation implements HelloService{
 
