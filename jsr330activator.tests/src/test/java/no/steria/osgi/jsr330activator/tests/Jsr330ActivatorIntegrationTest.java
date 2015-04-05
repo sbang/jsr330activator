@@ -2,13 +2,15 @@ package no.steria.osgi.jsr330activator.tests;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 
 import javax.inject.Inject;
+
+import no.steria.osgi.jsr330activator.testbundle1.HelloService;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +29,9 @@ public class Jsr330ActivatorIntegrationTest {
     @Inject
     private BundleContext bc;
 
+    @Inject
+    private HelloService helloService;
+
     @Configuration
     public Option[] config() {
         return options(
@@ -34,6 +39,7 @@ public class Jsr330ActivatorIntegrationTest {
                        mavenBundle("org.slf4j", "slf4j-api", "1.7.2"),
                        mavenBundle("ch.qos.logback", "logback-core", "1.0.4"),
                        mavenBundle("ch.qos.logback", "logback-classic", "1.0.4"),
+                       mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.implementation", "0.0.1-SNAPSHOT"),
                        mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.testbundle1", "0.0.1-SNAPSHOT"),
                        junitBundles());
     }
@@ -41,6 +47,16 @@ public class Jsr330ActivatorIntegrationTest {
     @Test
     public void shouldHaveBundleContext() {
         assertThat(bc, is(notNullValue()));
+    }
+
+    /**
+     * Verifies that the activator in testbundle1 starts, finds a
+     * service implementation, and registers it in the OSGi service
+     * registry
+     */
+    @Test
+    public void testbundle1ServiceFoundAndActivated() {
+    	assertEquals("Hello world!", helloService.getMessage());
     }
 
 }
