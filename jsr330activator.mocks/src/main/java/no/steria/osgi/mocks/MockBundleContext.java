@@ -46,4 +46,10 @@ public class MockBundleContext extends MockBundleContextBase {
         return serviceRegistrations.get(clazz);
     }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public <S> S getService(ServiceReference<S> reference) {
+        return (S) serviceImplementations.get(reference);
+    }
+
 }
