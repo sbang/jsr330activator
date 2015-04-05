@@ -65,12 +65,13 @@ public class Jsr330Activator implements BundleActivator {
     	try {
             BundleWiring bundleWiring = bundle.adapt(BundleWiring.class);
             if (null != bundleWiring) {
-                Collection<String> classnames = bundleWiring.listResources("/", "*", BundleWiring.LISTRESOURCES_LOCAL);
-                if (null != classnames) {
+                Collection<String> resources = bundleWiring.listResources("/", "*.class", BundleWiring.LISTRESOURCES_RECURSE | BundleWiring.LISTRESOURCES_LOCAL);
+                if (null != resources) {
                     ClassLoader bundleClassLoader = bundleWiring.getClassLoader();
                     if (null != bundleClassLoader) {
-                    	for (String classname : classnames) {
+                    	for (String resource : resources) {
                             try {
+                            	String classname = resource.substring(0, resource.length() - ".class".length()).replaceAll("/", ".");
                                 Class<?> clazz = bundleClassLoader.loadClass(classname);
                                 classes.add(clazz);
                             } catch (ClassNotFoundException e) { }

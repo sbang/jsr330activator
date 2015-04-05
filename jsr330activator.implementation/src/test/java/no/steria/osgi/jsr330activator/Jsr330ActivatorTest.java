@@ -36,8 +36,8 @@ public class Jsr330ActivatorTest {
     	Bundle bundle = mock(Bundle.class);
     	BundleWiring bundleWiring = mock(BundleWiring.class);
     	// Names of 3 classes found in the test project, name of 1 class not found (to test the try/catch)
-    	List<String> classnames = Arrays.asList("no.steria.osgi.jsr330activator.testbundle.HelloService", "no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceImplementation", "no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceProvider", "no.steria.osgi.jsr330activator.testbundle.implementation.NotFoundClass");
-    	when(bundleWiring.listResources(anyString(), anyString(), eq(BundleWiring.LISTRESOURCES_LOCAL))).thenReturn(classnames);
+    	List<String> classResources = Arrays.asList("no/steria/osgi/jsr330activator/testbundle/HelloService.class", "no/steria/osgi/jsr330activator/testbundle/implementation/HelloServiceImplementation.class", "no/steria/osgi/jsr330activator/testbundle/implementation/HelloServiceProvider.class", "no/steria/osgi/jsr330activator/testbundle/implementation/NotFoundClass.class");
+    	when(bundleWiring.listResources(anyString(), anyString(), anyInt())).thenReturn(classResources);
     	when(bundleWiring.getClassLoader()).thenReturn(this.getClass().getClassLoader());
     	when(bundle.adapt(eq(BundleWiring.class))).thenReturn(bundleWiring);
 
@@ -160,9 +160,9 @@ public class Jsr330ActivatorTest {
     public void testActivatorStartStop() throws Exception {
     	BundleWiring bundleWiring = mock(BundleWiring.class);
     	// Names of 3 classes found in the test project, name of 1 class not found (to test the try/catch)
-    	List<String> classnames = Arrays.asList("no.steria.osgi.jsr330activator.testbundle.HelloService", "no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceImplementation", "no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceProvider", "no.steria.osgi.jsr330activator.testbundle.implementation.NotFoundClass");
-    	when(bundleWiring.listResources(anyString(), anyString(), eq(BundleWiring.LISTRESOURCES_LOCAL))).thenReturn(classnames);
-    	when(bundleWiring.getClassLoader()).thenReturn(this.getClass().getClassLoader());
+    	List<String> classResources = Arrays.asList("no/steria/osgi/jsr330activator/testbundle/HelloService.class", "no/steria/osgi/jsr330activator/testbundle/implementation/HelloServiceImplementation.class", "no/steria/osgi/jsr330activator/testbundle/implementation/HelloServiceProvider.class", "no/steria/osgi/jsr330activator/testbundle/implementation/NotFoundClass.class");
+    	when(bundleWiring.listResources(anyString(), anyString(), anyInt())).thenReturn(classResources);
+     	when(bundleWiring.getClassLoader()).thenReturn(this.getClass().getClassLoader());
     	MockBundle bundle = new MockBundle(bundleWiring);
     	BundleContext bundleContext = new MockBundleContext(bundle);
 
