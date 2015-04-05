@@ -17,6 +17,7 @@ import javax.inject.Provider;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.wiring.BundleWiring;
 
 /**
@@ -45,13 +46,18 @@ public class Jsr330Activator implements BundleActivator {
 
     private static final Class<?>[] emptyArgumentTypes = new Class<?>[0];
     private static final Object[] emptyArgumentList = new Object[0];
+    private List<ServiceRegistration<?>> serviceRegistrations = new ArrayList<ServiceRegistration<?>>();
 
     public void start(BundleContext context) throws Exception {
-        // TODO add activation code here
+        List<Class<?>> classes = scanBundleForClasses(context.getBundle());
+        Map<Type, Class<?>> providers = findProviders(classes);
+        registerServices(context, providers);
     }
 
     public void stop(BundleContext context) throws Exception {
-        // TODO add deactivation code here
+        for (ServiceRegistration<?> serviceRegistration : serviceRegistrations) {
+            serviceRegistration.unregister();
+        }
     }
 
     List<Class<?>> scanBundleForClasses(Bundle bundle) {
@@ -109,7 +115,8 @@ public class Jsr330Activator implements BundleActivator {
                 if (serviceImplementation.getKey() instanceof Class) {
                     Class<?> service = (Class<?>)serviceImplementation.getKey();
                     String serviceName = service.getCanonicalName();
-                    bundleContext.registerService(serviceName, serviceImpl, null);
+                    ServiceRegistration<?> serviceRegistration = bundleContext.registerService(serviceName, serviceImpl, null);
+                    serviceRegistrations.add(serviceRegistration);
                 }
             } catch (InstantiationException e) {
             } catch (IllegalAccessException e) {

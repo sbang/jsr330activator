@@ -12,6 +12,7 @@ import java.util.Map;
 import no.steria.osgi.jsr330activator.testbundle.HelloService;
 import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceImplementation;
 import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceProvider;
+import no.steria.osgi.mocks.MockBundle;
 import no.steria.osgi.mocks.MockBundleContext;
 
 import org.junit.Before;
@@ -153,6 +154,38 @@ public class Jsr330ActivatorTest {
     	// Verify that the service can now be found
     	ServiceReference<?> helloAfterActivation = bundleContext.getServiceReference(HelloService.class.getCanonicalName());
     	assertNotNull(helloAfterActivation);
+    }
+
+    @Test
+    public void testActivatorStartStop() throws Exception {
+    	BundleWiring bundleWiring = mock(BundleWiring.class);
+    	// Names of 3 classes found in the test project, name of 1 class not found (to test the try/catch)
+    	List<String> classnames = Arrays.asList("no.steria.osgi.jsr330activator.testbundle.HelloService", "no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceImplementation", "no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceProvider", "no.steria.osgi.jsr330activator.testbundle.implementation.NotFoundClass");
+    	when(bundleWiring.listResources(anyString(), anyString(), eq(BundleWiring.LISTRESOURCES_LOCAL))).thenReturn(classnames);
+    	when(bundleWiring.getClassLoader()).thenReturn(this.getClass().getClassLoader());
+    	MockBundle bundle = new MockBundle(bundleWiring);
+    	BundleContext bundleContext = new MockBundleContext(bundle);
+
+    	// Verify that there is no HelloService before the registration
+    	ServiceReference<?> helloBeforeActivation = bundleContext.getServiceReference(HelloService.class.getCanonicalName());
+    	assertNull(helloBeforeActivation);
+
+    	// Register the found services
+    	Jsr330Activator activator = new Jsr330Activator();
+    	activator.start(bundleContext);
+
+    	// Verify that the service can now be found
+    	ServiceReference<?> helloAfterActivation = bundleContext.getServiceReference(HelloService.class.getCanonicalName());
+    	assertNotNull(helloAfterActivation);
+
+    	// Get the service from the reference and call it
+    	HelloService helloService = (HelloService) bundleContext.getService(helloAfterActivation);
+    	assertEquals("Hello world!", helloService.getMessage());
+
+    	// Unregister the service and verify that there will be noe service with that name
+    	activator.stop(bundleContext);
+    	ServiceReference<?> helloAfterDeactivation = bundleContext.getServiceReference(HelloService.class.getCanonicalName());
+    	assertNull(helloAfterDeactivation);
     }
 
 }
