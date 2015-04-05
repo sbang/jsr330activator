@@ -4,6 +4,7 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
@@ -25,6 +26,11 @@ public class MockBundleContext extends MockBundleContextBase {
 
     public MockBundleContext() {
         this(new MockBundle());
+    }
+
+    @Override
+    public Bundle getBundle() {
+        return bundle;
     }
 
     @Override
