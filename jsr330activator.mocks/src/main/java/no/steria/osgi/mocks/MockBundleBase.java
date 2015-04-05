@@ -28,150 +28,121 @@ import org.osgi.framework.Version;
 public class MockBundleBase implements Bundle {
 
     public int compareTo(Bundle arg0) {
-        // TODO Auto-generated method stub
-        return 0;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public int getState() {
-        // TODO Auto-generated method stub
-        return 0;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public void start(int options) throws BundleException {
-        // TODO Auto-generated method stub
-
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public void start() throws BundleException {
-        // TODO Auto-generated method stub
-
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public void stop(int options) throws BundleException {
-        // TODO Auto-generated method stub
-
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public void stop() throws BundleException {
-        // TODO Auto-generated method stub
-
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public void update(InputStream input) throws BundleException {
-        // TODO Auto-generated method stub
-
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public void update() throws BundleException {
-        // TODO Auto-generated method stub
-
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public void uninstall() throws BundleException {
-        // TODO Auto-generated method stub
-
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public Dictionary<String, String> getHeaders() {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public long getBundleId() {
-        // TODO Auto-generated method stub
-        return 0;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public String getLocation() {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public ServiceReference<?>[] getRegisteredServices() {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public ServiceReference<?>[] getServicesInUse() {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public boolean hasPermission(Object permission) {
-        // TODO Auto-generated method stub
-        return false;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public URL getResource(String name) {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public Dictionary<String, String> getHeaders(String locale) {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public String getSymbolicName() {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public Class<?> loadClass(String name) throws ClassNotFoundException {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public Enumeration<URL> getResources(String name) throws IOException {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public Enumeration<String> getEntryPaths(String path) {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public URL getEntry(String path) {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public long getLastModified() {
-        // TODO Auto-generated method stub
-        return 0;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public Enumeration<URL> findEntries(String path, String filePattern,
                                         boolean recurse) {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public BundleContext getBundleContext() {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public Map<X509Certificate, List<X509Certificate>> getSignerCertificates(
                                                                              int signersType) {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public Version getVersion() {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public <A> A adapt(Class<A> type) {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public File getDataFile(String filename) {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
 }

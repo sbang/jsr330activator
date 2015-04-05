@@ -15,37 +15,28 @@ import org.osgi.framework.ServiceReference;
  */
 public class MockServiceReferenceBase<S> implements ServiceReference<S> {
 
-    private static final String[] emptyStringArray = new String[0];
-    private static final Bundle[] emptyBundleArray = new Bundle[0];
-
     public Object getProperty(String key) {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public String[] getPropertyKeys() {
-        // TODO Auto-generated method stub
-        return emptyStringArray;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public Bundle getBundle() {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public Bundle[] getUsingBundles() {
-        // TODO Auto-generated method stub
-        return emptyBundleArray;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public boolean isAssignableTo(Bundle bundle, String className) {
-        // TODO Auto-generated method stub
-        return false;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     public int compareTo(Object reference) {
-        // TODO Auto-generated method stub
-        return 0;
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
 }
