@@ -33,13 +33,12 @@ public class Jsr330ActivatorTest {
      */
     @Test
     public void testScanBundleForClasses() {
-    	Bundle bundle = mock(Bundle.class);
     	BundleWiring bundleWiring = mock(BundleWiring.class);
     	// Names of 3 classes found in the test project, name of 1 class not found (to test the try/catch)
     	List<String> classResources = Arrays.asList("no/steria/osgi/jsr330activator/testbundle/HelloService.class", "no/steria/osgi/jsr330activator/testbundle/implementation/HelloServiceImplementation.class", "no/steria/osgi/jsr330activator/testbundle/implementation/HelloServiceProvider.class", "no/steria/osgi/jsr330activator/testbundle/implementation/NotFoundClass.class");
     	when(bundleWiring.listResources(anyString(), anyString(), anyInt())).thenReturn(classResources);
     	when(bundleWiring.getClassLoader()).thenReturn(this.getClass().getClassLoader());
-    	when(bundle.adapt(eq(BundleWiring.class))).thenReturn(bundleWiring);
+    	Bundle bundle = new MockBundle(bundleWiring);
 
     	Jsr330Activator activator = new Jsr330Activator();
         List<Class<?>> bundleClasses = activator.scanBundleForClasses(bundle);
