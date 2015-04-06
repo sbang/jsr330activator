@@ -29,4 +29,9 @@ public class MockBundle extends MockBundleBase {
         return null;
     }
 
+    @Override
+    public Class<?> loadClass(String classname) throws ClassNotFoundException {
+        return getClass().getClassLoader().loadClass(classname);
+    }
+
 }
