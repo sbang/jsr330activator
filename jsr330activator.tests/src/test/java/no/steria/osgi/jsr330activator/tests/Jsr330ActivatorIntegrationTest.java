@@ -1,7 +1,5 @@
 package no.steria.osgi.jsr330activator.tests;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.*;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
@@ -20,7 +18,6 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
-import org.osgi.framework.BundleContext;
 
 /**
  * Integration test that tests a bundle using a {@link Jsr330Activator}
@@ -35,9 +32,6 @@ import org.osgi.framework.BundleContext;
 public class Jsr330ActivatorIntegrationTest {
 
     @Inject
-    private BundleContext bc;
-
-    @Inject
     private HelloService helloService;
 
     @Configuration
@@ -50,11 +44,6 @@ public class Jsr330ActivatorIntegrationTest {
                        mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.implementation", "0.0.1-SNAPSHOT"),
                        mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.testbundle1", "0.0.1-SNAPSHOT"),
                        junitBundles());
-    }
-
-    @Test
-    public void shouldHaveBundleContext() {
-        assertThat(bc, is(notNullValue()));
     }
 
     /**
