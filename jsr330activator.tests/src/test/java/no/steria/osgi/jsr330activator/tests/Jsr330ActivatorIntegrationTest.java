@@ -10,6 +10,7 @@ import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 
 import javax.inject.Inject;
 
+import no.steria.osgi.jsr330activator.Jsr330Activator;
 import no.steria.osgi.jsr330activator.testbundle1.HelloService;
 
 import org.junit.Test;
@@ -21,6 +22,14 @@ import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 import org.osgi.framework.BundleContext;
 
+/**
+ * Integration test that tests a bundle using a {@link Jsr330Activator}
+ * as its bundle activator.  The Jsr330Activator is found and loaded
+ * from a jsr330activator.implementation bundle in the OSGi runtime.
+ *
+ * @author Steinar Bang
+ *
+ */
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
 public class Jsr330ActivatorIntegrationTest {
