@@ -40,7 +40,7 @@
     <extensions>true</extensions>
     <configuration>
      <instructions>
-      <Bundle-Activator>no.steria.osgi.jsr330activator.testbundle1.implementation.Activator</Bundle-Activator>
+      <Bundle-Activator>no.steria.osgi.jsr330activator.Jsr330Activator</Bundle-Activator>
       <Export-Package>no.steria.osgi.jsr330activator.testbundle1</Export-Package>
      </instructions>
     </configuration>
