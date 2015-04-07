@@ -70,4 +70,5 @@
    </plugin>
   </plugins>
  </build>
+ <description>An OSGi bundle activator implementation that will scan the bundle for JSR330 Provider&lt;&gt; interface implementations instantiate the providers, and register the provided services with OSGi.</description>
 </project>
