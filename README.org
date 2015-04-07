@@ -1,0 +1,118 @@
+* What's this?
+
+This is an implementation of the [[https://osgi.org/javadoc/r4v43/core/org/osgi/framework/BundleActivator.html][OSGi BundleActivator interface]], that will scan the bundle for implementations of the [[http://atinject.googlecode.com/svn/trunk/javadoc/javax/inject/Provider.html][JSR 330 Provider<> interface]], instantiate the providers, and use them to register the provided interface as an OSGi service.
+
+* How to use it
+
+** Install the jsr330activator in the local maven cache
+
+Since the project still hasn't been released, it must be checked out from git and built, to make it available to projects:
+#+BEGIN_EXAMPLE
+mkdir -p ~/git
+cd ~/git
+git clone http://github.com/sbang/jsr330activator.git
+cd jsr330activator
+mvn install
+#+END_EXAMPLE
+
+** Use it as an OSGi dependency
+
+The steps are:
+
+ 1. Add the jsr330activator.implementation-0.0.1-SNAPSHOT.jar to the OSGi runtime, renaming it if needed
+ 2. Add a dependency to the maven-bundle-project that will use it:
+    #+BEGIN_SRC nxml
+      <dependency>
+       <groupId>no.steria.osgi.jsr330activator</groupId>
+       <artifactId>jsr330activator.implementation</artifactId>
+       <version>0.0.1-SNAPSHOT</version>
+      </dependency>
+    #+END_SRC
+ 3. Set the Jsr330Activator as the bundle activator in the maven-bundle-plugin config
+    #+BEGIN_SRC nxml
+      <build>
+       <plugins>
+        <plugin>
+         <groupId>org.apache.felix</groupId>
+         <artifactId>maven-bundle-plugin</artifactId>
+         <version>2.3.7</version>
+         <extensions>true</extensions>
+         <configuration>
+          <instructions>
+           <Bundle-Activator>no.steria.osgi.jsr330activator.Jsr330Activator</Bundle-Activator>
+           <Export-Package>no.steria.osgi.jsr330activator.testbundle1</Export-Package>
+          </instructions>
+         </configuration>
+        </plugin>
+       </plugins>
+      </build>
+    #+END_SRC
+ 4. Deploy your bundle to the OSGi container where the jsr330activator bundle already has been deployed
+
+The j330activator.testbundle1 project uses this approach.  The PAM Exam integration test Jsr330ActivatorIntegrationTest in the jsr330activator.test project verifies that this approach works.
+
+** Embed the Jsr330Activator into your bundle
+
+The steps are:
+
+ 1. Add a dependency to the maven-bundle-project that will use it:
+    #+BEGIN_SRC nxml
+      <dependency>
+       <groupId>no.steria.osgi.jsr330activator</groupId>
+       <artifactId>jsr330activator.implementation</artifactId>
+       <version>0.0.1-SNAPSHOT</version>
+      </dependency>
+    #+END_SRC
+ 2. Set the Jsr330Activator as the bundle activator in the maven-bundle-plugin config, and embed the activator
+    #+BEGIN_SRC nxml
+       <build>
+        <plugins>
+         <plugin>
+          <groupId>org.apache.felix</groupId>
+          <artifactId>maven-bundle-plugin</artifactId>
+          <version>2.3.7</version>
+          <extensions>true</extensions>
+          <configuration>
+           <instructions>
+            <Bundle-Activator>no.steria.osgi.jsr330activator.Jsr330Activator</Bundle-Activator>
+            <Export-Package>no.steria.osgi.jsr330activator.testbundle2</Export-Package>
+            <Embed-Dependency>jsr330activator.implementation;inline=true</Embed-Dependency>
+           </instructions>
+          </configuration>
+         </plugin>
+        </plugins>
+       </build>
+    #+END_SRC
+ 3. Deploy your bundle to any OSGi container
+
+The j330activator.testbundle2 project uses this approach.  The PAM Exam integration test Jsr330ActivatorEmbeddedIntegrationTest in the jsr330activator.test project verifies that this approach works.
+
+** License
+
+The Jsr330Activator is under the Eclipse public license v. 1.0.  See the LICENSE file for the full license text.
+
+** Description of the project
+
+This is a Java project built by maven.  The maven projects, are:
+ - jsr330activator
+   - The parent POM for the other projects
+ - jsr330activator.mocks
+   - A plain Java jar maven project
+   - Mock implementations of OSGi interfaces, used in unit tests that needs logic (registration and unregistration of services)
+ - jsr330activator.implementation
+   - A maven-bundle-plugin project producing an OSGi bundle
+   - Builds an OSGi bundle exporting a package containing the Jsr330Activator
+   - Tested with JUnit unit tests, using Mockito mocks and classes from the jsr330activator.mocks project
+ - jsr330activator.testbundle1
+   - A maven-bundle-plugin project producing an OSGi bundle used in integration tests
+   - Exports a package containing the interface HelloService
+   - Implements Provider<HelloService> in a non-exported package
+   - Uses the Jsr330Activator to find the Provider<HelloService> implementation and uses the implementation to register the service
+ - jsr330activator.testbundle2
+   - A maven-bundle-plugin project producing an OSGi bundle used in integration tests
+   - Exports a package containing the interface HelloService
+   - Implements Provider<HelloService> in a non-exported package
+   - Embeds the Jsr330Activator, and uses the embedded Jsr330Activator to find the Provider<HelloService> implementation and uses the implementation to register the service
+ - jsr330activator.tests
+   - A maven project containing Pax Exam integration tests that starts up OSGi containers to test the activator on actual OSGi bundles
+
