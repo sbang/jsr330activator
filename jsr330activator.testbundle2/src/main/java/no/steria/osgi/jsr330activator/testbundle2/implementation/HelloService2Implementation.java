@@ -1,11 +1,11 @@
-package no.steria.osgi.jsr330activator.testbundle1.implementation;
+package no.steria.osgi.jsr330activator.testbundle2.implementation;
 
-import no.steria.osgi.jsr330activator.testbundle1.HelloService;
+import no.steria.osgi.jsr330activator.testbundle2.HelloService2;
 
-public class HelloServiceImplementation implements HelloService{
+public class HelloService2Implementation implements HelloService2 {
 
     public String getMessage() {
-        return "Hello world!";
+        return "Hello world2!";
     }
 
 }

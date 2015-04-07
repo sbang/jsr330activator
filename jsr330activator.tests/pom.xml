@@ -76,6 +76,12 @@
    <version>0.0.1-SNAPSHOT</version>
    <scope>test</scope>
   </dependency>
+  <dependency>
+   <groupId>no.steria.osgi.jsr330activator</groupId>
+   <artifactId>jsr330activator.testbundle2</artifactId>
+   <version>0.0.1-SNAPSHOT</version>
+   <scope>test</scope>
+  </dependency>
  </dependencies>
 
  <profiles>

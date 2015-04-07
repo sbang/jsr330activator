@@ -9,7 +9,7 @@ import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import javax.inject.Inject;
 
 import no.steria.osgi.jsr330activator.Jsr330Activator;
-import no.steria.osgi.jsr330activator.testbundle1.HelloService;
+import no.steria.osgi.jsr330activator.testbundle2.HelloService2;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,19 +20,21 @@ import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 
 /**
- * Integration test that tests a bundle using a {@link Jsr330Activator}
- * as its bundle activator.  The Jsr330Activator is found and loaded
- * from a jsr330activator.implementation bundle in the OSGi runtime.
+ * Integration test that tests a bundle using an embedded {@link Jsr330Activator}
+ * as its bundle activator.
+ *
+ * In this case there is no need to add the jsr330activator.implementation
+ * bundle to the runtime.
  *
  * @author Steinar Bang
  *
  */
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-public class Jsr330ActivatorIntegrationTest {
+public class Jsr330ActivatorEmbeddedIntegrationTest {
 
     @Inject
-    private HelloService helloService;
+    private HelloService2 helloService2;
 
     @Configuration
     public Option[] config() {
@@ -41,8 +43,7 @@ public class Jsr330ActivatorIntegrationTest {
                        mavenBundle("org.slf4j", "slf4j-api", "1.7.2"),
                        mavenBundle("ch.qos.logback", "logback-core", "1.0.4"),
                        mavenBundle("ch.qos.logback", "logback-classic", "1.0.4"),
-                       mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.implementation", "0.0.1-SNAPSHOT"),
-                       mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.testbundle1", "0.0.1-SNAPSHOT"),
+                       mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.testbundle2", "0.0.1-SNAPSHOT"),
                        junitBundles());
     }
 
@@ -53,7 +54,7 @@ public class Jsr330ActivatorIntegrationTest {
      */
     @Test
     public void testbundle1ServiceFoundAndActivated() {
-    	assertEquals("Hello world!", helloService.getMessage());
+    	assertEquals("Hello world2!", helloService2.getMessage());
     }
 
 }

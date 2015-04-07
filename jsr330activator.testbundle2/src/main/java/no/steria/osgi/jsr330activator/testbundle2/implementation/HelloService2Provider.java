@@ -1,13 +1,13 @@
-package no.steria.osgi.jsr330activator.testbundle1.implementation;
+package no.steria.osgi.jsr330activator.testbundle2.implementation;
 
 import javax.inject.Provider;
 
-import no.steria.osgi.jsr330activator.testbundle1.HelloService;
+import no.steria.osgi.jsr330activator.testbundle2.HelloService2;
 
-public class HelloServiceProvider implements Provider<HelloService> {
+public class HelloService2Provider implements Provider<HelloService2> {
 
-    public HelloServiceImplementation get() {
-        return new HelloServiceImplementation();
+    public HelloService2 get() {
+        return new HelloService2Implementation();
     }
 
 }
