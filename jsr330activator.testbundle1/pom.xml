@@ -27,7 +27,6 @@
    <groupId>no.steria.osgi.jsr330activator</groupId>
    <artifactId>jsr330activator.implementation</artifactId>
    <version>0.0.1-SNAPSHOT</version>
-   <type>bundle</type>
   </dependency>
  </dependencies>
 
