@@ -10,6 +10,13 @@
  <name>jsr330activator</name>
  <url>http://maven.apache.org</url>
 
+ <licenses>
+  <license>
+   <name>Eclipse Public License - v 1.0</name>
+   <url>LICENSE</url>
+  </license>
+ </licenses>
+
  <properties>
   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
  </properties>
