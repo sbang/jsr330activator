@@ -29,7 +29,7 @@ import org.ops4j.pax.exam.spi.reactors.PerClass;
  */
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-public class Jsr330ActivatorIntegrationTest {
+public class Jsr330ActivatorIntegrationTest extends Jsr330ActivatorIntegrationtestBase {
 
     @Inject
     private HelloService helloService;
@@ -41,8 +41,8 @@ public class Jsr330ActivatorIntegrationTest {
                        mavenBundle("org.slf4j", "slf4j-api", "1.7.2"),
                        mavenBundle("ch.qos.logback", "logback-core", "1.0.4"),
                        mavenBundle("ch.qos.logback", "logback-classic", "1.0.4"),
-                       mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.implementation", "0.0.1-SNAPSHOT"),
-                       mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.testbundle1", "0.0.1-SNAPSHOT"),
+                       mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.implementation", getMavenProjectVersion()),
+                       mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.testbundle1", getMavenProjectVersion()),
                        junitBundles());
     }
 
