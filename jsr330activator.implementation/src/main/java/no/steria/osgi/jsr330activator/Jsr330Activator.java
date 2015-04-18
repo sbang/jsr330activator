@@ -1,7 +1,5 @@
 package no.steria.osgi.jsr330activator;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -14,10 +12,11 @@ import java.util.Map.Entry;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import no.steria.osgi.jsr330activator.implementation.ProviderAdapter;
+
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 import org.osgi.framework.wiring.BundleWiring;
 
 /**
@@ -44,19 +43,20 @@ import org.osgi.framework.wiring.BundleWiring;
  */
 public class Jsr330Activator implements BundleActivator {
 
-    private static final Class<?>[] emptyArgumentTypes = new Class<?>[0];
-    private static final Object[] emptyArgumentList = new Object[0];
-    private List<ServiceRegistration<?>> serviceRegistrations = new ArrayList<ServiceRegistration<?>>();
+    private List<ProviderAdapter> serviceProviderAdapters;
 
     public void start(BundleContext context) throws Exception {
         List<Class<?>> classes = scanBundleForClasses(context.getBundle());
         Map<Type, Class<?>> providers = findProviders(classes);
-        registerServices(context, providers);
+        serviceProviderAdapters = createProviderAdapterList(providers);
+        for (ProviderAdapter serviceProviderAdapter : serviceProviderAdapters) {
+            serviceProviderAdapter.start(context);
+        }
     }
 
     public void stop(BundleContext context) throws Exception {
-        for (ServiceRegistration<?> serviceRegistration : serviceRegistrations) {
-            serviceRegistration.unregister();
+    	for (ProviderAdapter serviceProviderAdapter : serviceProviderAdapters) {
+            serviceProviderAdapter.stop(context);
         }
     }
 
@@ -104,26 +104,14 @@ public class Jsr330Activator implements BundleActivator {
         return providers;
     }
 
-    void registerServices(BundleContext bundleContext, Map<Type, Class<?>> serviceImplementations) {
-        for (Entry<Type, Class<?>> serviceImplementation : serviceImplementations.entrySet()) {
-            try {
-                Object provider = serviceImplementation.getValue().newInstance();
-                Method getMethod = serviceImplementation.getValue().getMethod("get", emptyArgumentTypes);
-                Object serviceImpl = getMethod.invoke(provider, emptyArgumentList);
-                if (serviceImplementation.getKey() instanceof Class) {
-                    Class<?> service = (Class<?>)serviceImplementation.getKey();
-                    String serviceName = service.getCanonicalName();
-                    ServiceRegistration<?> serviceRegistration = bundleContext.registerService(serviceName, serviceImpl, null);
-                    serviceRegistrations.add(serviceRegistration);
-                }
-            } catch (InstantiationException e) {
-            } catch (IllegalAccessException e) {
-            } catch (NoSuchMethodException e) {
-            } catch (SecurityException e) {
-            } catch (IllegalArgumentException e) {
-            } catch (InvocationTargetException e) {
-            }
+    public List<ProviderAdapter> createProviderAdapterList(Map<Type, Class<?>> providers) {
+        List<ProviderAdapter> providerAdapters = new ArrayList<ProviderAdapter>();
+        for (Entry<Type, Class<?>> providerEntry : providers.entrySet()) {
+            ProviderAdapter providerAdapter = new ProviderAdapter(providerEntry.getKey(), providerEntry.getValue());
+            providerAdapters.add(providerAdapter);
         }
+
+        return providerAdapters;
     }
 
 }

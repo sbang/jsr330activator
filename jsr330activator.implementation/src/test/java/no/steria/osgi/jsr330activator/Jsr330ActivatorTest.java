@@ -9,7 +9,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import no.steria.osgi.jsr330activator.implementation.ProviderAdapter;
+import no.steria.osgi.jsr330activator.testbundle.AddInjectionsService;
 import no.steria.osgi.jsr330activator.testbundle.HelloService;
+import no.steria.osgi.jsr330activator.testbundle.HelloService2;
+import no.steria.osgi.jsr330activator.testbundle.implementation.AddInjectionsServiceProvider;
+import no.steria.osgi.jsr330activator.testbundle.implementation.HelloService2Provider;
 import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceImplementation;
 import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceProvider;
 import no.steria.osgi.mocks.MockBundle;
@@ -19,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.wiring.BundleWiring;
 
@@ -137,22 +143,39 @@ public class Jsr330ActivatorTest {
     }
 
     @Test
-    public void testRegisterServices() {
-    	BundleContext bundleContext = new MockBundleContext();
+    public void testCreateProviderAdapterList() throws InvalidSyntaxException {
+    	Map<Type, Class<?>> providers = new HashMap<Type, Class<?>>();
+    	providers.put(HelloService.class, HelloServiceProvider.class);
+    	providers.put(HelloService2.class, HelloService2Provider.class);
+    	providers.put(AddInjectionsService.class, AddInjectionsServiceProvider.class);
 
-    	// Verify that there is no HelloService before the registration
-    	ServiceReference<?> helloBeforeActivation = bundleContext.getServiceReference(HelloService.class.getCanonicalName());
-    	assertNull(helloBeforeActivation);
-
-    	// Register the found services
-    	Map<Type, Class<?>> serviceImplementations = new HashMap<Type, Class<?>>();
-    	serviceImplementations.put(HelloService.class, HelloServiceProvider.class);
     	Jsr330Activator activator = new Jsr330Activator();
-    	activator.registerServices(bundleContext, serviceImplementations);
+    	List<ProviderAdapter> providerAdapters = activator.createProviderAdapterList(providers);
+    	assertEquals(3, providerAdapters.size());
 
-    	// Verify that the service can now be found
-    	ServiceReference<?> helloAfterActivation = bundleContext.getServiceReference(HelloService.class.getCanonicalName());
-    	assertNotNull(helloAfterActivation);
+    	for (ProviderAdapter providerAdapter : providerAdapters) {
+            if (providerAdapter.getProvidedServiceType() == HelloService.class) {
+                // The HelloService provider has no injections
+                assertFalse(providerAdapter.hasInjections());
+            }
+
+            if (providerAdapter.getProvidedServiceType() == HelloService2.class) {
+                // The HelloService2 provider has injections
+                assertTrue(providerAdapter.hasInjections());
+            }
+
+            if (providerAdapter.getProvidedServiceType() == AddInjectionsService.class) {
+                // The AddInjectionsService provider has injections
+                assertTrue(providerAdapter.hasInjections());
+            }
+        }
+
+    	// Start the provider adapters.
+    	BundleContext bundleContext = mock(BundleContext.class);
+    	when(bundleContext.getServiceReferences(anyString(), anyString())).thenReturn(new ServiceReference<?>[0]);
+    	for (ProviderAdapter providerAdapter : providerAdapters) {
+            providerAdapter.start(bundleContext);
+        }
     }
 
     @Test
