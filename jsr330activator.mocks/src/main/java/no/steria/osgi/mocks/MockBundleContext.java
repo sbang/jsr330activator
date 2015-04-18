@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -77,24 +76,31 @@ public class MockBundleContext extends MockBundleContextBase {
 
     @Override
     public boolean ungetService(ServiceReference<?> reference) {
+        // Always succeeds.  Called when releasing a reference
+        return true;
+    }
+
+    public boolean unregisterService(MockServiceRegistration<?> unregisteredServiceRegistration) {
         boolean unregistrationSuccess = true;
-        if (serviceRegistrations.containsValue(reference)) {
+        ServiceReference<?> serviceReference = unregisteredServiceRegistration.getReference();
+        if (serviceRegistrations.containsValue(serviceReference)) {
             List<String> serviceClassNames = new ArrayList<String>();
             for (Entry<String, ServiceReference<?>> serviceRegistration : serviceRegistrations.entrySet()) {
-                if (reference.equals(serviceRegistration.getValue())) {
+                if (serviceReference.equals(serviceRegistration.getValue())) {
                     serviceClassNames.add(serviceRegistration.getKey());
                 }
             }
 
             for (String serviceClassName : serviceClassNames) {
                 serviceRegistrations.remove(serviceClassName);
+            	notifyListenersAboutRemovedService(serviceClassName, serviceReference);
             }
         } else {
             unregistrationSuccess = false;
         }
 
-        if (serviceImplementations.containsKey(reference)) {
-            serviceImplementations.remove(reference);
+        if (serviceImplementations.containsKey(serviceReference)) {
+            serviceImplementations.remove(serviceReference);
         } else {
             unregistrationSuccess = false;
         }
@@ -116,6 +122,17 @@ public class MockBundleContext extends MockBundleContextBase {
         List<ServiceListener> filteredServiceListenerList = filteredServiceListeners.get(filter);
         if (null != filteredServiceListenerList) {
             ServiceEvent newServiceEvent = new ServiceEvent(ServiceEvent.REGISTERED, serviceReference);
+            for (ServiceListener serviceListener : filteredServiceListenerList) {
+                serviceListener.serviceChanged(newServiceEvent);
+            }
+        }
+    }
+
+    private void notifyListenersAboutRemovedService(String clazz, ServiceReference<?> serviceReference) {
+        String filter = "(objectclass=" + clazz + ")";
+        List<ServiceListener> filteredServiceListenerList = filteredServiceListeners.get(filter);
+        if (null != filteredServiceListenerList) {
+            ServiceEvent newServiceEvent = new ServiceEvent(ServiceEvent.UNREGISTERING, serviceReference);
             for (ServiceListener serviceListener : filteredServiceListenerList) {
                 serviceListener.serviceChanged(newServiceEvent);
             }

@@ -23,7 +23,7 @@ public class MockServiceRegistration<S> implements ServiceRegistration<S> {
     }
 
     public void unregister() {
-        bundleContext.ungetService(serviceReference);
+        bundleContext.unregisterService(this);
     }
 
 }
