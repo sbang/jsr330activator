@@ -122,4 +122,17 @@ public class MockBundleContext extends MockBundleContextBase {
         }
     }
 
+    @Override
+    public void removeServiceListener(ServiceListener listener) {
+        // Note: if unfiltered service listeners are implemented
+        // This method needs to look for, and remove, the listener there
+        // as well
+
+        // Go through all of the filters, and for each filter
+        // remove the listener from the filter's list.
+        for(Entry<String, List<ServiceListener>> filteredList : filteredServiceListeners.entrySet()) {
+            filteredList.getValue().remove(listener);
+        }
+    }
+
 }
