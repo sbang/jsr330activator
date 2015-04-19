@@ -79,4 +79,8 @@
   <url>https://github.com/sbang/jsr330activator/issues</url>
   <system>Github issue tracker</system>
  </issueManagement>
+ <ciManagement>
+  <url>https://travis-ci.org/sbang/jsr330activator</url>
+  <system>travis-ci</system>
+ </ciManagement>
 </project>
