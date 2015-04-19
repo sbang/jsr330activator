@@ -68,6 +68,20 @@
      </execution>
     </executions>
    </plugin>
+   <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-gpg-plugin</artifactId>
+    <version>1.5</version>
+    <executions>
+     <execution>
+      <id>sign-artifacts</id>
+      <phase>verify</phase>
+      <goals>
+       <goal>sign</goal>
+      </goals>
+     </execution>
+    </executions>
+   </plugin>
   </plugins>
  </build>
  <description>An OSGi bundle activator implementation that will scan the bundle for JSR330 Provider&lt;&gt; interface implementations instantiate the providers, and register the provided services with OSGi.</description>
