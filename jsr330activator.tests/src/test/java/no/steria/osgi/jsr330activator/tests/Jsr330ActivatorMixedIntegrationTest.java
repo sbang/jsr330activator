@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import no.steria.osgi.jsr330activator.Jsr330Activator;
 import no.steria.osgi.jsr330activator.testbundle1.HelloService;
+import no.steria.osgi.jsr330activator.testbundle2.HelloService2;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,19 +21,22 @@ import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 
 /**
- * Integration test that tests a bundle using a {@link Jsr330Activator}
- * as its bundle activator.  The Jsr330Activator is found and loaded
- * from a jsr330activator.implementation bundle in the OSGi runtime.
+ * Integration test that tests that a bundle using a {@link Jsr330Activator}
+ * loaded from the OSGi runtime can co-exist with a bundle that embeds the
+ * {@link Jsr330Activator}.
  *
  * @author Steinar Bang
  *
  */
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-public class Jsr330ActivatorIntegrationTest extends Jsr330ActivatorIntegrationtestBase {
+public class Jsr330ActivatorMixedIntegrationTest extends Jsr330ActivatorIntegrationtestBase {
 
     @Inject
     private HelloService helloService;
+
+    @Inject
+    private HelloService2 helloService2;
 
     @Configuration
     public Option[] config() {
@@ -43,17 +47,30 @@ public class Jsr330ActivatorIntegrationTest extends Jsr330ActivatorIntegrationte
                        mavenBundle("ch.qos.logback", "logback-classic", "1.0.4"),
                        mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.implementation", getMavenProjectVersion()),
                        mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.testbundle1", getMavenProjectVersion()),
+                       mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.testbundle2", getMavenProjectVersion()),
                        junitBundles());
     }
 
     /**
-     * Verifies that the activator in testbundle1 starts, finds a
+     * Verifies that the activator in testbundle1 (which loads the
+     * {@link Jsr330Activator} as an OSGi dependency) starts, finds a
      * service implementation, and registers it in the OSGi service
      * registry
      */
     @Test
     public void testbundle1ServiceFoundAndActivated() {
     	assertEquals("Hello world!", helloService.getMessage());
+    }
+
+    /**
+     * Verifies that the activator in testbundle2 (which embeds the
+     * {@link Jsr330Activator}) starts, finds a service implementation,
+     * and registers it in the OSGi service
+     * registry
+     */
+    @Test
+    public void testbundle2ServiceFoundAndActivated() {
+    	assertEquals("Hello world2!", helloService2.getMessage());
     }
 
 }
