@@ -53,7 +53,7 @@ public class Jsr330ActivatorEmbeddedIntegrationTest extends Jsr330ActivatorInteg
      * registry
      */
     @Test
-    public void testbundle1ServiceFoundAndActivated() {
+    public void testbundle2ServiceFoundAndActivated() {
     	assertEquals("Hello world2!", helloService2.getMessage());
     }
 
