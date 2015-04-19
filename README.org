@@ -2,6 +2,24 @@
 
 This is an implementation of the [[https://osgi.org/javadoc/r4v43/core/org/osgi/framework/BundleActivator.html][OSGi BundleActivator interface]], that will scan the bundle for implementations of the [[http://atinject.googlecode.com/svn/trunk/javadoc/javax/inject/Provider.html][JSR 330 Provider<> interface]], instantiate the providers, and use them to register the provided interface as an OSGi service.
 
+* Why does it exist
+
+[[https://osgi.org/javadoc/r4v43/core/org/osgi/framework/BundleActivator.html][BundleActivators]] exposing services and [[http://www.knopflerfish.org/osgi_service_tutorial.html#white][setting up service listeners for dependecies]], are the "four wheel drives" of OSGi plugins.  A bundle using a BundleActivator can be dropped in /any/ OSGi container using any (or none) component model, e.g. eclipse, Spring dynamic modules, iPOJO, and make its services available there.
+
+This project is an attempt at replacing the handwritten code with something that keeps the "four wheel drive" capability, but at the same time is much simpler to maintain.  To do so, it should be simple and small, and to stay small it has to limit what it can support.
+
+So, in short, this is what you get:
+ - Each type parameter to a [[http://docs.oracle.com/javaee/6/api/javax/inject/Provider.html][Provider<>]] implementation will be exposed as a service
+ - Each Provider<> implementation found will be instantiated once
+ - Each Provider<> implementation will be scanned for [[http://docs.oracle.com/javaee/6/api/javax/inject/Inject.html][@Inject]] annotations on fields and methods with a single argument, and service listeners will be set up for the types of the fields/types of the method argument
+ - An implementation of the type parameter to each instantiated Provider<> will fetched from [[http://docs.oracle.com/javaee/6/api/javax/inject/Provider.html#get()][Provider<>.get()]] and registered as a service
+   - Immediately after Provider<> instantiation if there are no injections
+   - Once all Injections have been satisfied, if there are injections
+
+And that's it.  It's formed from what I did with bundle activators.
+
+If this is not enough for your requirements, you're probably better off with a real component framework.
+
 * How to use it
 
 ** Install the jsr330activator in the local maven cache
