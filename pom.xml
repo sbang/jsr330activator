@@ -71,4 +71,12 @@
   </plugins>
  </build>
  <description>An OSGi bundle activator implementation that will scan the bundle for JSR330 Provider&lt;&gt; interface implementations instantiate the providers, and register the provided services with OSGi.</description>
+ <scm>
+  <url>https://github.com/sbang/jsr330activator</url>
+  <connection>https://github.com/sbang/jsr330activator.git</connection>
+ </scm>
+ <issueManagement>
+  <url>https://github.com/sbang/jsr330activator/issues</url>
+  <system>Github issue tracker</system>
+ </issueManagement>
 </project>
