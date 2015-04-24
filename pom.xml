@@ -39,6 +39,7 @@
   <module>jsr330activator.tests</module>
   <module>jsr330activator.mocks</module>
   <module>jsr330activator.testbundle2</module>
+  <module>jsr330activator.testbundle3</module>
  </modules>
  <build>
   <plugins>

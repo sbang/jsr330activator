@@ -9,8 +9,9 @@ import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import javax.inject.Inject;
 
 import no.steria.osgi.jsr330activator.Jsr330Activator;
-import no.steria.osgi.jsr330activator.testbundle1.HelloService;
-import no.steria.osgi.jsr330activator.testbundle2.HelloService2;
+import no.steria.osgi.jsr330activator.testbundle3.HelloService3a;
+import no.steria.osgi.jsr330activator.testbundle3.HelloService3b;
+import no.steria.osgi.jsr330activator.testbundle3.HelloService3c;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,13 +31,16 @@ import org.ops4j.pax.exam.spi.reactors.PerClass;
  */
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-public class Jsr330ActivatorMixedIntegrationTest extends Jsr330ActivatorIntegrationtestBase {
+public class Jsr330ActivatorDependencyInjectionTest extends Jsr330ActivatorIntegrationtestBase {
 
     @Inject
-    private HelloService helloService;
+    private HelloService3a helloService3a;
 
     @Inject
-    private HelloService2 helloService2;
+    private HelloService3b helloService3b;
+
+    @Inject
+    private HelloService3c helloService3c;
 
     @Configuration
     public Option[] config() {
@@ -47,30 +51,36 @@ public class Jsr330ActivatorMixedIntegrationTest extends Jsr330ActivatorIntegrat
                        mavenBundle("ch.qos.logback", "logback-classic", "1.0.4"),
                        mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.implementation", getMavenProjectVersion()),
                        mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.testbundle1", getMavenProjectVersion()),
+                       mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.testbundle3", getMavenProjectVersion()),
                        mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.testbundle2", getMavenProjectVersion()),
                        junitBundles());
     }
 
     /**
-     * Verifies that the activator in testbundle1 (which loads the
-     * {@link Jsr330Activator} as an OSGi dependency) starts, finds a
-     * service implementation, and registers it in the OSGi service
-     * registry
+     * Verifies that the implementation of the service {@link HelloService3a} gets
+     * its injection and provides its service.
      */
     @Test
-    public void testbundle1ServiceFoundAndActivated() {
-    	assertEquals("Hello world!", helloService.getMessage());
+    public void testbundle3aServiceFoundAndActivated() {
+    	assertEquals("Hello world!", helloService3a.getMessage());
     }
 
     /**
-     * Verifies that the activator in testbundle2 (which embeds the
-     * {@link Jsr330Activator}) starts, finds a service implementation,
-     * and registers it in the OSGi service
-     * registry
+     * Verifies that the implementation of the service {@link HelloService3b} gets
+     * its injection and provides its service.
      */
     @Test
-    public void testbundle2ServiceFoundAndActivated() {
-    	assertEquals("Hello world2!", helloService2.getMessage());
+    public void testbundle3bServiceFoundAndActivated() {
+    	assertEquals("Hello world2!", helloService3b.getMessage());
+    }
+
+    /**
+     * Verifies that the implementation of the service {@link HelloService3c} gets
+     * its injection and provides its service.
+     */
+    @Test
+    public void testbundle3cServiceFoundAndActivated() {
+    	assertEquals("Hello world2!", helloService3c.getCombinedMessage());
     }
 
 }
