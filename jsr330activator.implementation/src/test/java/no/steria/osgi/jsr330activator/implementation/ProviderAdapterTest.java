@@ -192,7 +192,7 @@ public class ProviderAdapterTest {
         String stringService = "This is a service";
         bundleContext.registerService(String.class.getCanonicalName(), stringService, null);
 
-        // All injection dependecies have been injected and the service is now available.
+        // All injection dependencies have been injected and the service is now available.
         assertNotNull(bundleContext.getServiceReference(AddInjectionsService.class.getCanonicalName()));
     }
 
