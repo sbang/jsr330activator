@@ -6,8 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
@@ -118,7 +120,7 @@ public class MockBundleContext extends MockBundleContextBase {
     }
 
     private void notifyListenersAboutNewService(String clazz, MockServiceReference<Object> serviceReference) {
-        String filter = "(objectclass=" + clazz + ")";
+        String filter = "(" + Constants.OBJECTCLASS+ "=" + clazz + ")";
         List<ServiceListener> filteredServiceListenerList = filteredServiceListeners.get(filter);
         if (null != filteredServiceListenerList) {
             ServiceEvent newServiceEvent = new ServiceEvent(ServiceEvent.REGISTERED, serviceReference);
@@ -129,7 +131,7 @@ public class MockBundleContext extends MockBundleContextBase {
     }
 
     private void notifyListenersAboutRemovedService(String clazz, ServiceReference<?> serviceReference) {
-        String filter = "(objectclass=" + clazz + ")";
+        String filter = "(" + Constants.OBJECTCLASS+ "=" + clazz + ")";
         List<ServiceListener> filteredServiceListenerList = filteredServiceListeners.get(filter);
         if (null != filteredServiceListenerList) {
             ServiceEvent newServiceEvent = new ServiceEvent(ServiceEvent.UNREGISTERING, serviceReference);

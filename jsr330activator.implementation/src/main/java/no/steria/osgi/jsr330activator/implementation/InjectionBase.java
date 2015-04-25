@@ -1,6 +1,7 @@
 package no.steria.osgi.jsr330activator.implementation;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
@@ -39,7 +40,7 @@ abstract class InjectionBase implements Injection {
                 }
             };
 
-        String filter = "(objectclass=" + getInjectedServiceType().getName() + ")";
+        String filter = "(" + Constants.OBJECTCLASS + "=" + getInjectedServiceType().getName() + ")";
         try {
             bundleContext.addServiceListener(serviceListener, filter);
             fakeRegisteredServiceEventForExistingServices(bundleContext, serviceListener, filter);
