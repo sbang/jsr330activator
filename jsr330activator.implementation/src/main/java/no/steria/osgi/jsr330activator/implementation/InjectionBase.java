@@ -50,8 +50,10 @@ abstract class InjectionBase implements Injection {
 
     private void fakeRegisteredServiceEventForExistingServices(final BundleContext bundleContext, ServiceListener sl, String filter) throws InvalidSyntaxException {
         ServiceReference<?>[] servicesPresent = bundleContext.getServiceReferences((String)null, filter);
-        for (ServiceReference<?> serviceReference : servicesPresent) {
-            sl.serviceChanged(new ServiceEvent(ServiceEvent.REGISTERED, serviceReference));
+        if (servicesPresent != null) {
+            for (ServiceReference<?> serviceReference : servicesPresent) {
+                sl.serviceChanged(new ServiceEvent(ServiceEvent.REGISTERED, serviceReference));
+            }
         }
     }
 
