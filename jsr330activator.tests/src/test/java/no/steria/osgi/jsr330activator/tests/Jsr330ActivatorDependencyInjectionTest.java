@@ -80,7 +80,7 @@ public class Jsr330ActivatorDependencyInjectionTest extends Jsr330ActivatorInteg
      */
     @Test
     public void testbundle3cServiceFoundAndActivated() {
-    	assertEquals("Hello world2!", helloService3c.getCombinedMessage());
+    	assertEquals("Hello world! Hello world2!", helloService3c.getCombinedMessage());
     }
 
 }
