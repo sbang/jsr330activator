@@ -24,7 +24,6 @@ So, in short, this is what you get:
 And that's it.  It's formed from what I did with bundle activators.
 
 If this is not enough for your requirements, you're probably better off with a real component framework.
-
 * How to use it
 
 ** Install the jsr330activator in the local maven cache
@@ -138,4 +137,9 @@ This is a Java project built by maven.  The maven projects, are:
    - Embeds the Jsr330Activator, and uses the embedded Jsr330Activator to find the Provider<HelloService> implementation and uses the implementation to register the service
  - jsr330activator.tests
    - A maven project containing Pax Exam integration tests that starts up OSGi containers to test the activator on actual OSGi bundles
-
+* Development stuff
+Some development-related links:
+ - [[https://github.com/sbang/jsr330activator][Source code on github]]
+ - [[https://travis-ci.org/sbang/jsr330activator/][Continous Integration on Travis CI]]
+ - [[https://github.com/sbang/jsr330activator/issues][Issue tracker]]
+ - [[https://issues.sonatype.org/browse/OSSRH-15092][OSSRH issue tracking deployment to OSSRH (formerly "maven central")]]
