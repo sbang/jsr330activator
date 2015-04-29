@@ -1,5 +1,6 @@
 package no.steria.osgi.jsr330activator.implementation;
 
+import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Field;
@@ -15,6 +16,8 @@ import no.steria.osgi.mocks.MockBundleContext;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 
@@ -160,6 +163,28 @@ public class ProviderAdapterTest {
 
         // The injection dependency is satisfied, the service should now be available
         assertNotNull(providerAdapter.getServiceRegistration());
+    }
+
+    /**
+     * Unit test for {@link ProviderAdapter#setupInjectionListeners(org.osgi.framework.BundleContext)}.
+     * @throws InvalidSyntaxException
+     */
+    @Test
+    public void testSetupInjectionListenersInjectionWithNoRegisteredServicesOfTheRequestedType() throws InvalidSyntaxException {
+        BundleContext bundleContext = mock(BundleContext.class);
+        when(bundleContext.getServiceReferences(anyString(), anyString())).thenReturn(null);
+
+        // Adapter for the service provider requiring the injected service
+        ProviderAdapter providerAdapter = new ProviderAdapter(HelloService2.class, HelloService2Provider.class);
+
+        // Verify that the service isn't available before the listeners are set up
+        assertNull(providerAdapter.getServiceRegistration());
+
+        // Register the listeners
+        providerAdapter.setupInjectionListeners(bundleContext);
+
+        // Since the injection dependency isn't satisfied, the service should still be unavailable.
+        assertNull(providerAdapter.getServiceRegistration());
     }
 
     /**
