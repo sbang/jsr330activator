@@ -221,6 +221,49 @@ public class ProviderAdapterTest {
         assertNotNull(bundleContext.getServiceReference(AddInjectionsService.class.getCanonicalName()));
     }
 
+    /**
+     * Unit test for {@link ProviderAdapter#setupInjectionListeners(org.osgi.framework.BundleContext)}.
+     * Verify that two injections of a service dependency doesn't cause the service to be registered twice.
+     */
+    @Test
+    public void testSetupInjectionListenersServiceInjectedTwice() {
+        MockBundleContext bundleContext = new MockBundleContext();
+
+        ProviderAdapter providerAdapter = new ProviderAdapter(AddInjectionsService.class, AddInjectionsServiceProvider.class);
+
+        // Verify that the service isn't available before the listeners are set up
+        assertNull(bundleContext.getServiceReference(AddInjectionsService.class.getCanonicalName()));
+
+        // Register the listeners
+        providerAdapter.setupInjectionListeners(bundleContext);
+
+        // Service should still not be available because the injections are not available yet
+        assertNull(bundleContext.getServiceReference(AddInjectionsService.class.getCanonicalName()));
+
+        // Register the first service that is to be injected
+        Integer integerService = 42;
+        bundleContext.registerService(Integer.class.getCanonicalName(), integerService, null);
+
+        // All injection dependences aren't satisfied yet, the service is still unavailable
+        assertNull(bundleContext.getServiceReference(AddInjectionsService.class.getCanonicalName()));
+
+        // Register the second service that is to be injected
+        String stringService = "This is a service";
+        bundleContext.registerService(String.class.getCanonicalName(), stringService, null);
+
+        // All injection dependencies have been injected and the service is now available.
+        ServiceReference<?> firstServiceReference = bundleContext.getServiceReference(AddInjectionsService.class.getCanonicalName());
+        assertNotNull(firstServiceReference);
+
+        // Inject a different string
+        String anotherStringService = "This is another service";
+        bundleContext.registerService(String.class.getCanonicalName(), anotherStringService, null);
+
+        // Get a service reference and verify that it is identical to the first reference
+        ServiceReference<?> secondServiceReference = bundleContext.getServiceReference(AddInjectionsService.class.getCanonicalName());
+        assertEquals(firstServiceReference, secondServiceReference);
+    }
+
     private Object getPrivateField(Object object, String fieldName) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
         Class<? extends Object> clazz = object.getClass();
         Field field = clazz.getDeclaredField(fieldName);
