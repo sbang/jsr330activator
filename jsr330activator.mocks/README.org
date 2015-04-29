@@ -1,0 +1,11 @@
+* What's this?
+
+This is a simple mock implementation of parts of the [[http://www.osgi.org][OSGi framework]], similar to what's found in [[https://sling.apache.org/documentation/development/osgi-mock.html][Apache Sling OSGi mocks]] and [[http://docs.spring.io/osgi/docs/current/reference/html/testing.html][Spring OSGi mocks]].
+
+* Why does it exist?
+
+The Apache Sling OSGi mocks were compiled against an older version of OSGi than what I was using, the Spring OSGi mocks didn't return a null reference for a non-existing service, and my tests required more logic in the classes than Mockito mocks could provide (basically: the tests needed a simple service registry).
+
+* Can it be used without the jsr330Activator?
+
+Yes.
