@@ -4,10 +4,7 @@ import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
 
-import no.steria.osgi.jsr330activator.testbundle.HelloService;
 import no.steria.osgi.jsr330activator.testbundle.implementation.AddInjectionsServiceProvider;
-import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceImplementation;
-
 import org.junit.Before;
 import org.junit.Test;
 
