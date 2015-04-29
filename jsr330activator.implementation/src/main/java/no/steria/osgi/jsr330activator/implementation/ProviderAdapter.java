@@ -123,7 +123,9 @@ public class ProviderAdapter {
     }
 
     void checkInjectionsAndRegisterServiceIfSatisfied(BundleContext bundleContext) {
-    	if (allInjectionsHaveBeenInjected()) {
+    	if (getServiceRegistration() == null &&
+            allInjectionsHaveBeenInjected())
+    	{
             registerService(bundleContext);
     	}
     }
