@@ -93,6 +93,14 @@
       <format>html</format>
       <format>xml</format>
      </formats>
+     <instrumentation>
+      <ignores>
+       <ignore>no.steria.osgi.mocks.*</ignore>
+       <ignore>no.steria.osgi.jsr330activator.testbundle1.*</ignore>
+       <ignore>no.steria.osgi.jsr330activator.testbundle2.*</ignore>
+       <ignore>no.steria.osgi.jsr330activator.testbundle3.*</ignore>
+      </ignores>
+     </instrumentation>
      <aggregate>true</aggregate>
     </configuration>
    </plugin>
