@@ -8,6 +8,7 @@ import org.osgi.framework.ServiceRegistration;
 public class MockServiceRegistration<S> implements ServiceRegistration<S> {
     MockBundleContext bundleContext;
     ServiceReference<S> serviceReference;
+    boolean alreadyUnregistered = false;
 
     public MockServiceRegistration(MockBundleContext bundleContext, ServiceReference<S> serviceReference) {
         this.bundleContext = bundleContext;
@@ -23,7 +24,12 @@ public class MockServiceRegistration<S> implements ServiceRegistration<S> {
     }
 
     public void unregister() {
-        bundleContext.unregisterService(this);
+    	if (alreadyUnregistered) {
+            throw new IllegalStateException("Service already unregistered.");
+    	}
+
+    	bundleContext.unregisterService(this);
+    	alreadyUnregistered = true;
     }
 
 }
