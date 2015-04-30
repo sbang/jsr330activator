@@ -141,6 +141,7 @@ This is a Java project built by maven.  The maven projects, are:
 Some development-related links:
  - [[https://github.com/sbang/jsr330activator][Source code on github]]
  - [[https://travis-ci.org/sbang/jsr330activator/][Continous Integration on Travis CI]]
+ - [[https://coveralls.io/r/sbang/jsr330activator][Code coverage reports on Coveralls]]
  - [[https://github.com/sbang/jsr330activator/issues][Issue tracker]]
  - [[https://issues.sonatype.org/browse/OSSRH-15092][OSSRH issue tracking deployment to OSSRH (formerly "maven central")]]
 
