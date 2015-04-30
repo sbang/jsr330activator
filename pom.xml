@@ -85,6 +85,23 @@
    </plugin>
   </plugins>
  </build>
+ <reporting>
+  <plugins>
+   <plugin>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>cobertura-maven-plugin</artifactId>
+    <version>2.7</version>
+    <configuration>
+     <outputDirectory>target/tmpcobertura</outputDirectory>
+     <formats>
+      <format>html</format>
+      <format>xml</format>
+     </formats>
+     <aggregate>true</aggregate>
+    </configuration>
+   </plugin>
+  </plugins>
+ </reporting>
  <description>An OSGi bundle activator implementation that will scan the bundle for JSR330 Provider&lt;&gt; interface implementations instantiate the providers, and register the provided services with OSGi.</description>
  <scm>
   <url>https://github.com/sbang/jsr330activator</url>
