@@ -4,7 +4,7 @@
  <parent>
   <artifactId>jsr330activator</artifactId>
   <groupId>no.steria.osgi.jsr330activator</groupId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0.0-SNAPSHOT</version>
  </parent>
 
  <artifactId>jsr330activator.testbundle1</artifactId>
@@ -26,7 +26,7 @@
   <dependency>
    <groupId>no.steria.osgi.jsr330activator</groupId>
    <artifactId>jsr330activator.implementation</artifactId>
-   <version>0.0.1-SNAPSHOT</version>
+   <version>${project.version}</version>
   </dependency>
  </dependencies>
 
