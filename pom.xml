@@ -94,12 +94,12 @@
       <format>xml</format>
      </formats>
      <instrumentation>
-      <ignores>
-       <ignore>no.steria.osgi.mocks.*</ignore>
-       <ignore>no.steria.osgi.jsr330activator.testbundle1.*</ignore>
-       <ignore>no.steria.osgi.jsr330activator.testbundle2.*</ignore>
-       <ignore>no.steria.osgi.jsr330activator.testbundle3.*</ignore>
-      </ignores>
+      <excludes>
+       <exclude>no/steria/osgi/mocks/**/*.class</exclude>
+       <exclude>no/steria/osgi/jsr330activator/testbundle1/**/*.class</exclude>
+       <exclude>no/steria/osgi/jsr330activator/testbundle2/**/*.class</exclude>
+       <exclude>no/steria/osgi/jsr330activator/testbundle3/**/*.class</exclude>
+      </excludes>
      </instrumentation>
      <aggregate>true</aggregate>
     </configuration>
