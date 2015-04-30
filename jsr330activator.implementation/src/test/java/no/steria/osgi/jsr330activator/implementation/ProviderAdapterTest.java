@@ -222,6 +222,91 @@ public class ProviderAdapterTest {
     }
 
     /**
+     * Unit test for {@link ProviderAdapter#checkInjectionsAndUnregisterServiceIfNotSatisfied(BundleContext)}.
+     * Verify that retracting all injections doesn't cause any exceptions caused by
+     * unregistering a service twice.
+     */
+    @Test
+    public void testCheckInjectionsAndUnregisterServiceIfNotSatisfied() {
+        MockBundleContext bundleContext = new MockBundleContext();
+
+        ProviderAdapter providerAdapter = new ProviderAdapter(AddInjectionsService.class, AddInjectionsServiceProvider.class);
+        providerAdapter.setupInjectionListeners(bundleContext);
+        Integer integerService = 42;
+        ServiceRegistration<?> integerServiceRegistration = bundleContext.registerService(Integer.class.getCanonicalName(), integerService, null);
+        String stringService = "This is a service";
+        ServiceRegistration<?> stringServiceRegistration = bundleContext.registerService(String.class.getCanonicalName(), stringService, null);
+
+        // Verify that the service has all of its dependencies and is running.
+        assertNotNull(bundleContext.getServiceReference(AddInjectionsService.class.getCanonicalName()));
+
+        // Unregistering both injected dependencies
+        integerServiceRegistration.unregister();
+        stringServiceRegistration.unregister();
+
+        // Verify that the service is gone from the registry
+        assertNull(bundleContext.getServiceReference(AddInjectionsService.class.getCanonicalName()));
+    }
+
+    /**
+     * Unit test for {@link ProviderAdapter#stop(BundleContext)}.
+     * Verify that retracting all injections doesn't cause any exceptions caused by
+     * unregistering a service twice.
+     */
+    @Test
+    public void testStopOnAlreadyUnregistered() {
+        MockBundleContext bundleContext = new MockBundleContext();
+
+        ProviderAdapter providerAdapter = new ProviderAdapter(AddInjectionsService.class, AddInjectionsServiceProvider.class);
+        providerAdapter.setupInjectionListeners(bundleContext);
+        Integer integerService = 42;
+        ServiceRegistration<?> integerServiceRegistration = bundleContext.registerService(Integer.class.getCanonicalName(), integerService, null);
+        String stringService = "This is a service";
+        bundleContext.registerService(String.class.getCanonicalName(), stringService, null);
+
+        // Verify that the service has all of its dependencies and is running.
+        assertNotNull(bundleContext.getServiceReference(AddInjectionsService.class.getCanonicalName()));
+
+        // Unregistering one injected dependency
+        integerServiceRegistration.unregister();
+
+        // Stop the service itself
+        providerAdapter.stop(bundleContext);
+
+        // Verify that the service is gone from the registry
+        assertNull(bundleContext.getServiceReference(AddInjectionsService.class.getCanonicalName()));
+    }
+
+    /**
+     * Unit test for {@link ProviderAdapter#stop(BundleContext)}.
+     * Verify that retracting all injections doesn't cause any exceptions caused by
+     * unregistering a service twice.
+     */
+    @Test
+    public void testStopFollowedByUnregistration() {
+        MockBundleContext bundleContext = new MockBundleContext();
+
+        ProviderAdapter providerAdapter = new ProviderAdapter(AddInjectionsService.class, AddInjectionsServiceProvider.class);
+        providerAdapter.setupInjectionListeners(bundleContext);
+        Integer integerService = 42;
+        ServiceRegistration<?> integerServiceRegistration = bundleContext.registerService(Integer.class.getCanonicalName(), integerService, null);
+        String stringService = "This is a service";
+        bundleContext.registerService(String.class.getCanonicalName(), stringService, null);
+
+        // Verify that the service has all of its dependencies and is running.
+        assertNotNull(bundleContext.getServiceReference(AddInjectionsService.class.getCanonicalName()));
+
+        // Stop the service itself
+        providerAdapter.stop(bundleContext);
+
+        // Unregistering one injected dependency
+        integerServiceRegistration.unregister();
+
+        // Verify that the service is gone from the registry
+        assertNull(bundleContext.getServiceReference(AddInjectionsService.class.getCanonicalName()));
+    }
+
+    /**
      * Unit test for {@link ProviderAdapter#setupInjectionListeners(org.osgi.framework.BundleContext)}.
      * Verify that two injections of a service dependency doesn't cause the service to be registered twice.
      */
