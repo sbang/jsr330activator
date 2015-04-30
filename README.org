@@ -143,3 +143,7 @@ Some development-related links:
  - [[https://travis-ci.org/sbang/jsr330activator/][Continous Integration on Travis CI]]
  - [[https://github.com/sbang/jsr330activator/issues][Issue tracker]]
  - [[https://issues.sonatype.org/browse/OSSRH-15092][OSSRH issue tracking deployment to OSSRH (formerly "maven central")]]
+
+#+ATTR_HTML: title="Coverage status"
+[[https://coveralls.io/r/sbang/jsr330activator][file:https://coveralls.io/repos/sbang/jsr330activator/badge.svg]]
+
