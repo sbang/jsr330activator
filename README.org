@@ -147,4 +147,31 @@ Some development-related links:
 
 #+ATTR_HTML: title="Coverage status"
 [[https://coveralls.io/r/sbang/jsr330activator][file:https://coveralls.io/repos/sbang/jsr330activator/badge.svg]]
+** Using the Apache Felix gogo shell for debugging
+The jsr330activator.gogoshell module isn't used for anything directly in the build process.  This module is used to start an OSGi shell, where the bundles and their behaviour can be examined.
 
+This is the place to go if the integration tests starts failing: error messages and exception stack traces from the gogo shell start and stop can be illuminating. Examining what the bundles actually provide and expect can also be illuminating.
+
+All bundles that should be loaded for the testing, should be listed as "provided" dependencies of type "jar", in the =jsr330activator.gogoshell/provision/pom.xml= file.
+
+To use the shell for debugging, do the following:
+
+ 1. Open a command line window and start the shell with maven:
+    #+BEGIN_EXAMPLE
+      cd jsr330activator.gogoshell
+      mvn install pax:provision
+    #+END_EXAMPLE
+ 2. During startup, look specifically for error messages with stack traces, and if they involve some of the bundles listed as dependencies in the =provision/pom.xml= file, they should be studied carefully: look for missing bundle dependencies, and look for missing services (often indicating that the bundle activator hasn't been successfully started)
+ 3. After startup give the command:
+    : bundles
+    This command lists all bundles.  Check that all bundles show up as "Active".  If they have a different state, something probably went wrong in the initialization phase
+ 4. Examine what services the bundles expose (the final argument is the bundle name):
+    #+BEGIN_EXAMPLE
+      inspect capability service no.steria.osgi.jsr330activator.testbundle3
+      inspect cap service no.steria.osgi.jsr330activator.testbundle2
+      inspect cap service no.steria.osgi.jsr330activator.testbundle1
+    #+END_EXAMPLE
+    (note that "cap" is a legal appreviation of "capabilitiy". Note also that the shell accepts arrow up and arrow down to browse previous commands and that the shell allows command editing)
+ 5. Shut down the shell
+    : exit 0
+    There should be no error messages during an orderly shutdown. Look specifically for errors and stack traces from bundles listed in the dependencies in the =provision/pom.xml= file
