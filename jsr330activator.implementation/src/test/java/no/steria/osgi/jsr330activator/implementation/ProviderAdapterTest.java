@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import no.steria.osgi.jsr330activator.mocks.providers.ProviderThrowsIllegalAccessException;
 import no.steria.osgi.jsr330activator.mocks.providers.ProviderThrowsInstantiationException;
 import no.steria.osgi.jsr330activator.testbundle.AddInjectionsService;
 import no.steria.osgi.jsr330activator.testbundle.HelloService;
@@ -47,6 +48,17 @@ public class ProviderAdapterTest {
     	thrown.expect(RuntimeException.class);
 
     	ProviderAdapter providerAdapter = new ProviderAdapter(String.class, ProviderThrowsInstantiationException.class);
+    	assertEquals(String.class, providerAdapter.getProvidedServiceType());
+    }
+
+    /**
+     * Test what happens when the provider's constructor is private.
+     */
+    @Test
+    public void testProviderWithPrivateConstructor() {
+    	thrown.expect(RuntimeException.class);
+
+    	ProviderAdapter providerAdapter = new ProviderAdapter(String.class, ProviderThrowsIllegalAccessException.class);
     	assertEquals(String.class, providerAdapter.getProvidedServiceType());
     }
 
