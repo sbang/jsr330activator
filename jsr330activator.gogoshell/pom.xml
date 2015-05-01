@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+ <!--
+     | put company details here
+     <organization>
+     <name>...</name>
+     <url>http://...</url>
+     </organization>
+ -->
+
+ <!--
+     | put license details here
+     <licenses>
+     <license>
+     <name>...</name>
+     <url>http://...</url>
+     <comments>
+     </comments>
+     </license>
+     </licenses>
+ -->
+ <parent>
+  <groupId>no.steria.osgi.jsr330activator</groupId>
+  <artifactId>jsr330activator</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+ </parent>
+
+ <modelVersion>4.0.0</modelVersion>
+ <artifactId>jsr330activator.gogoshell</artifactId>
+
+ <name>no.steria.osgi.jsr330activator.gogoshell (OSGi project)</name>
+
+ <!--
+     | describe your project here
+ -->
+
+ <description>Used to debug bundles: start this project with "mvn pax:provision" and examine registered services and service listeners. Generated using Pax-Construct</description>
+
+ <properties>
+  <!--
+      | some example OSGi runtime properties
+  -->
+  <org.osgi.service.http.port>8080</org.osgi.service.http.port>
+  <org.osgi.service.http.port.secure>8443</org.osgi.service.http.port.secure>
+ </properties>
+
+ <packaging>pom</packaging>
+
+ <modules>
+  <module>poms</module>
+  <module>provision</module>
+ </modules>
+
+ <build>
+  <plugins>
+   <plugin>
+    <groupId>org.ops4j</groupId>
+    <artifactId>maven-pax-plugin</artifactId>
+    <version>1.5</version>
+    <configuration>
+     <!--
+         | some example Pax-Runner settings
+     -->
+     <provision>
+      <param>--platform=felix</param>
+     </provision>
+    </configuration>
+    <executions>
+     <!--
+         | uncomment to auto-generate IDE files
+         <execution>
+         <id>ide-support</id>
+         <goals>
+         <goal>eclipse</goal>
+         </goals>
+         </execution>
+     -->
+    </executions>
+   </plugin>
+  </plugins>
+ </build>
+
+</project>
