@@ -1,6 +1,5 @@
 package no.steria.osgi.jsr330activator.implementation;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -33,9 +32,7 @@ class InjectionMethod extends InjectionBase {
     	try {
             method.invoke(provider, service);
             currentService = service;
-        } catch (IllegalAccessException e) {
-        } catch (IllegalArgumentException e) {
-        } catch (InvocationTargetException e) {
+        } catch (Exception e) {
         }
     }
 
@@ -43,9 +40,7 @@ class InjectionMethod extends InjectionBase {
         try {
             method.invoke(provider, (String)null);
             currentService = null;
-        } catch (IllegalAccessException e) {
-        } catch (IllegalArgumentException e) {
-        } catch (InvocationTargetException e) {
+        } catch (Exception e) {
         }
     }
 

@@ -40,9 +40,7 @@ class InjectionField extends InjectionBase {
     private Object getInjectedService() {
         try {
             return field.get(provider);
-        } catch (IllegalArgumentException e) {
-        } catch (IllegalAccessException e) {
-            // Can never get here, because the field is set accessible in the constructor
+        } catch (Exception e) {
         }
 
         return null;
@@ -51,9 +49,7 @@ class InjectionField extends InjectionBase {
     private void setInjectedService(Object service) {
         try {
             field.set(provider, service);
-        } catch (IllegalArgumentException e) {
-        } catch (IllegalAccessException e) {
-            // Can never get here, because the field is set accessible in the constructor
+        } catch (Exception e) {
         }
     }
 
