@@ -6,6 +6,7 @@ import static org.junit.Assert.*;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import no.steria.osgi.jsr330activator.mocks.providers.ProviderThrowsInstantiationException;
 import no.steria.osgi.jsr330activator.testbundle.AddInjectionsService;
 import no.steria.osgi.jsr330activator.testbundle.HelloService;
 import no.steria.osgi.jsr330activator.testbundle.HelloService2;
@@ -15,7 +16,9 @@ import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceProv
 import no.steria.osgi.mocks.MockBundleContext;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
@@ -28,9 +31,23 @@ import org.osgi.framework.ServiceRegistration;
  *
  */
 public class ProviderAdapterTest {
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     @Before
     public void setUp() throws Exception {
+    }
+
+    /**
+     * Test what happens when the provider doesn't have a
+     * no-argument constructor.
+     */
+    @Test
+    public void testProviderConstructorWithArguments() {
+    	thrown.expect(RuntimeException.class);
+
+    	ProviderAdapter providerAdapter = new ProviderAdapter(String.class, ProviderThrowsInstantiationException.class);
+    	assertEquals(String.class, providerAdapter.getProvidedServiceType());
     }
 
     /**
