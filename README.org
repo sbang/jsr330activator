@@ -132,11 +132,23 @@ This is a Java project built by maven.  The maven projects, are:
    - Uses the Jsr330Activator to find the Provider<HelloService> implementation and uses the implementation to register the service
  - jsr330activator.testbundle2
    - A maven-bundle-plugin project producing an OSGi bundle used in integration tests
-   - Exports a package containing the interface HelloService
-   - Implements Provider<HelloService> in a non-exported package
+   - Exports a package containing the interface HelloService2
+   - Implements Provider<HelloService2> in a non-exported package
+   - Embeds the Jsr330Activator, and uses the embedded Jsr330Activator to find the Provider<HelloService> implementation and uses the implementation to register the service
+ - jsr330activator.testbundle3
+   - A maven-bundle-plugin project producing an OSGi bundle used in integration tests
+   - Exports a package containing the interfaces HelloService3a, HelloService3b and HelloService3c
+   - Implements Provider<HelloService3a>, Provider<HelloService3b> and Provider<HelloService3c> in a non-exported package
+     - The providers have different injection requirements:
+       - Provider<HelloService3a> depends on HelloService from jsr330activator.testbundle1
+       - Provider<HelloService3b> depends on HelloService2 from jsr330activator.testbundle2
+       - Provider<HelloService3c> depends on both HelloService from jsr330activator.testbundle1 and HelloService2 from jsr330activator.testbundle2
+     - The providers in this bundle all also implement the interface they are providing and return "this" from the get() method
    - Embeds the Jsr330Activator, and uses the embedded Jsr330Activator to find the Provider<HelloService> implementation and uses the implementation to register the service
  - jsr330activator.tests
    - A maven project containing Pax Exam integration tests that starts up OSGi containers to test the activator on actual OSGi bundles
+ - jsr330activator.gogoshell
+   - A project that doesn't participate in the automated build and testing, but is used to start a "gogo shell" with jsr330activator.testbundle1, jsr330activator.testbundle2 and jsr330activator.testbundle3 to be able to examine whether the bundles start up and shut down properly and what services they expose etc.
 * Development stuff
 Some development-related links:
  - [[https://github.com/sbang/jsr330activator][Source code on github]]
