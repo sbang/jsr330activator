@@ -96,7 +96,20 @@ public class ProviderAdapter {
             injection.unGet(context);
         }
 
-        serviceRegistration.unregister();
+        unregisterMyService();
+    }
+
+    private void unregisterMyService() {
+        if (!serviceAlreadyUnregistered()) {
+            serviceRegistration.unregister();
+        }
+
+        // Make sure this now invalid object isn't used again.
+        serviceRegistration = null;
+    }
+
+    private boolean serviceAlreadyUnregistered() {
+        return serviceRegistration == null;
     }
 
     void registerService(BundleContext bundleContext) {
@@ -131,8 +144,9 @@ public class ProviderAdapter {
     }
 
     void checkInjectionsAndUnregisterServiceIfNotSatisfied(BundleContext bundleContext) {
-    	if (null != serviceRegistration && !allInjectionsHaveBeenInjected()) {
-            serviceRegistration.unregister();
+    	// Check for service already unregistered first because that is quickest
+    	if (!serviceAlreadyUnregistered() && !allInjectionsHaveBeenInjected()) {
+            unregisterMyService();
     	}
     }
 
