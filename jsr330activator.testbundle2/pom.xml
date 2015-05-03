@@ -4,7 +4,7 @@
  <parent>
   <artifactId>jsr330activator</artifactId>
   <groupId>no.steria.osgi.jsr330activator</groupId>
-  <version>1.0.0</version>
+  <version>1.0.0-SNAPSHOT</version>
  </parent>
 
  <artifactId>jsr330activator.testbundle2</artifactId>
