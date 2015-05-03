@@ -19,6 +19,15 @@
   </license>
  </licenses>
 
+ <developers>
+  <developer>
+   <name>Steinar Bang</name>
+   <email>steb@soprasteria.com</email>
+   <organization>steria</organization>
+   <organizationUrl>https://github.com/sbang</organizationUrl>
+  </developer>
+ </developers>
+
  <properties>
   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
  </properties>
@@ -127,8 +136,8 @@
  <scm>
   <url>https://github.com/sbang/jsr330activator</url>
   <connection>scm:git:https://github.com/sbang/jsr330activator.git</connection>
-   <tag>HEAD</tag>
-  </scm>
+  <tag>HEAD</tag>
+ </scm>
 
  <issueManagement>
   <url>https://github.com/sbang/jsr330activator/issues</url>
