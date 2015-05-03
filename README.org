@@ -154,3 +154,13 @@ To use the shell for debugging, do the following:
  5. Shut down the shell
     : exit 0
     There should be no error messages during an orderly shutdown. Look specifically for errors and stack traces from bundles listed in the dependencies in the =provision/pom.xml= file
+* Future enhanchements
+The idea is to keep the Jsr330Activator as simple as possible, so I won't be adding all of the enhancements I can think of.
+
+However there is one thing that I need for [[https://github.com/steinarb/modelstore][the project that prompted the existence of the Jsr330Activator]] and that is multiple injections of the same service, and start of the provided service without all of the instances present (several different storage backends in my case).
+
+I see two ways of doing it:
+ 1. Allow injections into a collection, as outlined [[http://stackoverflow.com/a/25327839][here]]
+ 2. Create an @Optional annotation in the Jsr330Activator jar itself, and use it together with @Named in addition to @Inject on dependencies, and put @Named on the Provider<T> implementations
+
+Alternative 2. would seem to be the most complete solution (because it lets the injection point determine which services are injected. It can also be used to require a particular implementation of a service and let the rest be optional), but alternative 1. is the simplest one to implement (it doesn't require an extra annotation and reflection code looking for two extra annotations).
