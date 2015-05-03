@@ -43,7 +43,7 @@ What's needed is:
         <dependency>
          <groupId>no.steria.osgi.jsr330activator</groupId>
          <artifactId>jsr330activator.implementation</artifactId>
-         <version>1.0.0-SNAPSHOT</version>
+         <version>1.0.0</version>
          <scope>provided</scope>
         </dependency>
        </dependencies>
