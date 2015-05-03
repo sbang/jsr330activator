@@ -121,7 +121,7 @@
 
  <scm>
   <url>https://github.com/sbang/jsr330activator</url>
-  <connection>https://github.com/sbang/jsr330activator.git</connection>
+  <connection>scm:git:https://github.com/sbang/jsr330activator.git</connection>
  </scm>
 
  <issueManagement>
