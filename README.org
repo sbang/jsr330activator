@@ -26,67 +26,32 @@ And that's it.  It's formed from what I did with bundle activators.
 If this is not enough for your requirements, you're probably better off with a real component framework.
 * How to use it
 
-** Install the jsr330activator in the local maven cache
+The preferred way to use the Jsr330Activator, is to embed the Jsr330Activator together with javax.inject inside your bundle.  This makes your bundle work without any dependencies outside of OSGi itself and whatever it needs to do its work.  The jsr330activator.testbundle3 is an example of this.  
 
-Since the project still hasn't been released, it must be checked out from git and built, to make it available to projects:
-#+BEGIN_EXAMPLE
-mkdir -p ~/git
-cd ~/git
-git clone http://github.com/sbang/jsr330activator.git
-cd jsr330activator
-mvn install
-#+END_EXAMPLE
-
-** Use it as an OSGi dependency
-
-The steps are:
-
- 1. Add the jsr330activator.implementation-1.0.0-SNAPSHOT.jar to the OSGi runtime, renaming it if needed
- 2. Add a dependency to the maven-bundle-project that will use it:
+What's needed is:
+ 1. Use the maven-bundle-plugin (the simplest way is to create a project using the Felix osgi-bundle archetype)
+ 2. Add the required bundles as direct dependencies:
     #+BEGIN_SRC nxml
-      <dependency>
-       <groupId>no.steria.osgi.jsr330activator</groupId>
-       <artifactId>jsr330activator.implementation</artifactId>
-       <version>1.0.0-SNAPSHOT</version>
-      </dependency>
+      <project>
+       <dependencies>
+        <dependency>
+         <groupId>javax.inject</groupId>
+         <artifactId>javax.inject</artifactId>
+         <version>1</version>
+         <scope>provided</scope>
+        </dependency>
+        <dependency>
+         <groupId>no.steria.osgi.jsr330activator</groupId>
+         <artifactId>jsr330activator.implementation</artifactId>
+         <version>1.0.0-SNAPSHOT</version>
+         <scope>provided</scope>
+        </dependency>
+       </dependencies>
+      </project>
     #+END_SRC
- 3. Set the Jsr330Activator as the bundle activator in the maven-bundle-plugin config
+ 3. Use the =Bundle-Activator= and =Embed-Dependency= settings in the maven-bundle-plugin configuration:
     #+BEGIN_SRC nxml
-      <build>
-       <plugins>
-        <plugin>
-         <groupId>org.apache.felix</groupId>
-         <artifactId>maven-bundle-plugin</artifactId>
-         <version>2.3.7</version>
-         <extensions>true</extensions>
-         <configuration>
-          <instructions>
-           <Bundle-Activator>no.steria.osgi.jsr330activator.Jsr330Activator</Bundle-Activator>
-           <Export-Package>no.steria.osgi.jsr330activator.testbundle1</Export-Package>
-          </instructions>
-         </configuration>
-        </plugin>
-       </plugins>
-      </build>
-    #+END_SRC
- 4. Deploy your bundle to the OSGi container where the jsr330activator bundle already has been deployed
-
-The j330activator.testbundle1 project uses this approach.  The PAM Exam integration test Jsr330ActivatorIntegrationTest in the jsr330activator.test project verifies that this approach works.
-
-** Embed the Jsr330Activator into your bundle
-
-The steps are:
-
- 1. Add a dependency to the maven-bundle-project that will use it:
-    #+BEGIN_SRC nxml
-      <dependency>
-       <groupId>no.steria.osgi.jsr330activator</groupId>
-       <artifactId>jsr330activator.implementation</artifactId>
-       <version>1.0.0-SNAPSHOT</version>
-      </dependency>
-    #+END_SRC
- 2. Set the Jsr330Activator as the bundle activator in the maven-bundle-plugin config, and embed the activator
-    #+BEGIN_SRC nxml
+      <project>
        <build>
         <plugins>
          <plugin>
@@ -97,74 +62,19 @@ The steps are:
           <configuration>
            <instructions>
             <Bundle-Activator>no.steria.osgi.jsr330activator.Jsr330Activator</Bundle-Activator>
-            <Export-Package>no.steria.osgi.jsr330activator.testbundle2</Export-Package>
-            <Embed-Dependency>jsr330activator.implementation;inline=true</Embed-Dependency>
+            <Export-Package>no.steria.osgi.jsr330activator.testbundle3</Export-Package>
+            <Embed-Dependency>jsr330activator.implementation;inline=true,javax.inject;inline=true</Embed-Dependency>
            </instructions>
           </configuration>
          </plugin>
         </plugins>
        </build>
+      </project>
     #+END_SRC
- 3. Deploy your bundle to any OSGi container
 
-The j330activator.testbundle2 project uses this approach.  The PAM Exam integration test Jsr330ActivatorEmbeddedIntegrationTest in the jsr330activator.test project verifies that this approach works.
+Both the Jsr330Activator and javax.bundle can be provided as OSGi dependencies instead of embedding them. The jsr330activator.testbundle1 project is an example of this.  Or one of the dependencies can be embedded and one can be provided as an OSGi dependency.  The jsr330activator.testbundle1 project is an example of this, it embeds the Jsr330Activator and gets javax.inject from the OSGi runtime.
 
-The jsr330.testbundle3 project also embeds the Jsr330Activator and the Providers also implements the interface they provide, returning "this" from the get() method.  This is the approach I recommend, and the approach I will use for my real service providers:
-#+BEGIN_SRC java
-  public class HelloService3cProvider implements Provider<HelloService3c>, HelloService3c {
-      @Inject
-      HelloService helloService;
-      HelloService2 helloService2;
-
-      @Inject
-      public void setHelloService2(HelloService2 helloService2) {
-          this.helloService2 = helloService2;
-      }
-
-      public String getCombinedMessage() {
-          return helloService.getMessage() + " " + helloService2.getMessage();
-      }
-
-      public HelloService3c get() {
-          return this;
-      }
-  }
-#+END_SRC
-
-The jar330.testbundle3 project also embeds the javax.inject classes (jsr330activator.testbundle1 and jsr330activator.testbundle2 uses javax.inject provided by the OSGi bundle with the maven dependency org.apache.servicemix.bundles:org.apache.servicemix.bundles.javax-inject:1_2).  Embedding is accomplished by directly mentioning the bundles that are to be embedded in the dependency list of the bundle's POM (reaching them as transitive or inherited dependencies aren't enough to make maven-bundle-plugin embed them:
-#+BEGIN_SRC nxml
-  <project>
-   <dependencies>
-    <dependency>
-     <groupId>javax.inject</groupId>
-     <artifactId>javax.inject</artifactId>
-     <version>1</version>
-    </dependency>
-    <dependency>
-     <groupId>no.steria.osgi.jsr330activator</groupId>
-     <artifactId>jsr330activator.implementation</artifactId>
-     <version>1.0.0-SNAPSHOT</version>
-    </dependency>
-   </dependencies>
-   <build>
-    <plugins>
-     <plugin>
-      <groupId>org.apache.felix</groupId>
-      <artifactId>maven-bundle-plugin</artifactId>
-      <version>2.3.7</version>
-      <extensions>true</extensions>
-      <configuration>
-       <instructions>
-        <Bundle-Activator>no.steria.osgi.jsr330activator.Jsr330Activator</Bundle-Activator>
-        <Export-Package>no.steria.osgi.jsr330activator.testbundle3</Export-Package>
-        <Embed-Dependency>jsr330activator.implementation;inline=true,javax.inject;inline=true</Embed-Dependency>
-       </instructions>
-      </configuration>
-     </plugin>
-    </plugins>
-   </build>
-  </project>
-#+END_SRC
+The config of the maven-bundle-plugin in =jsr330activator.testbundle1/pom.xml= doesn't contain an =Embed-Dependency= setting, and the =Embed-Dependency= setting in =jsr330activator.testbundle2/pom.xml= only mentions the artifactId of the dependency that is to be embedded.
 
 ** License
 
