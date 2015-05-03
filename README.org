@@ -30,7 +30,7 @@ The preferred way to use the Jsr330Activator, is to embed the Jsr330Activator to
 
 What's needed is:
  1. Use the maven-bundle-plugin (the simplest way is to create a project using the Felix osgi-bundle archetype)
- 2. Add the required bundles as direct dependencies:
+ 2. Add the required bundles as direct dependencies (if they arrive as transitive dependencies, they will not be embedded by the maven-bundle-plugin):
     #+BEGIN_SRC nxml
       <project>
        <dependencies>
@@ -70,6 +70,27 @@ What's needed is:
         </plugins>
        </build>
       </project>
+    #+END_SRC
+ 4. Implement a provider for your interface.  I have found a good pattern in letting the Provider also implement the service interface and return "this" from the get method, because it lets the Jsr330Activator completely manage the service implementation's life cycle:
+    #+BEGIN_SRC java
+      public class HelloService3aProvider implements Provider<HelloService3a>, HelloService3a {
+          private HelloService helloService;
+
+          @Inject
+          public void setHelloService(HelloService helloService) {
+              this.helloService = helloService;
+          }
+
+          // This is from the HelloService3a interface
+          public String getMessage() {
+              return helloService.getMessage();
+          }
+
+          // This is from the Provider<HelloService3a> interface
+          public HelloService3a get() {
+              return this;
+          }
+      }
     #+END_SRC
 
 Both the Jsr330Activator and javax.bundle can be provided as OSGi dependencies instead of embedding them. The jsr330activator.testbundle1 project is an example of this.  Or one of the dependencies can be embedded and one can be provided as an OSGi dependency.  The jsr330activator.testbundle1 project is an example of this, it embeds the Jsr330Activator and gets javax.inject from the OSGi runtime.
