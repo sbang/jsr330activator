@@ -145,8 +145,12 @@ Some development-related links:
  - [[https://github.com/sbang/jsr330activator/issues][Issue tracker]]
  - [[https://issues.sonatype.org/browse/OSSRH-15092][OSSRH issue tracking deployment to OSSRH (formerly "maven central")]]
 
+#+ATTR_HTML: title="Build Status"
+[[https://travis-ci.org/sbang/jsr330activator][file:https://travis-ci.org/sbang/jsr330activator.png]]
 #+ATTR_HTML: title="Coverage status"
 [[https://coveralls.io/r/sbang/jsr330activator][file:https://coveralls.io/repos/sbang/jsr330activator/badge.svg]]
+#+ATTR_HTML: title="Maven Central"
+[[https://maven-badges.herokuapp.com/maven-central/no.steria.osgi.jsr330activator/jsr330activator.implementation][file:https://maven-badges.herokuapp.com/maven-central/no.steria.osgi.jsr330activator/jsr330activator.implementation/badge.svg]]
 ** Using the Apache Felix gogo shell for debugging
 The jsr330activator.gogoshell module isn't used for anything directly in the build process.  This module is used to start an OSGi shell, where the bundles and their behaviour can be examined.
 
