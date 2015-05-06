@@ -4,7 +4,7 @@
  <modelVersion>4.0.0</modelVersion>
  <groupId>no.steria.osgi.jsr330activator</groupId>
  <artifactId>jsr330activator</artifactId>
- <version>1.0.2-SNAPSHOT</version>
+ <version>1.0.2</version>
 
  <packaging>pom</packaging>
 
@@ -141,7 +141,7 @@
  <scm>
   <url>https://github.com/sbang/jsr330activator</url>
   <connection>scm:git:https://github.com/sbang/jsr330activator.git</connection>
-  <tag>HEAD</tag>
+  <tag>jsr330activator-1.0.2</tag>
  </scm>
 
  <issueManagement>
