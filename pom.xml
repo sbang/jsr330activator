@@ -157,11 +157,11 @@
  <distributionManagement>
   <snapshotRepository>
    <id>ossrh</id>
-   <url>http://edwards.hjemme.lan:8081/nexus/content/repositories/snapshots</url>
+   <url>https://oss.sonatype.org/content/repositories/snapshots</url>
   </snapshotRepository>
   <repository>
    <id>ossrh</id>
-   <url>http://edwards.hjemme.lan:8081/nexus/service/local/staging/deploy/maven2/</url>
+   <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
   </repository>
  </distributionManagement>
 
