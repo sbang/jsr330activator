@@ -7,7 +7,7 @@
   <version>1.0.2-SNAPSHOT</version>
  </parent>
 
- <artifactId>jsr330activator.testbundle1</artifactId>
+ <artifactId>jsr330activator.testbundle4</artifactId>
  <packaging>bundle</packaging>
 
  <name>jsr330activator.testbundle1 OSGi Bundle</name>
@@ -33,6 +33,12 @@
    <artifactId>org.apache.servicemix.bundles.javax-inject</artifactId>
    <version>1_2</version>
    <scope>provided</scope>
+  </dependency>
+  <dependency>
+   <groupId>no.steria.osgi.jsr330activator</groupId>
+   <artifactId>jsr330activator.testbundle1</artifactId>
+   <version>${project.version}</version>
+   <type>bundle</type>
   </dependency>
  </dependencies>
 
