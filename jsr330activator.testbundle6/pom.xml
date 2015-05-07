@@ -7,10 +7,10 @@
   <version>1.0.2-SNAPSHOT</version>
  </parent>
 
- <artifactId>jsr330activator.testbundle4</artifactId>
+ <artifactId>jsr330activator.testbundle6</artifactId>
  <packaging>bundle</packaging>
 
- <name>jsr330activator.testbundle4 OSGi Bundle</name>
+ <name>jsr330activator.testbundle6 OSGi Bundle</name>
 
  <properties>
   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
