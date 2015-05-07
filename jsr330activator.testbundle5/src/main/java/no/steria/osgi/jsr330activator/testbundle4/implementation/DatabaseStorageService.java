@@ -1,11 +1,12 @@
 package no.steria.osgi.jsr330activator.testbundle4.implementation;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.UUID;
 
 import javax.inject.Named;
@@ -13,8 +14,18 @@ import javax.inject.Provider;
 
 import no.steria.osgi.jsr330activator.testbundle1.StorageService;
 
-@Named("file")
-public class FileStorageService implements Provider<StorageService>, StorageService {
+@Named("database")
+public class DatabaseStorageService implements Provider<StorageService>, StorageService {
+
+    private Path databaseDir;
+
+    public DatabaseStorageService() {
+    	try {
+            databaseDir = Files.createTempDirectory("database");
+        } catch (IOException e) {
+            databaseDir = null;
+        }
+    }
 
     public StorageService get() {
         return this;
@@ -62,9 +73,7 @@ public class FileStorageService implements Provider<StorageService>, StorageServ
     }
 
     private String fullPathFileName(UUID id) {
-        File tempdir = new File(System.getProperty("java.io.tmpdir"));
-        File file = new File(tempdir, id.toString());
-        return file.getPath();
+        return databaseDir.resolve(id.toString()).toString();
     }
 
 }
