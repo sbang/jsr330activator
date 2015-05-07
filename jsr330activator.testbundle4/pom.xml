@@ -10,7 +10,7 @@
  <artifactId>jsr330activator.testbundle4</artifactId>
  <packaging>bundle</packaging>
 
- <name>jsr330activator.testbundle1 OSGi Bundle</name>
+ <name>jsr330activator.testbundle4 OSGi Bundle</name>
 
  <properties>
   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -52,7 +52,6 @@
     <configuration>
      <instructions>
       <Bundle-Activator>no.steria.osgi.jsr330activator.Jsr330Activator</Bundle-Activator>
-      <Export-Package>no.steria.osgi.jsr330activator.testbundle1</Export-Package>
      </instructions>
     </configuration>
    </plugin>
