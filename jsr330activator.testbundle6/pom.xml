@@ -36,7 +36,7 @@
   </dependency>
   <dependency>
    <groupId>no.steria.osgi.jsr330activator</groupId>
-   <artifactId>jsr330activator.testbundle1</artifactId>
+   <artifactId>jsr330activator.testbundle3</artifactId>
    <version>${project.version}</version>
    <type>bundle</type>
   </dependency>

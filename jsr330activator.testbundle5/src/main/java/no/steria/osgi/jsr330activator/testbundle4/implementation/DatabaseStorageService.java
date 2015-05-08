@@ -12,7 +12,8 @@ import java.util.UUID;
 import javax.inject.Named;
 import javax.inject.Provider;
 
-import no.steria.osgi.jsr330activator.testbundle1.StorageService;
+import no.steria.osgi.jsr330activator.testbundle3.StorageService;
+
 
 @Named("database")
 public class DatabaseStorageService implements Provider<StorageService>, StorageService {

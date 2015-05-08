@@ -11,7 +11,8 @@ import java.util.UUID;
 import javax.inject.Named;
 import javax.inject.Provider;
 
-import no.steria.osgi.jsr330activator.testbundle1.StorageService;
+import no.steria.osgi.jsr330activator.testbundle3.StorageService;
+
 
 @Named("file")
 public class FileStorageService implements Provider<StorageService>, StorageService {
