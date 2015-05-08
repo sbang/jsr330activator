@@ -7,10 +7,10 @@
   <version>1.0.2-SNAPSHOT</version>
  </parent>
 
- <artifactId>jsr330activator.testbundle1</artifactId>
+ <artifactId>jsr330activator.testbundle7</artifactId>
  <packaging>bundle</packaging>
 
- <name>jsr330activator.testbundle1 OSGi Bundle</name>
+ <name>jsr330activator.testbundle7 OSGi Bundle</name>
 
  <properties>
   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -46,7 +46,7 @@
     <configuration>
      <instructions>
       <Bundle-Activator>no.steria.osgi.jsr330activator.Jsr330Activator</Bundle-Activator>
-      <Export-Package>no.steria.osgi.jsr330activator.testbundle1</Export-Package>
+      <Export-Package>no.steria.osgi.jsr330activator.testbundle7</Export-Package>
      </instructions>
     </configuration>
    </plugin>

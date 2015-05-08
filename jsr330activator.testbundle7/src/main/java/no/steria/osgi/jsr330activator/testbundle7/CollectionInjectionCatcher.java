@@ -1,5 +1,5 @@
-package no.steria.osgi.jsr330activator.testbundle1;
+package no.steria.osgi.jsr330activator.testbundle7;
 
-public interface HelloService {
+public interface CollectionInjectionCatcher {
     public String getMessage();
 }
