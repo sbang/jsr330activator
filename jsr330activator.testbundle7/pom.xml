@@ -53,6 +53,7 @@
      <instructions>
       <Bundle-Activator>no.steria.osgi.jsr330activator.Jsr330Activator</Bundle-Activator>
       <Export-Package>no.steria.osgi.jsr330activator.testbundle7</Export-Package>
+      <Embed-Dependency>jsr330activator.implementation;inline=true,javax.inject;inline=true</Embed-Dependency>
      </instructions>
     </configuration>
    </plugin>
