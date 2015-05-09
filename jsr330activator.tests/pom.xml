@@ -88,6 +88,26 @@
    <version>${project.version}</version>
    <scope>test</scope>
   </dependency>
+  <dependency>
+   <groupId>no.steria.osgi.jsr330activator</groupId>
+   <artifactId>jsr330activator.testbundle4</artifactId>
+   <version>${project.version}</version>
+  </dependency>
+  <dependency>
+   <groupId>no.steria.osgi.jsr330activator</groupId>
+   <artifactId>jsr330activator.testbundle5</artifactId>
+   <version>${project.version}</version>
+  </dependency>
+  <dependency>
+   <groupId>no.steria.osgi.jsr330activator</groupId>
+   <artifactId>jsr330activator.testbundle6</artifactId>
+   <version>${project.version}</version>
+  </dependency>
+  <dependency>
+   <groupId>no.steria.osgi.jsr330activator</groupId>
+   <artifactId>jsr330activator.testbundle7</artifactId>
+   <version>${project.version}</version>
+  </dependency>
  </dependencies>
 
  <profiles>
