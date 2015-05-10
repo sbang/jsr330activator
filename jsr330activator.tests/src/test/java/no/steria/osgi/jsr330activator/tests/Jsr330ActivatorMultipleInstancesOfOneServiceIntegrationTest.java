@@ -8,8 +8,8 @@ import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 
 import javax.inject.Inject;
 
-import no.steria.osgi.jsr330activator.Jsr330Activator;
-import no.steria.osgi.jsr330activator.testbundle2.HelloService2;
+import no.steria.osgi.jsr330activator.testbundle7.CollectionInjectionCatcher;
+import no.steria.osgi.jsr330activator.testbundle7.NamedServiceInjectionCatcher;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,21 +20,21 @@ import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
 
 /**
- * Integration test that tests a bundle using an embedded {@link Jsr330Activator}
- * as its bundle activator.
- *
- * In this case there is no need to add the jsr330activator.implementation
- * bundle to the runtime.
+ * Integration test for providers that receive multiple instances of
+ * a single service.
  *
  * @author Steinar Bang
  *
  */
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-public class Jsr330ActivatorEmbeddedIntegrationTest extends Jsr330ActivatorIntegrationtestBase {
+public class Jsr330ActivatorMultipleInstancesOfOneServiceIntegrationTest extends Jsr330ActivatorIntegrationtestBase {
 
     @Inject
-    private HelloService2 helloService2;
+    private CollectionInjectionCatcher collectionInjectionCatcher;
+
+    @Inject
+    private NamedServiceInjectionCatcher namedServiceInjectionCatcher;
 
     @Configuration
     public Option[] config() {
@@ -43,18 +43,30 @@ public class Jsr330ActivatorEmbeddedIntegrationTest extends Jsr330ActivatorInteg
                        mavenBundle("org.slf4j", "slf4j-api", "1.7.2"),
                        mavenBundle("ch.qos.logback", "logback-core", "1.0.4"),
                        mavenBundle("ch.qos.logback", "logback-classic", "1.0.4"),
-                       mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.testbundle2", getMavenProjectVersion()),
+                       mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.testbundle8", getMavenProjectVersion()),
+                       mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.testbundle4", getMavenProjectVersion()),
+                       mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.testbundle5", getMavenProjectVersion()),
+                       mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.testbundle6", getMavenProjectVersion()),
+                       mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.testbundle7", getMavenProjectVersion()),
                        junitBundles());
     }
 
     /**
-     * Verifies that the activator in testbundle1 starts, finds a
-     * service implementation, and registers it in the OSGi service
-     * registry
+     * Validate that a service depending on a collection injection has
+     * been started.
      */
     @Test
-    public void testbundle2ServiceFoundAndActivated() {
-    	assertEquals("Hello world2!", helloService2.getMessage());
+    public void testCollectionInjectionCatcherServiceFoundAndActivated() {
+    	assertNull(collectionInjectionCatcher.getMessage());
+    }
+
+    /**
+     * Validate that a service depending on named injections of
+     * multiple implementations of a service have been started.
+     */
+    @Test
+    public void testOptionalInjectionCatcherServiceFoundAndActivated() {
+        assertNull(namedServiceInjectionCatcher.getMessage());
     }
 
 }
