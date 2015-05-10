@@ -184,4 +184,5 @@
    </build>
   </profile>
  </profiles>
+ <description>An OSGi bundle used in integration tests.  This bundle exports the package containing two services that will have implementations that listen for the StorageService implementations in different ways, embeds the Jsr330BundleActivator and javax.inject and uses the Jsr330BundleActivator to find providers for the two services and avctivates these services.</description>
 </project>

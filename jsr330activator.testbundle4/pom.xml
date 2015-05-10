@@ -183,4 +183,5 @@
    </build>
   </profile>
  </profiles>
+ <description>An OSGi bundle used in integration tests.  This bundle embeds the Jsr330BundleActivator and javax.inject and uses the Jsr330BundleActivator to find a provider for the StorageService with a @Name annotation of &quot;file&quot;.</description>
 </project>

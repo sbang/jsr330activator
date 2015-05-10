@@ -166,4 +166,5 @@
    </build>
   </profile>
  </profiles>
+ <description>An OSGi bundle used in integration tests.  This bundle is a pure source bundle (no activator, no services provided or listened for), that exposes a package containing a definition for the StorageService.</description>
 </project>

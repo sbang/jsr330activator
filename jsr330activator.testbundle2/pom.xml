@@ -179,4 +179,5 @@
    </build>
   </profile>
  </profiles>
+ <description>An OSGi bundle used in integration tests.  This bundle exports the package containing the service definition for HelloService2 and embeds the Jsr330BundleActivator and imports javax.inject from the OSGi runtime and uses the Jsr330BundleActivator to find a provider for HelloService2 and expose the service to listeners.</description>
 </project>

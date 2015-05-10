@@ -190,4 +190,5 @@
    </build>
   </profile>
  </profiles>
+ <description>An OSGi bundle used in integration tests.  This bundle exports the package containing the service definitions for HelloService3a, HelloService3b, and HelloService3c, and embeds the Jsr330BundleActivator and javax.inject and uses the Jsr330BundleActivator to find a provider for HelloService3a, HelloService3b, HelloService3c, and set up listeners for the providers' dependencies and when the dependencies arrive, expose the service to listeners.</description>
 </project>
