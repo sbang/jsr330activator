@@ -12,7 +12,7 @@ import java.util.UUID;
 import javax.inject.Named;
 import javax.inject.Provider;
 
-import no.steria.osgi.jsr330activator.testbundle3.StorageService;
+import no.steria.osgi.jsr330activator.testbundle8.StorageService;
 
 
 @Named("database")

@@ -108,6 +108,12 @@
    <artifactId>jsr330activator.testbundle7</artifactId>
    <version>${project.version}</version>
   </dependency>
+  <dependency>
+   <groupId>no.steria.osgi.jsr330activator</groupId>
+   <artifactId>jsr330activator.testbundle8</artifactId>
+   <version>${project.version}</version>
+   <scope>provided</scope>
+  </dependency>
  </dependencies>
 
  <profiles>

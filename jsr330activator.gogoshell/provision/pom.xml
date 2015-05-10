@@ -72,5 +72,11 @@
    <version>1_2</version>
    <scope>provided</scope>
   </dependency>
+  <dependency>
+   <groupId>no.steria.osgi.jsr330activator</groupId>
+   <artifactId>jsr330activator.testbundle8</artifactId>
+   <version>${project.version}</version>
+   <scope>provided</scope>
+  </dependency>
  </dependencies>
 </project>

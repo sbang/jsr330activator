@@ -1,4 +1,4 @@
-package no.steria.osgi.jsr330activator.testbundle3;
+package no.steria.osgi.jsr330activator.testbundle8;
 
 import java.util.UUID;
 

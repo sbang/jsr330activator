@@ -51,6 +51,7 @@
   <module>jsr330activator.testbundle5</module>
   <module>jsr330activator.testbundle6</module>
   <module>jsr330activator.testbundle7</module>
+  <module>jsr330activator.testbundle8</module>
   <module>jsr330activator.tests</module>
  </modules>
 
