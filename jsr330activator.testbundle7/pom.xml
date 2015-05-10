@@ -29,9 +29,9 @@
    <version>${project.version}</version>
   </dependency>
   <dependency>
-   <groupId>org.apache.servicemix.bundles</groupId>
-   <artifactId>org.apache.servicemix.bundles.javax-inject</artifactId>
-   <version>1_2</version>
+   <groupId>javax.inject</groupId>
+   <artifactId>javax.inject</artifactId>
+   <version>1</version>
   </dependency>
   <dependency>
    <groupId>no.steria.osgi.jsr330activator</groupId>
@@ -52,7 +52,7 @@
      <instructions>
       <Bundle-Activator>no.steria.osgi.jsr330activator.Jsr330Activator</Bundle-Activator>
       <Export-Package>no.steria.osgi.jsr330activator.testbundle7</Export-Package>
-      <Embed-Dependency>jsr330activator.implementation;inline=true,org.apache.servicemix.bundles.javax-inject;inline=true</Embed-Dependency>
+      <Embed-Dependency>jsr330activator.implementation;inline=true,javax.inject;inline=true</Embed-Dependency>
      </instructions>
     </configuration>
    </plugin>
