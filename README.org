@@ -38,17 +38,19 @@ What's needed is:
          <groupId>javax.inject</groupId>
          <artifactId>javax.inject</artifactId>
          <version>1</version>
-         <scope>provided</scope>
         </dependency>
         <dependency>
          <groupId>no.steria.osgi.jsr330activator</groupId>
          <artifactId>jsr330activator.implementation</artifactId>
          <version>1.0.1</version>
-         <scope>provided</scope>
+         <scope>test</scope>
         </dependency>
        </dependencies>
       </project>
     #+END_SRC
+    Note the "test" dependency of the Jsr330Activator itself.  Using "compile" or "provided" here would create a maven dependency to the Jsr330Activator, that would make a maven-provisioned OSGi runtime (e.g. gogo shell) pull in the Jsr330Activator bundle into the OSGi runtime.  This does no harm, but it isn't necessary when the Jsr330Activator has been embedded, and therefore shouldn't be there.  
+
+    The javax.inject jar isn't a bundle and therefore is skipped by gogo shell and friends
  3. Use the =Bundle-Activator= and =Embed-Dependency= settings in the maven-bundle-plugin configuration:
     #+BEGIN_SRC nxml
       <project>
