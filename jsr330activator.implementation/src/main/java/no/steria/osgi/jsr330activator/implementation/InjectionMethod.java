@@ -36,7 +36,7 @@ class InjectionMethod extends InjectionBase {
         }
     }
 
-    public void doRetract() {
+    public void doRetract(Object service) {
         try {
             method.invoke(provider, (String)null);
             currentService = null;

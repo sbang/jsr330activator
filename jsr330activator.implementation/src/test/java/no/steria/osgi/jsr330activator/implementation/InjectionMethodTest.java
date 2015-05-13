@@ -47,7 +47,7 @@ public class InjectionMethodTest {
         assertTrue(injectionMethod.isInjected());
 
         // Retract the service and check the injected state
-        injectionMethod.doRetract();
+        injectionMethod.doRetract(stringService);
         assertFalse(injectionMethod.isInjected());
     }
 
@@ -115,7 +115,7 @@ public class InjectionMethodTest {
         assertTrue(injectionMethod.isInjected());
 
         // Retract the service and verify that it's gone
-        injectionMethod.doRetract();
+        injectionMethod.doRetract(stringService);
         assertFalse(injectionMethod.isInjected());
     }
 

@@ -9,11 +9,16 @@ import java.util.List;
 import no.steria.osgi.jsr330activator.mocks.providers.ProviderThrowsIllegalAccessException;
 import no.steria.osgi.jsr330activator.mocks.providers.ProviderThrowsInstantiationException;
 import no.steria.osgi.jsr330activator.testbundle.AddInjectionsService;
+import no.steria.osgi.jsr330activator.testbundle.CollectionCatcherService;
 import no.steria.osgi.jsr330activator.testbundle.HelloService;
 import no.steria.osgi.jsr330activator.testbundle.HelloService2;
+import no.steria.osgi.jsr330activator.testbundle.StorageService;
 import no.steria.osgi.jsr330activator.testbundle.implementation.AddInjectionsServiceProvider;
+import no.steria.osgi.jsr330activator.testbundle.implementation.CollectionCatcherServiceProvider;
+import no.steria.osgi.jsr330activator.testbundle.implementation.DummyStorageServiceProvider;
 import no.steria.osgi.jsr330activator.testbundle.implementation.HelloService2Provider;
 import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceProvider;
+import no.steria.osgi.jsr330activator.testbundle.implementation.MemoryStorageServiceProvider;
 import no.steria.osgi.mocks.MockBundleContext;
 
 import org.junit.Before;
@@ -407,7 +412,7 @@ public class ProviderAdapterTest {
         // Register the listeners
         providerAdapter.setupInjectionListeners(bundleContext);
 
-        // Service should still not be available because the injections are not available yet
+        // Service is available since the injections are both available
         assertNotNull(bundleContext.getServiceReference(AddInjectionsService.class.getCanonicalName()));
 
         // Unregister an injected service
@@ -415,6 +420,55 @@ public class ProviderAdapterTest {
 
         // Verify that the service is now unavailable.
         assertNull(bundleContext.getServiceReference(AddInjectionsService.class.getCanonicalName()));
+    }
+
+    /**
+     * Unit test for using the ProviderAdapter on a provider with multiple implementations of the same
+     * service into a collection injection field.
+     */
+    @Test
+    public void testAdapterOnProviderWithCollectionInjectField() {
+        MockBundleContext bundleContext = new MockBundleContext();
+
+        // Register the services that are to be injected
+        MemoryStorageServiceProvider memoryStorageServiceProvider = new MemoryStorageServiceProvider();
+        ServiceRegistration<?> memoryStorageServiceRegistration = bundleContext.registerService(StorageService.class.getCanonicalName(), memoryStorageServiceProvider.get(), null);
+        DummyStorageServiceProvider dummyStorageServiceProvider = new DummyStorageServiceProvider();
+        ServiceRegistration<?> dummyStorageServiceRegistration = bundleContext.registerService(StorageService.class.getCanonicalName(), dummyStorageServiceProvider.get(), null);
+
+        // Create the adapter wrapping the provider with the collection injection
+        ProviderAdapter providerAdapter = new ProviderAdapter(CollectionCatcherService.class, CollectionCatcherServiceProvider.class);
+
+        // Verify that the service isn't available before the listeners are set up
+        assertNull(bundleContext.getServiceReference(CollectionCatcherService.class.getCanonicalName()));
+
+        // Register the listeners (and immediately receive the injections)
+        providerAdapter.setupInjectionListeners(bundleContext);
+
+        // Service is available since the injections are both available
+        ServiceReference<?> collectionCatcherServiceReference = bundleContext.getServiceReference(CollectionCatcherService.class.getCanonicalName());
+        assertNotNull(collectionCatcherServiceReference);
+
+        // Actually use the service to get the number of injections
+        CollectionCatcherService collectionCatcherService = (CollectionCatcherService) bundleContext.getService(collectionCatcherServiceReference);
+        assertEquals(2, collectionCatcherService.getNumberOfStorageServices());
+
+        // Unregister one of the two provided instances of StorageService
+        dummyStorageServiceRegistration.unregister();
+
+        // Service is still available since one injection is still present
+        ServiceReference<?> collectionCatcherServiceReference2 = bundleContext.getServiceReference(CollectionCatcherService.class.getCanonicalName());
+        assertNotNull(collectionCatcherServiceReference2);
+
+        // Actually use the service to get the number of injections
+        CollectionCatcherService collectionCatcherService2 = (CollectionCatcherService) bundleContext.getService(collectionCatcherServiceReference2);
+        assertEquals(1, collectionCatcherService2.getNumberOfStorageServices());
+
+        // Unregister the second provided instance of StorageService
+        memoryStorageServiceRegistration.unregister();
+
+        // Verify that the service is no longer available because all of the injections have gone away.
+        assertNull(bundleContext.getServiceReference(CollectionCatcherService.class.getCanonicalName()));
     }
 
 }

@@ -1,5 +1,8 @@
 package no.steria.osgi.jsr330activator.implementation;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
@@ -16,22 +19,23 @@ import org.osgi.framework.ServiceReference;
 abstract class InjectionBase implements Injection {
 
     private ServiceListener serviceListener;
-    private ServiceReference<?> serviceReference;
+    private List<ServiceReference<?>> serviceReferences = new ArrayList<ServiceReference<?>>();
 
     public void setupListener(final BundleContext bundleContext, final ProviderAdapter providerAdapter) {
         serviceListener = new ServiceListener() {
 
                 public void serviceChanged(ServiceEvent event) {
                     ServiceReference<?> sr = event.getServiceReference();
+                    Object service = bundleContext.getService(sr);
                     switch(event.getType()) {
                       case ServiceEvent.REGISTERED:
-                        serviceReference = sr;
-                        Object service = bundleContext.getService(sr);
+                    	if (!serviceReferences.contains(sr)) { serviceReferences.add(sr); }
                         doInject(service);
                         providerAdapter.checkInjectionsAndRegisterServiceIfSatisfied(bundleContext);
                         break;
                       case ServiceEvent.UNREGISTERING:
-                        doRetract();
+                    	serviceReferences.remove(sr);
+                        doRetract(service);
                         providerAdapter.checkInjectionsAndUnregisterServiceIfNotSatisfied(bundleContext);
                         break;
                       default:
@@ -62,7 +66,9 @@ abstract class InjectionBase implements Injection {
         bundleContext.removeServiceListener(serviceListener);
 
         // Release the injected service
-        bundleContext.ungetService(serviceReference);
+        for (ServiceReference<?> serviceReference : serviceReferences) {
+            bundleContext.ungetService(serviceReference);
+        }
     }
 
 }

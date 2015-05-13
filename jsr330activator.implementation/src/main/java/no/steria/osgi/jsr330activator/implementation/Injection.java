@@ -42,8 +42,9 @@ interface Injection {
      * fails, the method is a no-op.
      *
      * Called when receiving an unregistration event about the service.
+     * @param service the service to retract
      */
-    void doRetract();
+    void doRetract(Object service);
 
     /**
      * Will set up an OSGi listener for the injected service, so
