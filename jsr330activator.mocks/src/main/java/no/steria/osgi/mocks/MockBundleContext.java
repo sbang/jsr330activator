@@ -1,6 +1,7 @@
 package no.steria.osgi.mocks;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
@@ -28,18 +29,18 @@ public class MockBundleContext extends MockBundleContextBase {
         // Note: neither the clazz nor the filter argument is handled in any way
     	// If this is needed to make tests run as expected it must be implemented
     	// For now, just return all of the references in the mock.
-    	ServiceReference<?>[] serviceReferences = new ServiceReference<?>[serviceRegistrations.size()];
-    	int i = 0;
-    	for (Entry<String, ServiceReference<?>> serviceRegistration : serviceRegistrations.entrySet()) {
-            serviceReferences[i] = serviceRegistration.getValue();
-            ++i;
+    	List<ServiceReference<?>> serviceReferences = new ArrayList<ServiceReference<?>>();
+    	for (Entry<String, Collection<ServiceReference<?>>> serviceRegistrationEntry : serviceRegistrations.entrySet()) {
+            for (ServiceReference<?> serviceRegistration : serviceRegistrationEntry.getValue()) {
+                serviceReferences.add(serviceRegistration);
+            }
         }
 
-    	return serviceReferences;
+    	return serviceReferences.toArray(new ServiceReference<?>[serviceReferences.size()]);
     }
 
     MockBundle bundle;
-    Map<String, ServiceReference<?>> serviceRegistrations = new HashMap<String, ServiceReference<?>>();
+    Map<String, Collection<ServiceReference<?>>> serviceRegistrations = new HashMap<String, Collection<ServiceReference<?>>>();
     Map<ServiceReference<?>, Object> serviceImplementations = new HashMap<ServiceReference<?>, Object>();
     Map<String, List<ServiceListener>> filteredServiceListeners = new HashMap<String, List<ServiceListener>>();
 
@@ -59,7 +60,8 @@ public class MockBundleContext extends MockBundleContextBase {
     @Override
     public ServiceRegistration<?> registerService(String clazz, Object service, Dictionary<String, ?> properties) {
         MockServiceReference<Object> serviceReference = new MockServiceReference<Object>(getBundle());
-        serviceRegistrations.put(clazz, serviceReference);
+        if (serviceRegistrations.get(clazz) == null) { serviceRegistrations.put(clazz, new ArrayList<ServiceReference<?>>()); }
+        serviceRegistrations.get(clazz).add(serviceReference);
         serviceImplementations.put(serviceReference, service);
         notifyListenersAboutNewService(clazz, serviceReference);
         return new MockServiceRegistration<Object>(this, serviceReference);
@@ -67,7 +69,12 @@ public class MockBundleContext extends MockBundleContextBase {
 
     @Override
     public ServiceReference<?> getServiceReference(String clazz) {
-        return serviceRegistrations.get(clazz);
+    	Collection<ServiceReference<?>> servrefs = serviceRegistrations.get(clazz);
+    	if (servrefs == null || servrefs.size() == 0) {
+            return null;
+    	}
+
+        return servrefs.iterator().next();
     }
 
     @SuppressWarnings("unchecked")
@@ -85,18 +92,15 @@ public class MockBundleContext extends MockBundleContextBase {
     public boolean unregisterService(MockServiceRegistration<?> unregisteredServiceRegistration) {
         boolean unregistrationSuccess = true;
         ServiceReference<?> serviceReference = unregisteredServiceRegistration.getReference();
-        if (serviceRegistrations.containsValue(serviceReference)) {
-            List<String> serviceClassNames = new ArrayList<String>();
-            for (Entry<String, ServiceReference<?>> serviceRegistration : serviceRegistrations.entrySet()) {
-                if (serviceReference.equals(serviceRegistration.getValue())) {
-                    serviceClassNames.add(serviceRegistration.getKey());
-                }
+        String serviceClassName = findServiceClassName(serviceReference);
+        if (serviceRegistrations.containsKey(serviceClassName)) {
+            serviceRegistrations.get(serviceClassName).remove(serviceReference);
+            if (serviceRegistrations.get(serviceClassName).isEmpty()) {
+                // Last implementation gone, remove from registry
+                serviceRegistrations.remove(serviceClassName);
             }
 
-            for (String serviceClassName : serviceClassNames) {
-                serviceRegistrations.remove(serviceClassName);
-            	notifyListenersAboutRemovedService(serviceClassName, serviceReference);
-            }
+            notifyListenersAboutRemovedService(serviceClassName, serviceReference);
         } else {
             unregistrationSuccess = false;
         }
@@ -108,6 +112,18 @@ public class MockBundleContext extends MockBundleContextBase {
         }
 
         return unregistrationSuccess;
+    }
+
+    private String findServiceClassName(ServiceReference<?> serviceReference) {
+        for (Entry<String, Collection<ServiceReference<?>>> serviceRegistrationEntry : serviceRegistrations.entrySet()) {
+            for (ServiceReference<?> serviceRegistration : serviceRegistrationEntry.getValue()) {
+                if (serviceReference.equals(serviceRegistration)) {
+                    return serviceRegistrationEntry.getKey();
+                }
+            }
+        }
+
+        return "";
     }
 
     @Override
