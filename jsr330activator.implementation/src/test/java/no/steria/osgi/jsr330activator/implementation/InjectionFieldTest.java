@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import no.steria.osgi.jsr330activator.testbundle.HelloService;
 import no.steria.osgi.jsr330activator.testbundle.StorageService;
 import no.steria.osgi.jsr330activator.testbundle.implementation.CollectionCatcherServiceProvider;
+import no.steria.osgi.jsr330activator.testbundle.implementation.CollectionCatcherServiceProviderWithSetInject;
 import no.steria.osgi.jsr330activator.testbundle.implementation.DummyStorageServiceProvider;
 import no.steria.osgi.jsr330activator.testbundle.implementation.HelloService2Provider;
 import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceProvider;
@@ -168,5 +169,49 @@ public class InjectionFieldTest {
     	injectionField.doRetract(memoryStorageServiceProvider.get());
     	assertFalse(injectionField.isInjected());
     }
+
+	/**
+	 * Unit test for injecting into a field that is a an already initialized Set.
+	 * @throws SecurityException
+	 * @throws NoSuchFieldException
+	 */
+	@Test
+	public void testSetInjectionSetAlreadyPresent() throws NoSuchFieldException, SecurityException {
+		CollectionCatcherServiceProviderWithSetInject collectionCatcher = new CollectionCatcherServiceProviderWithSetInject();
+		Field injectionPoint = collectionCatcher.getClass().getDeclaredField("storageServices");
+		Injection injectionField = new InjectionField(collectionCatcher, injectionPoint);
+	
+		// Verify that the injection type is the element type of the collection
+		assertEquals(StorageService.class, injectionField.getInjectedServiceType());
+	
+		// Verify that the field isn't initially injected
+		assertFalse(injectionField.isInjected());
+	
+		// Inject something not a storage service, this should be a no-op wrt. injection (ie. field still not injected)
+		injectionField.doInject(helloServiceProvider.get());
+		assertFalse(injectionField.isInjected());
+	
+		// Inject a storage service
+		MemoryStorageServiceProvider memoryStorageServiceProvider = new MemoryStorageServiceProvider();
+		injectionField.doInject(memoryStorageServiceProvider.get());
+		assertTrue(injectionField.isInjected());
+	
+		// Inject another storage service
+		DummyStorageServiceProvider dummyStorageProvider = new DummyStorageServiceProvider();
+		injectionField.doInject(dummyStorageProvider.get());
+		assertTrue(injectionField.isInjected());
+	
+		// Remove one of the storage services, field is still injected (removing an already removed service is a no-op)
+		injectionField.doRetract(dummyStorageProvider.get());
+		assertTrue(injectionField.isInjected());
+	
+		// Remove the same storage service again, field should still be injected
+		injectionField.doRetract(dummyStorageProvider.get());
+		assertTrue(injectionField.isInjected());
+	
+		// Remove the other storage service, field should no longer be injected
+		injectionField.doRetract(memoryStorageServiceProvider.get());
+		assertFalse(injectionField.isInjected());
+	}
 
 }
