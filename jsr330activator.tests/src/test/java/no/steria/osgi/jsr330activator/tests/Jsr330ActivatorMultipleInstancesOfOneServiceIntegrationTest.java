@@ -53,11 +53,12 @@ public class Jsr330ActivatorMultipleInstancesOfOneServiceIntegrationTest extends
 
     /**
      * Validate that a service depending on a collection injection has
-     * been started.
+     * been started.  Verify that the expected number of services has
+     * been injected.
      */
     @Test
     public void testCollectionInjectionCatcherServiceFoundAndActivated() {
-    	assertNull(collectionInjectionCatcher.getMessage());
+    	assertEquals(3, collectionInjectionCatcher.getNumberOfInjectedStorageServices());
     }
 
     /**
