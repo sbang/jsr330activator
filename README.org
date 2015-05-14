@@ -186,3 +186,13 @@ I see two ways of doing it:
  2. Create an @Optional annotation in the Jsr330Activator jar itself, and use it together with @Named in addition to @Inject on dependencies, and put @Named on the Provider<T> implementations
 
 Alternative 2. would seem to be the most complete solution (because it lets the injection point determine which services are injected. It can also be used to require a particular implementation of a service and let the rest be optional), but alternative 1. is the simplest one to implement (it doesn't require an extra annotation and reflection code looking for two extra annotations).
+
+/Note/: Alternative 1 i.e. injection into a collection is now on master.
+
+The behaviour is like this:
+ - Add a List<Service> field to the provider class
+ - All instances of "Service" that arrives are added to the collection (see CollectionInjectionCatcherProvider.java in jsr330activator.testbundle7 for an example)
+ - All instances of "Service" that are retracted are removed from the collection
+ - For the purposes of service activation, the field is seen as injected as long as it has at least one item
+  - This means that an optional injection could be faked by inserting a dummy service into a collection injection
+
