@@ -22,4 +22,10 @@ public class DummyStorageServiceProvider implements Provider<StorageService>, St
         return null;
     }
 
+    public int compareTo(StorageService storageToCompareWith) {
+        String myName = ((Named)this.getClass().getAnnotations()[0]).value();
+        String nameOfStorageToCompareWith = ((Named)storageToCompareWith.getClass().getAnnotations()[0]).value();
+        return myName.compareTo(nameOfStorageToCompareWith);
+    }
+
 }

@@ -26,4 +26,10 @@ public class MemoryStorageServiceProvider implements Provider<StorageService>, S
         return store.get(id);
     }
 
+    public int compareTo(StorageService storageToCompareWith) {
+        String myName = ((Named)this.getClass().getAnnotations()[0]).value();
+        String nameOfStorageToCompareWith = ((Named)storageToCompareWith.getClass().getAnnotations()[0]).value();
+        return myName.compareTo(nameOfStorageToCompareWith);
+    }
+
 }
