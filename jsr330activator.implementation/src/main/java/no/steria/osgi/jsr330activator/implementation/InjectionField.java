@@ -1,11 +1,14 @@
 package no.steria.osgi.jsr330activator.implementation;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * An {@link Injection} implementation that operates on
@@ -124,8 +127,39 @@ class InjectionField extends InjectionBase {
     @SuppressWarnings("rawtypes")
     private void createCollectionIfNull() throws IllegalAccessException {
         if (field.get(provider) == null) {
+            // If the field has a type that can be instantiated, instantiate
+            // that type, using the no-argument constructor.
+            if (isInstantiable(field.getType())) {
+                try {
+                    Object newCollection = field.getType().newInstance();
+                    field.set(provider, newCollection);
+                    return;
+                } catch (IllegalArgumentException e) {
+                } catch (InstantiationException e) {
+                }
+            }
+
+            // If the field has type Set, use HashSet (services need not implement Comparable)
+            if (Set.class.isAssignableFrom(field.getType())) {
+                field.set(provider, new HashSet());
+            }
+
+            // For everything else (Collection, List etc.), use ArrayList
             field.set(provider, new ArrayList());
         }
+    }
+
+    private boolean isInstantiable(Class<?> type) {
+    	int modifiers = type.getModifiers();
+    	if (Modifier.isInterface(modifiers)) {
+            return false;
+    	}
+
+    	if (Modifier.isAbstract(modifiers)) {
+            return false;
+    	}
+
+    	return true;
     }
 
     private boolean fieldIsCollection() {
