@@ -6,11 +6,11 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import no.steria.osgi.jsr330activator.testbundle.CollectionCatcherService;
-import no.steria.osgi.jsr330activator.testbundle.StorageService;
 
-public class CollectionCatcherServiceProvider implements Provider<CollectionCatcherService>, CollectionCatcherService {
+public class CollectionCatcherServiceProviderWithNonGenericList implements Provider<CollectionCatcherService>, CollectionCatcherService {
+    @SuppressWarnings("rawtypes")
     @Inject
-    List<StorageService> storageServices;
+    List storageServices;
 
     public CollectionCatcherService get() {
         return this;

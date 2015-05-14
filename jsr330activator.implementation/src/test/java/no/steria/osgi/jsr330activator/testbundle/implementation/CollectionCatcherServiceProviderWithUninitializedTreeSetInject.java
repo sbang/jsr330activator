@@ -1,7 +1,6 @@
 package no.steria.osgi.jsr330activator.testbundle.implementation;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.TreeSet;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -9,9 +8,9 @@ import javax.inject.Provider;
 import no.steria.osgi.jsr330activator.testbundle.CollectionCatcherService;
 import no.steria.osgi.jsr330activator.testbundle.StorageService;
 
-public class CollectionCatcherServiceProviderWithSetInject implements Provider<CollectionCatcherService>, CollectionCatcherService {
+public class CollectionCatcherServiceProviderWithUninitializedTreeSetInject implements Provider<CollectionCatcherService>, CollectionCatcherService {
     @Inject
-    Set<StorageService> storageServices = new HashSet<StorageService>();
+    TreeSet<StorageService> storageServices;
 
     public CollectionCatcherService get() {
         return this;
