@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -305,8 +306,8 @@ public class InjectionFieldTest {
         Field injectionPoint = collectionCatcher.getClass().getDeclaredField("storageServices");
         Injection injectionField = new InjectionField(collectionCatcher, injectionPoint);
 
-        // Verify that the injection type is the element type of the collection
-        assertEquals(StorageService.class, injectionField.getInjectedServiceType());
+        // Verify that the injection type is the field type itself.
+        assertEquals(List.class, injectionField.getInjectedServiceType());
 
         // Verify that the field isn't initially injected
         assertFalse(injectionField.isInjected());
@@ -315,26 +316,14 @@ public class InjectionFieldTest {
         injectionField.doInject(helloServiceProvider.get());
         assertFalse(injectionField.isInjected());
 
-        // Inject a storage service
-        MemoryStorageServiceProvider memoryStorageServiceProvider = new MemoryStorageServiceProvider();
-        injectionField.doInject(memoryStorageServiceProvider.get());
+        // Inject a list
+        @SuppressWarnings("rawtypes")
+            List stringList = Arrays.asList("Hello world!");
+        injectionField.doInject(stringList);
         assertTrue(injectionField.isInjected());
 
-        // Inject another storage service
-        DummyStorageServiceProvider dummyStorageProvider = new DummyStorageServiceProvider();
-        injectionField.doInject(dummyStorageProvider.get());
-        assertTrue(injectionField.isInjected());
-
-        // Remove one of the storage services, field is still injected (removing an already removed service is a no-op)
-        injectionField.doRetract(dummyStorageProvider.get());
-        assertTrue(injectionField.isInjected());
-
-        // Remove the same storage service again, field should still be injected
-        injectionField.doRetract(dummyStorageProvider.get());
-        assertTrue(injectionField.isInjected());
-
-        // Remove the other storage service, field should no longer be injected
-        injectionField.doRetract(memoryStorageServiceProvider.get());
+        // Remove the injection and the field is no longer injected
+        injectionField.doRetract(stringList);
         assertFalse(injectionField.isInjected());
     }
 
