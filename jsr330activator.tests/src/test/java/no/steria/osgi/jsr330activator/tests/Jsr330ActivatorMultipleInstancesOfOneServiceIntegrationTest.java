@@ -6,10 +6,14 @@ import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 
+import java.util.Collection;
+import java.util.UUID;
+
 import javax.inject.Inject;
 
 import no.steria.osgi.jsr330activator.testbundle7.CollectionInjectionCatcher;
 import no.steria.osgi.jsr330activator.testbundle7.NamedServiceInjectionCatcher;
+import no.steria.osgi.jsr330activator.testbundle8.StorageService;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,6 +63,13 @@ public class Jsr330ActivatorMultipleInstancesOfOneServiceIntegrationTest extends
     @Test
     public void testCollectionInjectionCatcherServiceFoundAndActivated() {
     	assertEquals(3, collectionInjectionCatcher.getNumberOfInjectedStorageServices());
+    	Collection<String> serviceNames = collectionInjectionCatcher.getInjectedStorageServiceNames();
+    	assertEquals(3, serviceNames.size());
+    	UUID id = UUID.randomUUID();
+    	String data = "Hi there!";
+    	StorageService fileStorage = collectionInjectionCatcher.getStorageService("file");
+    	boolean result = fileStorage.save(id, data);
+    	assertTrue(result);
     }
 
     /**
