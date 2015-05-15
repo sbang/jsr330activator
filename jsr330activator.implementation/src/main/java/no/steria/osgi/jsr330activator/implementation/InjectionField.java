@@ -48,12 +48,8 @@ class InjectionField extends InjectionBase {
     @SuppressWarnings("rawtypes")
     public boolean isInjected() {
     	if (fieldIsCollection()) {
-            try {
-                Collection fieldAsCollection = getFieldAsCollection();
-                return fieldAsCollection.size() > 0;
-            } catch (IllegalAccessException e) {
-                return false;
-            }
+            Collection fieldAsCollection = getFieldAsCollection();
+            return fieldAsCollection.size() > 0;
     	}
 
     	Object injectedService = getInjectedService();
@@ -67,12 +63,9 @@ class InjectionField extends InjectionBase {
     @SuppressWarnings("rawtypes")
     public void doRetract(Object service) {
     	if (fieldIsCollection()) {
-            try {
-                Collection fieldAsCollection = getFieldAsCollection();
-                fieldAsCollection.remove(service);
-                return;
-            } catch (IllegalAccessException e) {
-            }
+            Collection fieldAsCollection = getFieldAsCollection();
+            fieldAsCollection.remove(service);
+            return;
     	}
 
     	setInjectedService(null);
@@ -113,11 +106,16 @@ class InjectionField extends InjectionBase {
     }
 
     @SuppressWarnings("rawtypes")
-    private Collection getFieldAsCollection() throws IllegalAccessException {
+    Collection getFieldAsCollection() {
         if (fieldIsCollection()) {
-            Collection fieldAsCollection = (Collection) field.get(provider);
-            if (fieldAsCollection != null) {
-                return fieldAsCollection;
+            Collection fieldAsCollection;
+            try {
+                fieldAsCollection = (Collection) field.get(provider);
+                if (fieldAsCollection != null) {
+                    return fieldAsCollection;
+                }
+            } catch (IllegalArgumentException e) {
+            } catch (IllegalAccessException e) {
             }
         }
 
