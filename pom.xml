@@ -113,6 +113,11 @@
        <exclude>no/steria/osgi/jsr330activator/testbundle1/**/*.class</exclude>
        <exclude>no/steria/osgi/jsr330activator/testbundle2/**/*.class</exclude>
        <exclude>no/steria/osgi/jsr330activator/testbundle3/**/*.class</exclude>
+       <exclude>no/steria/osgi/jsr330activator/testbundle4/**/*.class</exclude>
+       <exclude>no/steria/osgi/jsr330activator/testbundle5/**/*.class</exclude>
+       <exclude>no/steria/osgi/jsr330activator/testbundle6/**/*.class</exclude>
+       <exclude>no/steria/osgi/jsr330activator/testbundle7/**/*.class</exclude>
+       <exclude>no/steria/osgi/jsr330activator/testbundle8/**/*.class</exclude>
       </excludes>
      </instrumentation>
      <aggregate>true</aggregate>
