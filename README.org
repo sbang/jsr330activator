@@ -139,6 +139,9 @@ This is a Java project built by maven.  The maven projects, are:
    - A maven project containing Pax Exam integration tests that starts up OSGi containers to test the activator on actual OSGi bundles
  - jsr330activator.gogoshell
    - A project that doesn't participate in the automated build and testing, but is used to start a "gogo shell" with jsr330activator.testbundle1, jsr330activator.testbundle2 and jsr330activator.testbundle3 to be able to examine whether the bundles start up and shut down properly and what services they expose etc.
+* Version history
+ - 1.0.1 First successful release
+ - 1.0.0 Failed deployment to OSSRH (aka. "maven central")
 * Development stuff
 Some development-related links:
  - [[https://github.com/sbang/jsr330activator][Source code on github]]
