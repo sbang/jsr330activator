@@ -135,6 +135,27 @@ This is a Java project built by maven.  The maven projects, are:
        - Provider<HelloService3c> depends on both HelloService from jsr330activator.testbundle1 and HelloService2 from jsr330activator.testbundle2
      - The providers in this bundle all also implement the interface they are providing and return "this" from the get() method
    - Embeds the Jsr330Activator, and uses the embedded Jsr330Activator to find the Provider<HelloService> implementation and uses the implementation to register the service
+ - jsr330activator.testbundle8
+   - A maven-bundle-plugin project producing an OSGi bundle used in integration tests
+   - Exports a package containing the interface StorageService
+   - The bundle has no activator
+ - jsr330activator.testbundle4
+   - A maven-bundle-plugin project producing an OSGi bundle used in integration tests
+   - The bundle exports no packages
+   - The bundle has a Provider<StorageService> that implements a mock file storage
+ - jsr330activator.testbundle5
+   - A maven-bundle-plugin project producing an OSGi bundle used in integration tests
+   - The bundle exports no packages
+   - The bundle has a Provider<StorageService> that implements a mock database storage
+ - jsr330activator.testbundle6
+   - A maven-bundle-plugin project producing an OSGi bundle used in integration tests
+   - The bundle exports no packages
+   - The bundle has a Provider<StorageService> that implements a dummy storage service (save does nothing, load always returns null)
+ - jsr330activator.testbundle7
+   - A maven-bundle-plugin project producing an OSGi bundle used in integration tests
+   - The bundle exports a package containing the services CollectionInjectionCatcher and NamedServiceInjectionCatcher that are injected into an integration test
+   - The bundle has a Provider for CollectionInjectionCatcher that has a Collection<StorageService> field annotated by @Inject and will be activated by at least one instance of StorageService
+   - The bundle has a provider for NamedServiceInjectionCatcher that at the point of writing has no injections
  - jsr330activator.tests
    - A maven project containing Pax Exam integration tests that starts up OSGi containers to test the activator on actual OSGi bundles
  - jsr330activator.gogoshell
