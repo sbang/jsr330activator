@@ -1,5 +1,7 @@
 package no.steria.osgi.jsr330activator.testbundle7.implementation;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -48,9 +50,18 @@ public class CollectionInjectionCatcherProvider implements Provider<CollectionIn
     }
 
     private String getNamedAnnotationValue(StorageService storageService) {
-        Named named = storageService.getClass().getAnnotation(Named.class);
-        if (named != null) {
-            return named.value();
+    	Annotation[] annotations = storageService.getClass().getAnnotations();
+    	for (Annotation annotation : annotations) {
+            Class<?>[] interfaces = annotation.getClass().getInterfaces();
+            for (Class<?> annotationInterface : interfaces) {
+                if (Named.class.getCanonicalName().equals(annotationInterface.getCanonicalName())) {
+                    try {
+                        Method valueMethod = annotationInterface.getMethod("value", new Class<?>[0]);
+                        String namedValue = (String) valueMethod.invoke(annotation, new Object[0]);
+                        return namedValue;
+                    } catch (Exception e) { }
+                }
+            }
         }
 
         return null;
