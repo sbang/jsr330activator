@@ -99,11 +99,51 @@ Both the Jsr330Activator and javax.bundle can be provided as OSGi dependencies i
 
 The config of the maven-bundle-plugin in =jsr330activator.testbundle1/pom.xml= doesn't contain an =Embed-Dependency= setting, and the =Embed-Dependency= setting in =jsr330activator.testbundle2/pom.xml= only mentions the artifactId of the dependency that is to be embedded.
 
-** License
+** To embed or not to embed
+
+I haven't been able to think of a use case for not embedding the Jsr330Activator itself.  The Jsr330Activator's reason for existence, is to create self-contained service-providinng and service-listening bundles, that don't require anything from the run-time other than basic OSGi support.
+
+There is a use-case for not embedding javax.inject, and that is if one wish to access the @Named annotation of an injected service.  If the javax.inject package is provided through OSGi, then one can access the name this way:
+#+BEGIN_SRC java
+  private String getNamedAnnotationValue(StorageService storageService) {
+      Named named = storageService.getClass().getAnnotation(Named.class);
+      if (named != null) {
+          return named.value();
+      }
+
+      return null;
+  }
+#+END_SRC
+
+If javax.inject has been embedded in either the service-providing bundles or the service receiving bundles, or both, the @Named annotation has to be accessed using reflection on a dynamic proxy (that itself uses reflection):
+#+BEGIN_SRC java
+  private String getNamedAnnotationValue(StorageService storageService) {
+      Annotation[] annotations = storageService.getClass().getAnnotations();
+      for (Annotation annotation : annotations) {
+          Class<?>[] interfaces = annotation.getClass().getInterfaces();
+          for (Class<?> annotationInterface : interfaces) {
+              if (Named.class.getCanonicalName().equals(annotationInterface.getCanonicalName())) {
+                  try {
+                      Method valueMethod = annotationInterface.getMethod("value", new Class<?>[0]);
+                      String namedValue = (String) valueMethod.invoke(annotation, new Object[0]);
+                      return namedValue;
+                  } catch (Exception e) { }
+              }
+          }
+      }
+
+      return null;
+  }
+#+END_SRC
+
+** Why is the Jsr330Activator a bundle if it's meant to be embedded
+
+Since this is an OSGi project it seemed wrong /not/ to make the Jsr330Activator a bundle.
+* License
 
 The Jsr330Activator is under the Eclipse public license v. 1.0.  See the LICENSE file for the full license text.
 
-** Description of the project
+* Description of the project
 
 This is a Java project built by maven.  The maven projects, are:
  - jsr330activator
