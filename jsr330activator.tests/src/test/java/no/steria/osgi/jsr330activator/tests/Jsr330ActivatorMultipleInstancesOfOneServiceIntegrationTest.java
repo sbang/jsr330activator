@@ -59,6 +59,8 @@ public class Jsr330ActivatorMultipleInstancesOfOneServiceIntegrationTest extends
      * Validate that a service depending on a collection injection has
      * been started.  Verify that the expected number of services has
      * been injected.
+     *
+     * Get and use one of the services.
      */
     @Test
     public void testCollectionInjectionCatcherServiceFoundAndActivated() {
@@ -75,10 +77,18 @@ public class Jsr330ActivatorMultipleInstancesOfOneServiceIntegrationTest extends
     /**
      * Validate that a service depending on named injections of
      * multiple implementations of a service have been started.
+     *
+     * Get and use one of the services.
      */
     @Test
     public void testOptionalInjectionCatcherServiceFoundAndActivated() {
-        assertNull(namedServiceInjectionCatcher.getMessage());
+    	Collection<String> serviceNames = namedServiceInjectionCatcher.getInjectedStorageServiceNames();
+    	assertEquals(3, serviceNames.size());
+    	UUID id = UUID.randomUUID();
+    	String data = "Hi there!";
+    	StorageService fileStorage = namedServiceInjectionCatcher.getStorageService("file");
+    	boolean result = fileStorage.save(id, data);
+    	assertTrue(result);
     }
 
 }
