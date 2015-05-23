@@ -11,11 +11,11 @@ import no.steria.osgi.jsr330activator.testbundle.HelloService;
  * @author Steinar Bang
  *
  */
-@Named("hello1")
-public class HelloServiceProviderNamedHello1 implements Provider<HelloService>, HelloService {
+@Named("hello2")
+public class HelloServiceProviderNamedHello2 implements Provider<HelloService>, HelloService {
 
     public String getMessage() {
-        return "Hello1 says hi!";
+        return "Hello2 says hi!";
     }
 
     public HelloService get() {
