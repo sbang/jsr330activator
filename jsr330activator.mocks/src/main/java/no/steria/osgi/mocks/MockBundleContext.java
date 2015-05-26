@@ -59,7 +59,7 @@ public class MockBundleContext extends MockBundleContextBase {
 
     @Override
     public ServiceRegistration<?> registerService(String clazz, Object service, Dictionary<String, ?> properties) {
-        MockServiceReference<Object> serviceReference = new MockServiceReference<Object>(getBundle());
+        MockServiceReference<Object> serviceReference = new MockServiceReference<Object>(getBundle(), properties);
         if (serviceRegistrations.get(clazz) == null) { serviceRegistrations.put(clazz, new ArrayList<ServiceReference<?>>()); }
         serviceRegistrations.get(clazz).add(serviceReference);
         serviceImplementations.put(serviceReference, service);
@@ -137,6 +137,21 @@ public class MockBundleContext extends MockBundleContextBase {
 
     private void notifyListenersAboutNewService(String clazz, MockServiceReference<Object> serviceReference) {
         String filter = "(" + Constants.OBJECTCLASS+ "=" + clazz + ")";
+        // To make a proper mock of the notification all possible
+        // permutations of the property keys should be tried as
+        // a filter, but for the current testing there is only
+        // the single key "id" so running through the keys one
+        // by one should suffice
+        for (String servicePropertyKey : serviceReference.getPropertyKeys()) {
+            String filterWithProperty = filter + "(" + servicePropertyKey + "=" + serviceReference.getProperty(servicePropertyKey) + ")";
+            notifyFilteredListenersAboutNewService(serviceReference, filterWithProperty);
+        }
+
+        // Also notify any undecorated listeners
+        notifyFilteredListenersAboutNewService(serviceReference, filter);
+    }
+
+    private void notifyFilteredListenersAboutNewService(MockServiceReference<Object> serviceReference, String filter) {
         List<ServiceListener> filteredServiceListenerList = filteredServiceListeners.get(filter);
         if (null != filteredServiceListenerList) {
             ServiceEvent newServiceEvent = new ServiceEvent(ServiceEvent.REGISTERED, serviceReference);
@@ -148,6 +163,21 @@ public class MockBundleContext extends MockBundleContextBase {
 
     private void notifyListenersAboutRemovedService(String clazz, ServiceReference<?> serviceReference) {
         String filter = "(" + Constants.OBJECTCLASS+ "=" + clazz + ")";
+        // To make a proper mock of the notification all possible
+        // permutations of the property keys should be tried as
+        // a filter, but for the current testing there is only
+        // the single key "id" so running through the keys one
+        // by one should suffice
+        for (String servicePropertyKey : serviceReference.getPropertyKeys()) {
+            String filterWithProperty = filter + "(" + servicePropertyKey + "=" + serviceReference.getProperty(servicePropertyKey) + ")";
+            notifyFilteredListenersAboutRemovedService(serviceReference, filterWithProperty);
+        }
+
+        // Also notify any undecorated listeners
+        notifyFilteredListenersAboutRemovedService(serviceReference, filter);
+    }
+
+    private void notifyFilteredListenersAboutRemovedService(ServiceReference<?> serviceReference, String filter) {
         List<ServiceListener> filteredServiceListenerList = filteredServiceListeners.get(filter);
         if (null != filteredServiceListenerList) {
             ServiceEvent newServiceEvent = new ServiceEvent(ServiceEvent.UNREGISTERING, serviceReference);
