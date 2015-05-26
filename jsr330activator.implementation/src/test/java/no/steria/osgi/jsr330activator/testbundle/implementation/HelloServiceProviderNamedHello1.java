@@ -19,7 +19,7 @@ public class HelloServiceProviderNamedHello1 implements Provider<HelloService>, 
     }
 
     public HelloService get() {
-        return new HelloServiceImplementation();
+        return this;
     }
 
 }
