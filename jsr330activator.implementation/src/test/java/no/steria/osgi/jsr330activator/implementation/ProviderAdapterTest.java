@@ -12,13 +12,17 @@ import no.steria.osgi.jsr330activator.testbundle.AddInjectionsService;
 import no.steria.osgi.jsr330activator.testbundle.CollectionCatcherService;
 import no.steria.osgi.jsr330activator.testbundle.HelloService;
 import no.steria.osgi.jsr330activator.testbundle.HelloService2;
+import no.steria.osgi.jsr330activator.testbundle.NamedInjectionCatcherService;
 import no.steria.osgi.jsr330activator.testbundle.StorageService;
 import no.steria.osgi.jsr330activator.testbundle.implementation.AddInjectionsServiceProvider;
 import no.steria.osgi.jsr330activator.testbundle.implementation.CollectionCatcherServiceProvider;
 import no.steria.osgi.jsr330activator.testbundle.implementation.DummyStorageServiceProvider;
 import no.steria.osgi.jsr330activator.testbundle.implementation.HelloService2Provider;
 import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceProvider;
+import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceProviderNamedHello1;
+import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceProviderNamedHello2;
 import no.steria.osgi.jsr330activator.testbundle.implementation.MemoryStorageServiceProvider;
+import no.steria.osgi.jsr330activator.testbundle.implementation.NamedInjectionCatcherServiceProvider;
 import no.steria.osgi.mocks.MockBundleContext;
 
 import org.junit.Before;
@@ -173,6 +177,87 @@ public class ProviderAdapterTest {
 
     	// The injection dependency is satisfied, the service should now be available
     	assertNotNull(providerAdapter.getServiceRegistration());
+    }
+
+    /**
+     * Unit test for {@link ProviderAdapter#setupInjectionListeners(org.osgi.framework.BundleContext)},
+     * setting up a listener for a named injection, and receiving a named injection.
+     */
+    @Test
+    public void testSetupInjectionListenersWaitForNamedInjections() {
+        MockBundleContext bundleContext = new MockBundleContext();
+
+        ProviderAdapter providerAdapter = new ProviderAdapter(NamedInjectionCatcherService.class, NamedInjectionCatcherServiceProvider.class);
+
+        // Verify that the service isn't available before the listeners are set up
+        assertNull(providerAdapter.getServiceRegistration());
+
+        // Register the listeners
+        providerAdapter.setupInjectionListeners(bundleContext);
+
+        // Service should still not be available because the injections are not available yet
+        assertNull(providerAdapter.getServiceRegistration());
+
+        // Register an un-named service of the type required by
+        // the named injections
+        ProviderAdapter unnamedHelloServiceProviderAdapter = new ProviderAdapter(HelloService.class, HelloServiceProvider.class);
+        unnamedHelloServiceProviderAdapter.start(bundleContext);
+
+        // The injection dependency is not satisfied, since the started
+        // HelloService doesn't have a @Named annotation matching and
+        // therefore not matching one of the two @Named @Injections of
+        // HelloService
+        assertNull(providerAdapter.getServiceRegistration());
+
+        // Register the HelloService named "hello2"
+        // (one of the two required injections)
+        ProviderAdapter helloServiceNamedHello2ProviderAdapter = new ProviderAdapter(HelloService.class, HelloServiceProviderNamedHello2.class);
+        helloServiceNamedHello2ProviderAdapter.start(bundleContext);
+
+        // The injection dependency is still not satisfied, since only
+        // one of the two required HelloService injections have
+        // been satisfied.
+        assertNull(providerAdapter.getServiceRegistration());
+
+        // Register the HelloService named "hello1"
+        // (the last of the two required injections)
+        ProviderAdapter helloServiceNamedHello1ProviderAdapter = new ProviderAdapter(HelloService.class, HelloServiceProviderNamedHello1.class);
+        helloServiceNamedHello1ProviderAdapter.start(bundleContext);
+
+        // The injection dependency is now satisfied, and the service
+        // requiring two named injections is now available
+        ServiceRegistration<?> namedInjectionCatcherRegistration = providerAdapter.getServiceRegistration();
+        assertNotNull(namedInjectionCatcherRegistration);
+        NamedInjectionCatcherService namedInjectionCatcher = (NamedInjectionCatcherService) bundleContext.getService(namedInjectionCatcherRegistration.getReference());
+        assertEquals("Hello1 says hi!", namedInjectionCatcher.getHello1().getMessage());
+        assertEquals("Hello2 says hi!", namedInjectionCatcher.getHello2().getMessage());
+    }
+
+    /**
+     * Corner case unit test for {@link ProviderAdapter#setupInjectionListeners(org.osgi.framework.BundleContext)}.
+     * Verify that an un-named injection point can receive a service from a named provider.
+     */
+    @Test
+    public void testSetupInjectionListenersWaitForInjectionsGetNamedHelloService() {
+        MockBundleContext bundleContext = new MockBundleContext();
+
+        ProviderAdapter providerAdapter = new ProviderAdapter(HelloService2.class, HelloService2Provider.class);
+
+        // Verify that the service isn't available before the listeners are set up
+        assertNull(providerAdapter.getServiceRegistration());
+
+        // Register the listeners
+        providerAdapter.setupInjectionListeners(bundleContext);
+
+        // Service should still not be available because the injections are not available yet
+        assertNull(providerAdapter.getServiceRegistration());
+
+        // Register a named provider for the service that is to be injected
+        ProviderAdapter injectedDependencyProviderAdapter = new ProviderAdapter(HelloService.class, HelloServiceProviderNamedHello1.class);
+        injectedDependencyProviderAdapter.start(bundleContext);
+
+        // The injection dependency is satisfied, the service should now be available
+        assertNotNull(providerAdapter.getServiceRegistration());
     }
 
     /**
