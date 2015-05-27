@@ -2,6 +2,8 @@ package no.steria.osgi.jsr330activator.implementation;
 
 import java.lang.reflect.Method;
 
+import javax.inject.Named;
+
 /**
  * Implementation of {@link Injection} that injects using a method.
  *
@@ -22,6 +24,15 @@ class InjectionMethod extends InjectionBase {
 
     public Class<?> getInjectedServiceType() {
         return method.getParameterTypes()[0];
+    }
+
+    public String getNamedValue() {
+    	Named namedAnnotation = method.getAnnotation(Named.class);
+    	if (namedAnnotation != null) {
+            return namedAnnotation.value();
+    	}
+
+    	return null;
     }
 
     public boolean isInjected() {

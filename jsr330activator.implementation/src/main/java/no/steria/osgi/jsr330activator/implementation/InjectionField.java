@@ -10,6 +10,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.inject.Named;
+
 /**
  * An {@link Injection} implementation that operates on
  * a provider field.  The field may be declared as private.
@@ -43,6 +45,15 @@ class InjectionField extends InjectionBase {
     	}
 
         return field.getType();
+    }
+
+    public String getNamedValue() {
+    	Named namedAnnotation = field.getAnnotation(Named.class);
+    	if (namedAnnotation != null) {
+            return namedAnnotation.value();
+    	}
+
+    	return null;
     }
 
     @SuppressWarnings("rawtypes")

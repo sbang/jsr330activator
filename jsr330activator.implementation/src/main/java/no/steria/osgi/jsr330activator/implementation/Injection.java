@@ -1,5 +1,7 @@
 package no.steria.osgi.jsr330activator.implementation;
 
+import javax.inject.Named;
+
 import org.osgi.framework.BundleContext;
 
 /**
@@ -19,6 +21,13 @@ interface Injection {
      * @return a class object defining the injected service.
      */
     Class<?> getInjectedServiceType();
+
+    /**
+     * Get the value of the {@link Named} annotation on the injection member.
+     *
+     * @return the {@link Named#value()} or null if the member has no Named annotation
+     */
+    String getNamedValue();
 
     /**
      * Used to determine if the injection point is currently in an
