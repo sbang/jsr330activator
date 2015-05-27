@@ -226,6 +226,7 @@ To use the shell for debugging, do the following:
       cd jsr330activator.gogoshell
       mvn install pax:provision
     #+END_EXAMPLE
+    This will also start the "Felix Webconsole" on http://localhost:8080/system/console (username/password: admin/admin) where the bundles can be thoroughly explored
  2. During startup, look specifically for error messages with stack traces, and if they involve some of the bundles listed as dependencies in the =provision/pom.xml= file, they should be studied carefully: look for missing bundle dependencies, and look for missing services (often indicating that the bundle activator hasn't been successfully started)
  3. After startup give the command:
     : bundles
