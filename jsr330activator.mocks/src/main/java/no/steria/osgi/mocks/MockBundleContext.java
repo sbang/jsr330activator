@@ -143,7 +143,7 @@ public class MockBundleContext extends MockBundleContextBase {
         // the single key "id" so running through the keys one
         // by one should suffice
         for (String servicePropertyKey : serviceReference.getPropertyKeys()) {
-            String filterWithProperty = filter + "(" + servicePropertyKey + "=" + serviceReference.getProperty(servicePropertyKey) + ")";
+            String filterWithProperty = "(&" + filter + "(" + servicePropertyKey + "=" + serviceReference.getProperty(servicePropertyKey) + "))";
             notifyFilteredListenersAboutNewService(serviceReference, filterWithProperty);
         }
 
@@ -169,7 +169,7 @@ public class MockBundleContext extends MockBundleContextBase {
         // the single key "id" so running through the keys one
         // by one should suffice
         for (String servicePropertyKey : serviceReference.getPropertyKeys()) {
-            String filterWithProperty = filter + "(" + servicePropertyKey + "=" + serviceReference.getProperty(servicePropertyKey) + ")";
+            String filterWithProperty = "(&" + filter + "(" + servicePropertyKey + "=" + serviceReference.getProperty(servicePropertyKey) + "))";
             notifyFilteredListenersAboutRemovedService(serviceReference, filterWithProperty);
         }
 
