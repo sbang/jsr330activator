@@ -45,6 +45,11 @@ abstract class InjectionBase implements Injection {
             };
 
         String filter = "(" + Constants.OBJECTCLASS + "=" + getInjectedServiceType().getName() + ")";
+        String namedAnnotationValue = getNamedValue();
+        if (namedAnnotationValue != null) {
+            filter = filter + "(id=" + namedAnnotationValue + ")";
+        }
+
         try {
             bundleContext.addServiceListener(serviceListener, filter);
             fakeRegisteredServiceEventForExistingServices(bundleContext, serviceListener, filter);
