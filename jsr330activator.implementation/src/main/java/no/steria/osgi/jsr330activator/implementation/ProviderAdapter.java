@@ -4,9 +4,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -114,11 +117,18 @@ public class ProviderAdapter {
     void registerService(BundleContext bundleContext) {
         try {
             Method getMethod = provider.getClass().getMethod("get", emptyArgumentTypes);
+            Named named = provider.getClass().getAnnotation(Named.class);
+            String name = (named!=null) ? named.value() : null;
             Object serviceImpl = getMethod.invoke(provider);
             if (providedServiceType instanceof Class) {
                 Class<?> service = (Class<?>)providedServiceType;
                 String serviceName = service.getCanonicalName();
-                serviceRegistration = bundleContext.registerService(serviceName, serviceImpl, null);
+                Dictionary<String, String> properties = (name!=null) ? new Hashtable<String, String>() : null;
+                if (properties != null) {
+                    properties.put("id", name); // Use "id" as the service property: compatibility with apache aries blueprint blueprint-maven-plugin
+                }
+
+                serviceRegistration = bundleContext.registerService(serviceName, serviceImpl, properties);
             }
         } catch (Exception e) {
         }
