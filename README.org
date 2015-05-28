@@ -261,3 +261,13 @@ The behaviour is like this:
  - For the purposes of service activation, the field is seen as injected as long as it has at least one item
   - This means that an optional injection could be faked by inserting a dummy service into a collection injection
 
+There is now an implementation of @Named injections on the branch add-named-inject-support.
+
+Since the primary use case is to embed this bundle activator, it's important to keep it as small as possible.  And one of the ways of keeping it small is to not pull in features that aren't strictly necessary.
+
+Here is a little table to show what the extra costs for the new features are, wrt. to increasing the size of the jar (testbundle1 which embeds nothing is shown for comparison).  These are sizes in bytes of the jar files, testbundle3 is the one to track through all of the changes, the implementation also gives a good indication of the code growth:
+
+|                       | implementation | testbundle1 | testbundle2 | testbundle3 | testbundle4 | testbundle5 | testbundle6 | testbundle7 |
+| 1.0.1                 |          14527 |        5886 |       19002 |       23556 |             |             |             |             |
+| collection injections |          15996 |        6101 |       20696 |       25331 |       23103 |       23193 |       22310 |       25247 |
+| named injections      |          16623 |        6102 |       21321 |       25956 |       23729 |       23818 |       22935 |       26675 |
