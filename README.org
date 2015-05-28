@@ -261,7 +261,13 @@ The behaviour is like this:
  - For the purposes of service activation, the field is seen as injected as long as it has at least one item
   - This means that an optional injection could be faked by inserting a dummy service into a collection injection
 
-There is now an implementation of @Named injections on the branch add-named-inject-support.
+There is now also an implementation of @Named injections. @Named annotations on @Inject members means that only those service Provider<> classes annotated with @Named with the same value will be matched.  Services from @Named Providers<> can be injected into @Inject members that has no @Named annotations.
+
+There are no clear semantics of what happens when a collection @Inject point gets a @Named annotation.
+
+The property name "id" has been picked for the service property holding the @Named.value().  This is the property name used by the [[http://aries.apache.org/modules/blueprint-maven-plugin.html][blueprint-maven-plugin]] for the same annotation, and if we're lucky they might be compatible.
+
+There is currently no @Optional support on named (and unnamed) injection points.
 
 Since the primary use case is to embed this bundle activator, it's important to keep it as small as possible.  And one of the ways of keeping it small is to not pull in features that aren't strictly necessary.
 
