@@ -4,7 +4,13 @@ import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import no.steria.osgi.jsr330activator.Optional;
+import no.steria.osgi.jsr330activator.testbundle.HelloService;
 import no.steria.osgi.jsr330activator.testbundle.implementation.AddInjectionsServiceProvider;
+
 import org.junit.Before;
 import org.junit.Test;
 
@@ -117,6 +123,47 @@ public class InjectionMethodTest {
         // Retract the service and verify that it's gone
         injectionMethod.doRetract(stringService);
         assertFalse(injectionMethod.isInjected());
+    }
+
+    // Methods used for "isOptional" tests
+
+    @Inject
+    @Named("named")
+    void setNonOptionalNamed(HelloService service) { }
+
+    @Inject
+    @Optional
+    @Named("optionalnamed")
+    void setOptionalNamed(HelloService service) { }
+
+    @Inject
+    @Optional
+    void setOptionalUnnamed(HelloService service) { }
+
+    /**
+     * Unit tests for {@link InjectionMethod#isOptional()}.
+     *
+     * @throws NoSuchMethodException
+     * @throws SecurityException
+     */
+    @Test
+    public void testIsOptional() throws NoSuchMethodException, SecurityException {
+        Method injectionPoint = addInjectionsServiceProvider.getClass().getDeclaredMethod("setStringValue", String.class);
+        Method nonOptionalNamedInject = getClass().getDeclaredMethod("setNonOptionalNamed", HelloService.class);
+        Method optionalNamedInject = getClass().getDeclaredMethod("setOptionalNamed", HelloService.class);
+        Method optionalUnnamedInject = getClass().getDeclaredMethod("setOptionalUnnamed", HelloService.class);
+
+        Injection injectionMethod = new InjectionMethod(addInjectionsServiceProvider, injectionPoint);
+        assertFalse(injectionMethod.isOptional());
+
+        Injection nonOptionalNamedInjection = new InjectionMethod(this, nonOptionalNamedInject);
+        assertFalse(nonOptionalNamedInjection.isOptional());
+
+        Injection optionalNamedInjection = new InjectionMethod(this, optionalNamedInject);
+        assertTrue(optionalNamedInjection.isOptional());
+
+        Injection optionalUnnamedInjection = new InjectionMethod(this, optionalUnnamedInject);
+        assertTrue(optionalUnnamedInjection.isOptional());
     }
 
 }

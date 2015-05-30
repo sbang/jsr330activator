@@ -30,6 +30,13 @@ interface Injection {
     String getNamedValue();
 
     /**
+     * Determine if an Injection is optional.
+     *
+     * @return true if the injection is optional, false if it isn't optional.
+     */
+    boolean isOptional();
+
+    /**
      * Used to determine if the injection point is currently in an
      * injected state.
      *

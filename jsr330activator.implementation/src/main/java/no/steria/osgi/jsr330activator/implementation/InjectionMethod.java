@@ -4,6 +4,8 @@ import java.lang.reflect.Method;
 
 import javax.inject.Named;
 
+import no.steria.osgi.jsr330activator.Optional;
+
 /**
  * Implementation of {@link Injection} that injects using a method.
  *
@@ -33,6 +35,15 @@ class InjectionMethod extends InjectionBase {
     	}
 
     	return null;
+    }
+
+    public boolean isOptional() {
+    	Optional optionalAnnotation = method.getAnnotation(Optional.class);
+    	if (optionalAnnotation != null) {
+            return true;
+    	}
+
+    	return false;
     }
 
     public boolean isInjected() {

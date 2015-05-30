@@ -12,6 +12,8 @@ import java.util.Set;
 
 import javax.inject.Named;
 
+import no.steria.osgi.jsr330activator.Optional;
+
 /**
  * An {@link Injection} implementation that operates on
  * a provider field.  The field may be declared as private.
@@ -54,6 +56,15 @@ class InjectionField extends InjectionBase {
     	}
 
     	return null;
+    }
+
+    public boolean isOptional() {
+    	Optional optionalAnnotation = field.getAnnotation(Optional.class);
+    	if (optionalAnnotation != null) {
+            return true;
+    	}
+
+    	return false;
     }
 
     @SuppressWarnings("rawtypes")

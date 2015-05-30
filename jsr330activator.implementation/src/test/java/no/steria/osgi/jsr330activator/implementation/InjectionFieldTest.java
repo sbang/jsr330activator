@@ -11,6 +11,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeSet;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import no.steria.osgi.jsr330activator.Optional;
 import no.steria.osgi.jsr330activator.testbundle.HelloService;
 import no.steria.osgi.jsr330activator.testbundle.StorageService;
 import no.steria.osgi.jsr330activator.testbundle.implementation.CollectionCatcherServiceProvider;
@@ -38,6 +42,28 @@ public class InjectionFieldTest {
 
     private HelloServiceProvider helloServiceProvider;
     private HelloService2Provider helloService2Provider;
+
+    // Fields used for "isOptional" tests
+
+    @Inject
+    List<HelloService> nonOptionalCollection;
+
+    @Inject
+    @Optional
+    List<HelloService> optionalCollection;
+
+    @Inject
+    @Named("named")
+    HelloService nonOptionalNamed;
+
+    @Inject
+    @Named("namedoptional")
+    @Optional
+    HelloService optionalNamed;
+
+    @Inject
+    @Optional
+    HelloService optionalUnnamed;
 
     @Before
     public void setUp() throws Exception {
@@ -463,6 +489,40 @@ public class InjectionFieldTest {
         // Remove the other storage service, field should no longer be injected
         injectionField.doRetract(memoryStorageServiceProvider.get());
         assertFalse(injectionField.isInjected());
+    }
+
+    /**
+     * Unit tests for {@link InjectionField#isOptional()}.
+     *
+     * @throws NoSuchFieldException
+     * @throws SecurityException
+     */
+    @Test
+    public void testIsOptional() throws NoSuchFieldException, SecurityException {
+        Field injectionPoint = helloService2Provider.getClass().getDeclaredField("helloService");
+        Field nonOptionalCollectionInject = getClass().getDeclaredField("nonOptionalCollection");
+        Field optionalCollectionInject = getClass().getDeclaredField("optionalCollection");
+        Field nonOptionalNamedInject = getClass().getDeclaredField("nonOptionalNamed");
+        Field optionalNamedInject = getClass().getDeclaredField("optionalNamed");
+        Field optionalUnnamedInject = getClass().getDeclaredField("optionalUnnamed");
+
+        Injection injectionField = new InjectionField(helloService2Provider, injectionPoint);
+        assertFalse(injectionField.isOptional());
+
+        Injection nonOptionalCollectionInjection = new InjectionField(this, nonOptionalCollectionInject);
+        assertFalse(nonOptionalCollectionInjection.isOptional());
+
+        Injection optionalCollectionInjection = new InjectionField(this, optionalCollectionInject);
+        assertTrue(optionalCollectionInjection.isOptional());
+
+        Injection nonOptionalNamedInjection = new InjectionField(this, nonOptionalNamedInject);
+        assertFalse(nonOptionalNamedInjection.isOptional());
+
+        Injection optionalNamedInjection = new InjectionField(this, optionalNamedInject);
+        assertTrue(optionalNamedInjection.isOptional());
+
+        Injection optionalUnnamedInjection = new InjectionField(this, optionalUnnamedInject);
+        assertTrue(optionalUnnamedInjection.isOptional());
     }
 
 }
