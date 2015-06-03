@@ -26,9 +26,18 @@ import org.osgi.framework.ServiceRegistration;
 public class MockBundleContext extends MockBundleContextBase {
     @Override
     public ServiceReference<?>[] getServiceReferences(String clazz, String filter) throws InvalidSyntaxException {
-        // Note: neither the clazz nor the filter argument is handled in any way
+        // Note: the clazz argument is not handled in any way
     	// If this is needed to make tests run as expected it must be implemented
-    	// For now, just return all of the references in the mock.
+    	if (filter != null) {
+            Collection<ServiceReference<?>> serviceReferences = filteredServiceRegistrations.get(filter);
+            if (serviceReferences != null) {
+            	return serviceReferences.toArray(new ServiceReference<?>[serviceReferences.size()]);
+            }
+
+            return new ServiceReference<?>[0];
+    	}
+
+    	// No filter, just return all of the references in the mock.
     	List<ServiceReference<?>> serviceReferences = new ArrayList<ServiceReference<?>>();
     	for (Entry<String, Collection<ServiceReference<?>>> serviceRegistrationEntry : serviceRegistrations.entrySet()) {
             for (ServiceReference<?> serviceRegistration : serviceRegistrationEntry.getValue()) {
@@ -41,6 +50,7 @@ public class MockBundleContext extends MockBundleContextBase {
 
     MockBundle bundle;
     Map<String, Collection<ServiceReference<?>>> serviceRegistrations = new HashMap<String, Collection<ServiceReference<?>>>();
+    Map<String, Collection<ServiceReference<?>>> filteredServiceRegistrations = new HashMap<String, Collection<ServiceReference<?>>>();
     Map<ServiceReference<?>, Object> serviceImplementations = new HashMap<ServiceReference<?>, Object>();
     Map<String, List<ServiceListener>> filteredServiceListeners = new HashMap<String, List<ServiceListener>>();
 
@@ -159,6 +169,13 @@ public class MockBundleContext extends MockBundleContextBase {
                 serviceListener.serviceChanged(newServiceEvent);
             }
         }
+
+        addFilteredServiceRegistration(serviceReference, filter);
+    }
+
+    private void addFilteredServiceRegistration(MockServiceReference<Object> serviceReference, String filter) {
+        if (filteredServiceRegistrations.get(filter) == null) { filteredServiceRegistrations.put(filter, new ArrayList<ServiceReference<?>>()); }
+        filteredServiceRegistrations.get(filter).add(serviceReference);
     }
 
     private void notifyListenersAboutRemovedService(String clazz, ServiceReference<?> serviceReference) {
