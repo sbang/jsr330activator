@@ -23,6 +23,7 @@ import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceProv
 import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceProviderNamedHello2;
 import no.steria.osgi.jsr330activator.testbundle.implementation.MemoryStorageServiceProvider;
 import no.steria.osgi.jsr330activator.testbundle.implementation.NamedInjectionCatcherServiceProvider;
+import no.steria.osgi.jsr330activator.testbundle.implementation.NamedOptionalInjectionCatcherServiceProvider;
 import no.steria.osgi.mocks.MockBundleContext;
 
 import org.junit.Before;
@@ -551,6 +552,57 @@ public class ProviderAdapterTest {
 
         // Unregister the second provided instance of StorageService
         memoryStorageServiceRegistration.unregister();
+
+        // Verify that the service is no longer available because all of the injections have gone away.
+        assertNull(bundleContext.getServiceReference(CollectionCatcherService.class.getCanonicalName()));
+    }
+
+    /**
+     * Unit test for using the ProviderAdapter on a provider with two non-optional
+     * and two optional injections.
+     */
+    @Test
+    public void testAdapterOnProviderWithOptionalInjections() {
+        MockBundleContext bundleContext = new MockBundleContext();
+
+        // Register the services that are to be injected
+        ProviderAdapter hello1ProviderAdapter = new ProviderAdapter(HelloService.class, HelloServiceProviderNamedHello1.class);
+        hello1ProviderAdapter.start(bundleContext);
+        ProviderAdapter hello2ProviderAdapter = new ProviderAdapter(HelloService.class, HelloServiceProviderNamedHello2.class);
+        hello2ProviderAdapter.start(bundleContext);
+
+        // Create the adapter wrapping the provider with the collection injection
+        ProviderAdapter providerAdapter = new ProviderAdapter(NamedInjectionCatcherService.class, NamedOptionalInjectionCatcherServiceProvider.class);
+
+        // Verify that the service isn't available before the listeners are set up
+        assertNull(bundleContext.getServiceReference(NamedInjectionCatcherService.class.getCanonicalName()));
+
+        // Register the listeners (and immediately receive the injections)
+        providerAdapter.setupInjectionListeners(bundleContext);
+
+        // Service is available since the injections are both available
+        ServiceReference<?> nameInjectionCatcherServiceReference = bundleContext.getServiceReference(NamedInjectionCatcherService.class.getCanonicalName());
+        assertNotNull(nameInjectionCatcherServiceReference);
+
+        // Check that both injections are present
+        NamedInjectionCatcherService namedInjectionCatcherService = (NamedInjectionCatcherService) bundleContext.getService(nameInjectionCatcherServiceReference);
+        assertEquals("Hello1 says hi!", namedInjectionCatcherService.getHello1().getMessage());
+        assertEquals("Hello2 says hi!", namedInjectionCatcherService.getHello2().getMessage());
+
+        // Unregister the optional instance of StorageService
+        hello2ProviderAdapter.stop(bundleContext);
+
+        // Service is still available since non-optional injection is still present
+        ServiceReference<?> namedInjectionCatcherServiceReference2= bundleContext.getServiceReference(NamedInjectionCatcherService.class.getCanonicalName());
+        assertNotNull(namedInjectionCatcherServiceReference2);
+
+        // Verify that only hello1 is still available (hello2 is null since it has been retracted)
+        NamedInjectionCatcherService namedInjectionCatcherService2 = (NamedInjectionCatcherService) bundleContext.getService(namedInjectionCatcherServiceReference2);
+        assertEquals("Hello1 says hi!", namedInjectionCatcherService2.getHello1().getMessage());
+        assertNull(namedInjectionCatcherService.getHello2());
+
+        // Unregister the non-optional instance of StorageService
+        hello1ProviderAdapter.stop(bundleContext);
 
         // Verify that the service is no longer available because all of the injections have gone away.
         assertNull(bundleContext.getServiceReference(CollectionCatcherService.class.getCanonicalName()));
