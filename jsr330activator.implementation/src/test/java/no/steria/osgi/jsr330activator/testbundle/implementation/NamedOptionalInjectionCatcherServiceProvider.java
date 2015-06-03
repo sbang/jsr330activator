@@ -4,6 +4,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
 
+import no.steria.osgi.jsr330activator.Optional;
 import no.steria.osgi.jsr330activator.testbundle.HelloService;
 import no.steria.osgi.jsr330activator.testbundle.NamedInjectionCatcherService;
 
@@ -15,8 +16,7 @@ import no.steria.osgi.jsr330activator.testbundle.NamedInjectionCatcherService;
  * @author Steinar Bang
  *
  */
-@Named("hello2")
-public class NamedInjectionCatcherServiceProvider implements Provider<NamedInjectionCatcherService>, NamedInjectionCatcherService {
+public class NamedOptionalInjectionCatcherServiceProvider implements Provider<NamedInjectionCatcherService>, NamedInjectionCatcherService {
 
     @Inject
     @Named("hello1")
@@ -24,6 +24,7 @@ public class NamedInjectionCatcherServiceProvider implements Provider<NamedInjec
     private HelloService hello2;
 
     @Named("hello2")
+    @Optional
     @Inject
     public void setHello2(HelloService hello2) {
         this.hello2 = hello2;
