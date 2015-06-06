@@ -277,4 +277,4 @@ Here is a little table to show what the extra costs for the new features are, wr
 | 1.0.1                 |          14527 |        5886 |       19002 |       23556 |             |             |             |             |
 | collection injections |          15996 |        6101 |       20696 |       25331 |       23103 |       23193 |       22310 |       25247 |
 | named injections      |          16623 |        6102 |       21321 |       25956 |       23729 |       23818 |       22935 |       26675 |
-| optional injections   |          17214 |        6099 |       21912 |       26549 |       24320 |       24410 |       23527 |       27266 |
+| optional injections   |          17244 |        6101 |       21942 |       26580 |       24351 |       24441 |       23556 |       28787 |
