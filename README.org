@@ -261,9 +261,12 @@ The behaviour is like this:
  - For the purposes of service activation, the field is seen as injected as long as it has at least one item
   - This means that an optional injection could be faked by inserting a dummy service into a collection injection
 
-There is now an implementation of @Named injections on the branch add-named-inject-support.
+There is now an implementation of @Named injections in the branch add-named-inject-support.
+There is also an implementation of @Optonal on top of @Named in the branch add-optional-injection-support.
 
-Since the primary use case is to embed this bundle activator, it's important to keep it as small as possible.  And one of the ways of keeping it small is to not pull in features that aren't strictly necessary.
+I haven't decided whether to pull these into master or not.
+
+This is because the primary use case of the Jsr330Activator is to embed it, and it's therefore important to keep it as small as possible.  And one of the ways of keeping it small is to not pull in features that aren't strictly necessary.
 
 Here is a little table to show what the extra costs for the new features are, wrt. to increasing the size of the jar (testbundle1 which embeds nothing is shown for comparison).  These are sizes in bytes of the jar files, testbundle3 is the one to track through all of the changes, the implementation also gives a good indication of the code growth:
 
@@ -271,3 +274,10 @@ Here is a little table to show what the extra costs for the new features are, wr
 | 1.0.1                 |          14527 |        5886 |       19002 |       23556 |             |             |             |             |
 | collection injections |          15996 |        6101 |       20696 |       25331 |       23103 |       23193 |       22310 |       25247 |
 | named injections      |          16623 |        6102 |       21321 |       25956 |       23729 |       23818 |       22935 |       26675 |
+| optional injections   |          17244 |        6101 |       21942 |       26580 |       24351 |       24441 |       23556 |       28787 |
+
+Collection injections add around 1800 bytes to the size of the jar (1775 bytes on testbundle3, and 1249 bytes on the implementation).  @Named injections add around 625 bytes on top of this (implementation 627 bytes, testbundle3 625 bytes), and @Optional adds around 625 bytes on top of this again (implementation 621 bytes, testbundle3 624 bytes).  Total for @Named and @Optional is an additional 1250 bytes (implementation 1248 bytes, testbundle3 1249 bytes).
+
+Collection injections will go into the next release, because I need them myself.
+
+Whether @Named and @Optional will go in is more in question, especially since @Optional introduced a felix runtime dependency on the Jsr330Activator.  This is more than an annoyance than an actual problem, beause if the launcher is felix it doesn't really matter if the Jsr330Activator is pulled in or not, except for a small extra runtime cost.
