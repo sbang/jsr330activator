@@ -13,6 +13,7 @@ import javax.inject.Inject;
 
 import no.steria.osgi.jsr330activator.testbundle7.CollectionInjectionCatcher;
 import no.steria.osgi.jsr330activator.testbundle7.NamedServiceInjectionCatcher;
+import no.steria.osgi.jsr330activator.testbundle7.NamedServiceOptionalInjectionCatcher;
 import no.steria.osgi.jsr330activator.testbundle8.StorageService;
 
 import org.junit.Test;
@@ -39,6 +40,9 @@ public class Jsr330ActivatorMultipleInstancesOfOneServiceIntegrationTest extends
 
     @Inject
     private NamedServiceInjectionCatcher namedServiceInjectionCatcher;
+
+    @Inject
+    private NamedServiceOptionalInjectionCatcher namedServiceOptionalInjectionCatcher;
 
     @Configuration
     public Option[] config() {
@@ -81,7 +85,7 @@ public class Jsr330ActivatorMultipleInstancesOfOneServiceIntegrationTest extends
      * Get and use one of the services.
      */
     @Test
-    public void testOptionalInjectionCatcherServiceFoundAndActivated() {
+    public void testNamedInjectionCatcherServiceFoundAndActivated() {
     	Collection<String> serviceNames = namedServiceInjectionCatcher.getInjectedStorageServiceNames();
     	assertEquals(3, serviceNames.size());
     	UUID id = UUID.randomUUID();
@@ -89,6 +93,34 @@ public class Jsr330ActivatorMultipleInstancesOfOneServiceIntegrationTest extends
     	StorageService fileStorage = namedServiceInjectionCatcher.getStorageService("file");
     	boolean result = fileStorage.save(id, data);
     	assertTrue(result);
+    }
+
+    /**
+     * Validate that a service depending on named injections of
+     * multiple implementations of a service have been started.
+     *
+     * This service also depends on two optional injections,
+     * once of which is injected and one of which isn't injected
+     * and it starts in spite of the service that hasn't been
+     * injected.
+     *
+     * Get and use one of the services.
+     * Verify that the uninjected service is null.
+     */
+    @Test
+    public void testOptionalInjectionCatcherServiceFoundAndActivated() {
+    	Collection<String> serviceNames = namedServiceOptionalInjectionCatcher.getInjectedStorageServiceNames();
+    	assertEquals(3, serviceNames.size());
+    	UUID id = UUID.randomUUID();
+    	String data = "Hi there!";
+    	StorageService fileStorage = namedServiceOptionalInjectionCatcher.getStorageService("file");
+    	boolean result = fileStorage.save(id, data);
+    	assertTrue(result);
+
+    	// Verify that the optional injection hasn't been satisfied, but that
+    	// the provider was successfully started anyway (since the service it
+    	// provides was successfully injected into this integration test).
+    	assertNull(namedServiceOptionalInjectionCatcher.getUninjectedOptionalStorageService());
     }
 
 }
