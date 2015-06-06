@@ -33,7 +33,7 @@ Then in the test, create a MockBundleContext and give it as an argument where a 
           BundleContext = new MockBundleContext();
           MyActivator activator = new MyActivator();
 
-          // Check that the service can't be found befor activator start
+          // Check that the service can't be found before activator start
           ServiceReference<?> helloBeforeActivation = bundleContext.getServiceReference(HelloService.class.getCanonicalName());
           assertNull(helloBeforeActivation);
 
@@ -48,7 +48,7 @@ Then in the test, create a MockBundleContext and give it as an argument where a 
           HelloService helloService = (HelloService) bundleContext.getService(helloAfterActivation);
           assertEquals("Hello world!", helloService.getMessage());
 
-          // Unregister the service and verify that there will be noe service with that name
+          // Unregister the service and verify that there is no service of the type present
           activator.stop(bundleContext);
           ServiceReference<?> helloAfterDeactivation = bundleContext.getServiceReference(HelloService.class.getCanonicalName());
           assertNull(helloAfterDeactivation);
