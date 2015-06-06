@@ -267,13 +267,11 @@ There are no clear semantics of what happens when a collection @Inject point get
 
 The property name "id" has been picked for the service property holding the @Named.value().  This is the property name used by the [[http://aries.apache.org/modules/blueprint-maven-plugin.html][blueprint-maven-plugin]] for the same annotation, and if we're lucky they might be compatible.
 
-There is also an implementation of @Optonal on top of @Named in the branch add-optional-injection-support.
+There is also an implementation of @Optional injections. Annotating an injection with @Optional means that the Provider<> can be started, and the service it provides registered with OSGi, before that dependency is injected.  It also means that even if that dependency is rejected the service will stay registered with OSGi.  It is the provider's job to keep track of the optional injections, which means that the optional injections should be property setters, so that the Provider can get notification when they are injected tand retracted.
 
-I haven't decided whether to pull the @Optional branch into master or not.
+The primary use case of the Jsr330Activator is to embed it, and it's therefore important to keep it as small as possible.  And one of the ways of keeping it small is to not pull in features that aren't strictly necessary.
 
-This is because the primary use case of the Jsr330Activator is to embed it, and it's therefore important to keep it as small as possible.  And one of the ways of keeping it small is to not pull in features that aren't strictly necessary.
-
-Here is a little table to show what the extra costs for the new features are, wrt. to increasing the size of the jar (testbundle1 which embeds nothing is shown for comparison).  These are sizes in bytes of the jar files, testbundle3 is the one to track through all of the changes, the implementation also gives a good indication of the code growth:
+So here is a little table to show what the extra costs for the new features are, wrt. to increasing the size of the jar (testbundle1 which embeds nothing is shown for comparison).  These are sizes in bytes of the jar files, testbundle3 is the one to track through all of the changes, the implementation also gives a good indication of the code growth:
 
 |                       | implementation | testbundle1 | testbundle2 | testbundle3 | testbundle4 | testbundle5 | testbundle6 | testbundle7 |
 | 1.0.1                 |          14527 |        5886 |       19002 |       23556 |             |             |             |             |
@@ -282,8 +280,4 @@ Here is a little table to show what the extra costs for the new features are, wr
 | optional injections   |          17244 |        6101 |       21942 |       26580 |       24351 |       24441 |       23556 |       28787 |
 
 Collection injections add around 1800 bytes to the size of the jar (1775 bytes on testbundle3, and 1249 bytes on the implementation).  @Named injections add around 625 bytes on top of this (implementation 627 bytes, testbundle3 625 bytes), and @Optional adds around 625 bytes on top of this again (implementation 621 bytes, testbundle3 624 bytes).  Total for @Named and @Optional is an additional 1250 bytes (implementation 1248 bytes, testbundle3 1249 bytes).
-
-The @Named injections will go into the next release.
-
-Whether @Optional will go in is more in question, especially since @Optional introduced a felix runtime dependency on the Jsr330Activator.  This is more than an annoyance than an actual problem, beause if the launcher is felix it doesn't really matter if the Jsr330Activator is pulled in or not, except for a small extra runtime cost. But it is still an annoyance...
 
