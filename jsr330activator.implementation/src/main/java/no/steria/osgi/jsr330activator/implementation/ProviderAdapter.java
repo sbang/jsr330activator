@@ -158,7 +158,7 @@ public class ProviderAdapter {
     private boolean allInjectionsHaveBeenInjected() {
         boolean isInjected = true;
         for (Injection injection : injections) {
-            isInjected = isInjected & injection.isInjected();
+            isInjected = isInjected && (injection.isInjected() || injection.isOptional());
         }
 
         return isInjected;
