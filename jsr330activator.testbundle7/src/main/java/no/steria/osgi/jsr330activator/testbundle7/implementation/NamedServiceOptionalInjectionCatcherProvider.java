@@ -7,10 +7,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
 
-import no.steria.osgi.jsr330activator.testbundle7.NamedServiceInjectionCatcher;
+import no.steria.osgi.jsr330activator.Optional;
+import no.steria.osgi.jsr330activator.testbundle7.NamedServiceOptionalInjectionCatcher;
 import no.steria.osgi.jsr330activator.testbundle8.StorageService;
 
-public class NamedServiceInjectionCatcherProvider implements Provider<NamedServiceInjectionCatcher>, NamedServiceInjectionCatcher {
+@Named("optionalcatcher")
+public class NamedServiceOptionalInjectionCatcherProvider implements Provider<NamedServiceOptionalInjectionCatcher>, NamedServiceOptionalInjectionCatcher {
     @Named("file")
     @Inject
     private StorageService fileStorageService;
@@ -18,16 +20,40 @@ public class NamedServiceInjectionCatcherProvider implements Provider<NamedServi
     private StorageService databaseStorageService;
     private StorageService dummyStorageService;
 
+    private StorageService nosuchStorageService;
+
     @Named("database")
     @Inject
     public void setDatabaseStorageService(StorageService service) {
         databaseStorageService = service;
     }
 
+    /**
+     * This is an optional injection that will be satisfied in the
+     * integration test. The purpose of annotating this injection
+     * with {@link Optional}, is to verify that the annotation
+     * doesn't affect the regular dependency injection operation.
+     *
+     * @param service an OSGi injection that will be satisfied.
+     */
     @Inject
     @Named("dummy")
+    @Optional
     public void setDummyStorageService(StorageService service) {
         dummyStorageService = service;
+    }
+
+    /**
+     * This is a service that will never be injected, but the
+     * provider should still start and register the service.
+     *
+     * @param service an argument provided for a method never called.
+     */
+    @Inject
+    @Named("nosuchstorageservice")
+    @Optional
+    public void setNosuchStorageService(StorageService service) {
+        nosuchStorageService = service;
     }
 
     public Collection<String> getInjectedStorageServiceNames() {
@@ -56,7 +82,17 @@ public class NamedServiceInjectionCatcherProvider implements Provider<NamedServi
         return null;
     }
 
-    public NamedServiceInjectionCatcher get() {
+    /**
+     * Called from the integration test to verify that the "nosuch"
+     * injection hasn't been satisfied, from a service that has
+     * been successfully injected into the test (and therefore
+     * by definition has been started).
+     */
+    public StorageService getUninjectedOptionalStorageService() {
+        return nosuchStorageService;
+    }
+
+    public NamedServiceOptionalInjectionCatcher get() {
         return this;
     }
 
