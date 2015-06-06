@@ -5,7 +5,53 @@ This is a simple mock implementation of parts of the [[http://www.osgi.org][OSGi
 * Why does it exist?
 
 The Apache Sling OSGi mocks were compiled against an older version of OSGi than what I was using, the Spring OSGi mocks didn't return a null reference for a non-existing service, and my tests required more logic in the classes than Mockito mocks could provide (basically: the tests needed a simple service registry).
-
 * Can it be used without the jsr330Activator?
 
-Yes.
+Yes.  The only dependencies it has is to OSGi core and the Java runtime.
+
+* How do I use it?
+
+Add the following dependency to your POM:
+#+BEGIN_SRC nxml
+  <project>
+   <dependencies>
+    <dependency>
+     <groupId>no.steria.osgi.jsr330activator</groupId>
+     <artifactId>jsr330activator.mocks</artifactId>
+     <version>1.0.1</version>
+     <scope>test</scope>
+    </dependency>
+   </dependencies>
+  </project>
+#+END_SRC
+
+Then in the test, create a MockBundleContext and give it as an argument where a BundleContext is expected, e.g. with a BundleActivator:
+#+BEGIN_SRC java
+  public class MyOsgiTests() {
+      @Test
+      public void testMyActivator() {
+          BundleContext = new MockBundleContext();
+          MyActivator activator = new MyActivator();
+
+          // Check that the service can't be found befor activator start
+          ServiceReference<?> helloBeforeActivation = bundleContext.getServiceReference(HelloService.class.getCanonicalName());
+          assertNull(helloBeforeActivation);
+
+          // Start the activator
+          activator.start();
+
+          // Verify that the service can now be found
+          ServiceReference<?> helloAfterActivation = bundleContext.getServiceReference(HelloService.class.getCanonicalName());
+          assertNotNull(helloAfterActivation);
+
+          // Get the service from the reference and call it
+          HelloService helloService = (HelloService) bundleContext.getService(helloAfterActivation);
+          assertEquals("Hello world!", helloService.getMessage());
+
+          // Unregister the service and verify that there will be noe service with that name
+          activator.stop(bundleContext);
+          ServiceReference<?> helloAfterDeactivation = bundleContext.getServiceReference(HelloService.class.getCanonicalName());
+          assertNull(helloAfterDeactivation);
+      }
+  }
+#+END_SRC
