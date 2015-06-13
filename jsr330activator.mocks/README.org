@@ -55,3 +55,8 @@ Then in the test, create a MockBundleContext and give it as an argument where a 
       }
   }
 #+END_SRC
+
+* Is there documentation?
+
+There are javadocs:
+ - [[http://www.javadoc.io/doc/no.steria.osgi.jsr330activator/jsr330activator.mocks][Release javadocs]]

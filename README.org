@@ -135,10 +135,12 @@ If javax.inject has been embedded in either the service-providing bundles or the
       return null;
   }
 #+END_SRC
-
 ** Why is the Jsr330Activator a bundle if it's meant to be embedded
 
 Since this is an OSGi project it seemed wrong /not/ to make the Jsr330Activator a bundle.
+
+** Javadocs
+ - [[http://www.javadoc.io/doc/no.steria.osgi.jsr330activator/jsr330activator.implementation][Released version javadocs]]
 * License
 
 The Jsr330Activator is under the Eclipse public license v. 1.0.  See the LICENSE file for the full license text.
