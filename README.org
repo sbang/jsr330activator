@@ -7,7 +7,7 @@ Its dependencies are:
  - OSGi core
  - javax.inject
 
-* Why does it exist
+* Why does it exist?
 
 [[https://osgi.org/javadoc/r4v43/core/org/osgi/framework/BundleActivator.html][BundleActivators]] exposing services and [[http://www.knopflerfish.org/osgi_service_tutorial.html#white][setting up service listeners for dependecies]], are the "four wheel drives" of OSGi plugins.  A bundle using a BundleActivator can be dropped in /any/ OSGi container using any (or none) component model, e.g. eclipse, Spring dynamic modules, iPOJO, and make its services available there.
 
@@ -24,7 +24,7 @@ So, in short, this is what you get:
 And that's it.  It's formed from what I did with bundle activators.
 
 If this is not enough for your requirements, you're probably better off with a real component framework.
-* How to use it
+* How to use it?
 
 The preferred way to use the Jsr330Activator, is to embed the Jsr330Activator together with javax.inject inside your bundle.  This makes your bundle work without any dependencies outside of OSGi itself and whatever it needs to do its work.  The jsr330activator.testbundle3 is an example of this.  
 
@@ -139,11 +139,14 @@ If javax.inject has been embedded in either the service-providing bundles or the
 
 Since this is an OSGi project it seemed wrong /not/ to make the Jsr330Activator a bundle.
 
-** Javadocs
- - [[http://www.javadoc.io/doc/no.steria.osgi.jsr330activator/jsr330activator.implementation][Released version javadocs]]
-* License
+* Where do I find documentation?
+There's the [[https://github.com/sbang/jsr330activator/blob/master/README.org][README]] you're currently reading, written in [[http://orgmode.org/][org format]]
 
-The Jsr330Activator is under the Eclipse public license v. 1.0.  See the LICENSE file for the full license text.
+There are also javadocs:
+- [[http://www.javadoc.io/doc/no.steria.osgi.jsr330activator/jsr330activator.implementation][Released version javadocs]]
+* What License is this software distributed under?
+
+The Jsr330Activator is under the Eclipse public license v. 1.0.  See the [[https://github.com/sbang/jsr330activator/blob/master/LICENSE][LICENSE]] file for the full license text.
 
 * Description of the project
 
