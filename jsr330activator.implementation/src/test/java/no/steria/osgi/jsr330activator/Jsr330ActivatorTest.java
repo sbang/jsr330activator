@@ -204,7 +204,7 @@ public class Jsr330ActivatorTest {
     	HelloService helloService = (HelloService) bundleContext.getService(helloAfterActivation);
     	assertEquals("Hello world!", helloService.getMessage());
 
-    	// Unregister the service and verify that there will be noe service with that name
+    	// Unregister the service and verify that there is no service of that type present
     	activator.stop(bundleContext);
     	ServiceReference<?> helloAfterDeactivation = bundleContext.getServiceReference(HelloService.class.getCanonicalName());
     	assertNull(helloAfterDeactivation);
