@@ -135,10 +135,12 @@ If javax.inject has been embedded in either the service-providing bundles or the
       return null;
   }
 #+END_SRC
-
 ** Why is the Jsr330Activator a bundle if it's meant to be embedded
 
 Since this is an OSGi project it seemed wrong /not/ to make the Jsr330Activator a bundle.
+
+** Javadocs
+ - [[http://www.javadoc.io/doc/no.steria.osgi.jsr330activator/jsr330activator.implementation][Released version javadocs]]
 * License
 
 The Jsr330Activator is under the Eclipse public license v. 1.0.  See the LICENSE file for the full license text.
@@ -253,6 +255,7 @@ I see two ways of doing it:
 Alternative 2. would seem to be the most complete solution (because it lets the injection point determine which services are injected. It can also be used to require a particular implementation of a service and let the rest be optional), but alternative 1. is the simplest one to implement (it doesn't require an extra annotation and reflection code looking for two extra annotations).
 
 /Note/: Alternative 1 i.e. injection into a collection is now on master.
+/Note2/: I have discovered a need for @Optional in [[https://github.com/steinarb/modelstore][my project using the Jsr330Activator]]: I need logging and the logservice @Inject should probably be optional, so I will probably end up pulling all of the branches below in on master and making a release.  I will make tags on the branch points so that it will be possible to make slimmer versions (won't be made by me, though...).
 
 The behaviour is like this:
  - Add a List<Service> field to the provider class
