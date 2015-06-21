@@ -5,6 +5,7 @@ if [ "$TRAVIS_REPO_SLUG" == "sbang/jsr330activator" ] && [ "$TRAVIS_PULL_REQUEST
   echo -e "Publishing javadoc...\n"
 
   cp -R jsr330activator.implementation/target/apidocs $HOME/javadoc-latest
+  cp -R jsr330activator.mocks/target/apidocs $HOME/osgi-mocks-javadoc-latest
 
   cd $HOME
   git config --global user.email "travis@travis-ci.org"
@@ -13,7 +14,9 @@ if [ "$TRAVIS_REPO_SLUG" == "sbang/jsr330activator" ] && [ "$TRAVIS_PULL_REQUEST
 
   cd gh-pages
   git rm -rf ./javadoc
+  git rm -rf ./osgi-mocks-javadoc
   cp -Rf $HOME/javadoc-latest ./javadoc
+  cp -Rf $HOME/osgi-mocks-javadoc-latest ./osgi-mocks-javadoc
   git add -f .
   git commit -m "Lastest javadoc on successful travis build $TRAVIS_BUILD_NUMBER auto-pushed to gh-pages"
   git push -fq origin gh-pages > /dev/null
