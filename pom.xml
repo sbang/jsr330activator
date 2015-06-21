@@ -10,7 +10,6 @@
 
  <name>jsr330activator</name>
 
- <url>http://maven.apache.org</url>
 
  <licenses>
   <license>
@@ -175,4 +174,5 @@
   </repository>
  </distributionManagement>
 
+ <url>http://sbang.github.io/jsr330activator/</url>
 </project>
