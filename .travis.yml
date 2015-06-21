@@ -1,5 +1,7 @@
 language: java
-secure: "Zfr8M3yHDnWYLwNqEqvhgCJ8/Zleh/LtcG9loBhF3OXctWEUFSDC8Y6XPU7HfSRk7lGo6iQxEyXHL46166saqegwuwhoGPQWV4CWk0LvIt3/fBxZtoS6Ij30nxOnGiWSTWIadZBx8+4+Lp9dDlj3uJRzRb8yr/l/S/IHQ9MimNw="
+env:
+  global:
+    - secure: "Zfr8M3yHDnWYLwNqEqvhgCJ8/Zleh/LtcG9loBhF3OXctWEUFSDC8Y6XPU7HfSRk7lGo6iQxEyXHL46166saqegwuwhoGPQWV4CWk0LvIt3/fBxZtoS6Ij30nxOnGiWSTWIadZBx8+4+Lp9dDlj3uJRzRb8yr/l/S/IHQ9MimNw="
 install: mvn install -DskipTests=true -Dgpg.skip=true
 
 script:
