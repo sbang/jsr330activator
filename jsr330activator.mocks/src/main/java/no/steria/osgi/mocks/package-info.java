@@ -5,8 +5,7 @@
  *
  * <p>The implemented classes implement basic service registration, and retrieval,
  * service notification and callback registration.
- */
-/**
+ *
  * @author Steinar Bang
  *
  */
