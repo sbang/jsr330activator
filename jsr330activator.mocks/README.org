@@ -60,3 +60,4 @@ Then in the test, create a MockBundleContext and give it as an argument where a 
 
 There are javadocs:
  - [[http://www.javadoc.io/doc/no.steria.osgi.jsr330activator/jsr330activator.mocks][Release javadocs]]
+ - [[http://sbang.github.io/jsr330activator/osgi-mocks-javadoc/][javadoc from latest travis build]]

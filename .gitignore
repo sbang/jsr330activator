@@ -1,6 +1,7 @@
 .classpath
 .project
 .settings/
+/README.md
 /jsr330activator.gogoshell/runner/
 /jsr330activator.tests/test.log
 target/
