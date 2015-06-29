@@ -250,7 +250,21 @@ To use the shell for debugging, do the following:
 * Future enhanchements
 The idea is to keep the Jsr330Activator as simple as possible, so I won't be adding all of the enhancements I can think of.
 
-However there is one thing that I need for [[https://github.com/steinarb/modelstore][the project that prompted the existence of the Jsr330Activator]] and that is multiple injections of the same service, and start of the provided service without all of the instances present (several different storage backends in my case).
+But here are currently two things I would like to get in:
+ 1. Some way of accessing the BundleContext from the activated code
+ 2. Some way of handling multiple instances of the same service, and not require all of them to activate the Provider<>
+
+If the Provider<> implementations that are activated by the Jsr330Activator [[http://www.eclipsezone.com/eclipse/forums/t101557.rhtml][needs to load resources]] other than constant resources in the bundles themselves, they will need to know the [[https://osgi.org/javadoc/r4v43/core/org/osgi/framework/BundleContext.html][BundleContext]].  One way this could be allowing @Inject of BundleContext, i.e.:
+#+BEGIN_SRC java
+  class SomeServiceProvider implements Provider<SomeService>, SomeService  {
+      @Inject
+      private BundleContext context;
+
+      SomeService get() { return this; }
+  }
+#+END_SRC
+
+One thing that I need for [[https://github.com/steinarb/modelstore][the project that prompted the existence of the Jsr330Activator]] and that is multiple injections of the same service, and start of the provided service without all of the instances present (several different storage backends in my case).
 
 I see two ways of doing it:
  1. Allow injections into a collection, as outlined [[http://stackoverflow.com/a/25327839][here]]
