@@ -85,8 +85,8 @@ public class MockBundleContext extends MockBundleContextBase {
      * If this is needed to make tests run as expected it must be implemented
      * For now, just return all of the references in the mock.
      *
-     * @param a fully qualified class name
-     * @param a filter expression matching a service and its parameters
+     * @param clazz a fully qualified class name
+     * @param filter a filter expression matching a service and its parameters
      * @return an array of {@link ServiceReference} objects implementing the matching service, or an empty array if none can be found
      */
     @Override
@@ -118,7 +118,7 @@ public class MockBundleContext extends MockBundleContextBase {
     /**
      * Get the service a {@link ServiceReference} is referring to.
      *
-     * @param a {@link ServiceReference} for a registered service
+     * @param reference a {@link ServiceReference} for a registered service
      * @return the object implementing the service
      */
     @SuppressWarnings("unchecked")
@@ -131,7 +131,7 @@ public class MockBundleContext extends MockBundleContextBase {
      * Tell the service registration that a particular service
      * is no longer being used.
      *
-     * @param a {@link ServiceReference} for a registered service
+     * @param reference a {@link ServiceReference} for a registered service
      * @return true if the release succeeds (this mack always returns true).
      */
     @Override
@@ -187,7 +187,7 @@ public class MockBundleContext extends MockBundleContextBase {
     /**
      * Register a listener for a service, using a filter expression.
      * @param listener the listener callback object to register
-     * @filter a filter expression matching a service
+     * @param filter a filter expression matching a service
      */
     @Override
     public void addServiceListener(ServiceListener listener, String filter) throws InvalidSyntaxException {
