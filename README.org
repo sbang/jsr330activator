@@ -95,7 +95,7 @@ What's needed is:
       }
     #+END_SRC
 
-Both the Jsr330Activator and javax.bundle can be provided as OSGi dependencies instead of embedding them. The jsr330activator.testbundle1 project is an example of this.  Or one of the dependencies can be embedded and one can be provided as an OSGi dependency.  The jsr330activator.testbundle1 project is an example of this, it embeds the Jsr330Activator and gets javax.inject from the OSGi runtime.
+Both the Jsr330Activator and javax.bundle can be provided as OSGi dependencies instead of embedding them. The jsr330activator.testbundle1 project is an example of this.  Or one of the dependencies can be embedded and one can be provided as an OSGi dependency.  The jsr330activator.testbundle2 project is an example of this, it embeds the Jsr330Activator and gets javax.inject from the OSGi runtime.
 
 The config of the maven-bundle-plugin in =jsr330activator.testbundle1/pom.xml= doesn't contain an =Embed-Dependency= setting, and the =Embed-Dependency= setting in =jsr330activator.testbundle2/pom.xml= only mentions the artifactId of the dependency that is to be embedded.
 
