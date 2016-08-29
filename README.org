@@ -299,3 +299,40 @@ Collection injections add around 1800 bytes to the size of the jar (1775 bytes o
 Collection injections will go into the next release, because I need them myself.
 
 Whether @Named and @Optional will go in is more in question, especially since @Optional introduced a felix runtime dependency on the Jsr330Activator.  This is more than an annoyance than an actual problem, beause if the launcher is felix it doesn't really matter if the Jsr330Activator is pulled in or not, except for a small extra runtime cost.
+* Known bugs
+** Providers implementing multiple interfaces aren't recognize unless the Provider<T> is the first interface
+
+This provider is recognized:
+#+BEGIN_SRC java
+  public class HelloServiceProvider2 implements Provider<HelloService>, HelloService {
+
+      public String getMessage() {
+          return "Hello from HelloServiceProvider2";
+      }
+
+      public HelloService get() {
+          return this;
+      }
+
+  }
+#+END_SRC
+
+This provider isn't recognized:
+#+BEGIN_SRC java
+  public class HelloService2Provider2 implements  HelloService2, Provider<HelloService2> {
+
+      public String getMessage() {
+          return "Hello from HelloService2Provider2";
+      }
+
+      public HelloService2 get() {
+          return this;
+      }
+
+  }
+#+END_SRC
+
+The unit test
+Jsr330ActivatorTest.testFindProvidersMultipleInterfacesWithProviderNotFirst()
+reproduces this bug (the failing test is checked in as @Ignored to
+avoid failing the continous integration).
