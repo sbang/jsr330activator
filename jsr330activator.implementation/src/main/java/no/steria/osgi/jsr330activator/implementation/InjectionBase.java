@@ -62,7 +62,9 @@ abstract class InjectionBase implements Injection {
         bundleContext.removeServiceListener(serviceListener);
 
         // Release the injected service
-        bundleContext.ungetService(serviceReference);
+        if (serviceReference != null) {
+            bundleContext.ungetService(serviceReference);
+        }
     }
 
 }
