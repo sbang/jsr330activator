@@ -2,8 +2,6 @@ package no.steria.osgi.jsr330activator.implementation;
 
 import java.lang.reflect.Method;
 
-import org.osgi.framework.BundleContext;
-
 /**
  * Implementation of {@link Injection} that injects using a method.
  *
@@ -20,12 +18,6 @@ class InjectionMethod extends InjectionBase {
     	this.provider = provider;
     	this.method = method;
     	this.method.setAccessible(true);
-    }
-
-    @Override
-    public void unGet(BundleContext bundleContext) {
-    	signalDisconnectToProvider();
-        super.unGet(bundleContext);
     }
 
     public Class<?> getInjectedServiceType() {
@@ -50,10 +42,6 @@ class InjectionMethod extends InjectionBase {
             currentService = null;
         } catch (Exception e) {
         }
-    }
-
-    private void signalDisconnectToProvider() {
-        doRetract(null);
     }
 
 }
