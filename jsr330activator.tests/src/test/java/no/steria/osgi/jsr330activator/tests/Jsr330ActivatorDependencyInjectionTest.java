@@ -45,15 +45,15 @@ public class Jsr330ActivatorDependencyInjectionTest extends Jsr330ActivatorInteg
     @Configuration
     public Option[] config() {
         return options(
-                       systemProperty("logback.configurationFile").value("file:src/test/resources/logback.xml"),
-                       mavenBundle("org.slf4j", "slf4j-api", "1.7.2"),
-                       mavenBundle("ch.qos.logback", "logback-core", "1.0.4"),
-                       mavenBundle("ch.qos.logback", "logback-classic", "1.0.4"),
-                       mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.implementation", getMavenProjectVersion()),
-                       mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.testbundle1", getMavenProjectVersion()),
-                       mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.testbundle3", getMavenProjectVersion()),
-                       mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.testbundle2", getMavenProjectVersion()),
-                       junitBundles());
+            systemProperty("logback.configurationFile").value("file:src/test/resources/logback.xml"),
+            mavenBundle("org.slf4j", "slf4j-api", "1.7.2"),
+            mavenBundle("ch.qos.logback", "logback-core", "1.0.4"),
+            mavenBundle("ch.qos.logback", "logback-classic", "1.0.4"),
+            mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.implementation", getMavenProjectVersion()),
+            mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.testbundle1", getMavenProjectVersion()),
+            mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.testbundle3", getMavenProjectVersion()),
+            mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.testbundle2", getMavenProjectVersion()),
+            junitBundles());
     }
 
     /**
@@ -62,7 +62,7 @@ public class Jsr330ActivatorDependencyInjectionTest extends Jsr330ActivatorInteg
      */
     @Test
     public void testbundle3aServiceFoundAndActivated() {
-    	assertEquals("Hello world!", helloService3a.getMessage());
+    	assertEquals("I'm here to serve!", helloService3a.getMessage());
     }
 
     /**
@@ -80,7 +80,7 @@ public class Jsr330ActivatorDependencyInjectionTest extends Jsr330ActivatorInteg
      */
     @Test
     public void testbundle3cServiceFoundAndActivated() {
-    	assertEquals("Hello world! Hello world2!", helloService3c.getCombinedMessage());
+    	assertEquals("I'm here to serve! Hello world2!", helloService3c.getCombinedMessage());
     }
 
 }
