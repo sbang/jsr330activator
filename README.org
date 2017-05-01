@@ -95,7 +95,7 @@ What's needed is:
       }
     #+END_SRC
 
-Both the Jsr330Activator and javax.bundle can be provided as OSGi dependencies instead of embedding them. The jsr330activator.testbundle1 project is an example of this.  Or one of the dependencies can be embedded and one can be provided as an OSGi dependency.  The jsr330activator.testbundle1 project is an example of this, it embeds the Jsr330Activator and gets javax.inject from the OSGi runtime.
+Both the Jsr330Activator and javax.bundle can be provided as OSGi dependencies instead of embedding them. The jsr330activator.testbundle1 project is an example of this.  Or one of the dependencies can be embedded and one can be provided as an OSGi dependency.  The jsr330activator.testbundle2 project is an example of this, it embeds the Jsr330Activator and gets javax.inject from the OSGi runtime.
 
 The config of the maven-bundle-plugin in =jsr330activator.testbundle1/pom.xml= doesn't contain an =Embed-Dependency= setting, and the =Embed-Dependency= setting in =jsr330activator.testbundle2/pom.xml= only mentions the artifactId of the dependency that is to be embedded.
 
@@ -203,6 +203,8 @@ This is a Java project built by maven.  The maven projects, are:
  - jsr330activator.gogoshell
    - A project that doesn't participate in the automated build and testing, but is used to start a "gogo shell" with jsr330activator.testbundle1, jsr330activator.testbundle2 and jsr330activator.testbundle3 to be able to examine whether the bundles start up and shut down properly and what services they expose etc.
 * Version history
+ - 1.1.0
+   - Fixes [[https://github.com/sbang/jsr330activator/issues/2][Issue #2 Need a way to get notified on activator shutdown (for pax-web unregistration)]]
  - 1.0.1 First successful release
  - 1.0.0 Failed deployment to OSSRH (aka. "maven central")
 * Development stuff
@@ -304,3 +306,40 @@ Collection injections add around 1800 bytes to the size of the jar (1775 bytes o
 The @Named injections will go into the next release.
 
 Whether @Optional will go in is more in question, especially since @Optional introduced a felix runtime dependency on the Jsr330Activator.  This is more than an annoyance than an actual problem, beause if the launcher is felix it doesn't really matter if the Jsr330Activator is pulled in or not, except for a small extra runtime cost. But it is still an annoyance...
+* Known bugs
+** Providers implementing multiple interfaces aren't recognize unless the Provider<T> is the first interface
+
+This provider is recognized:
+#+BEGIN_SRC java
+  public class HelloServiceProvider2 implements Provider<HelloService>, HelloService {
+
+      public String getMessage() {
+          return "Hello from HelloServiceProvider2";
+      }
+
+      public HelloService get() {
+          return this;
+      }
+
+  }
+#+END_SRC
+
+This provider isn't recognized:
+#+BEGIN_SRC java
+  public class HelloService2Provider2 implements  HelloService2, Provider<HelloService2> {
+
+      public String getMessage() {
+          return "Hello from HelloService2Provider2";
+      }
+
+      public HelloService2 get() {
+          return this;
+      }
+
+  }
+#+END_SRC
+
+The unit test
+Jsr330ActivatorTest.testFindProvidersMultipleInterfacesWithProviderNotFirst()
+reproduces this bug (the failing test is checked in as @Ignored to
+avoid failing the continous integration).
