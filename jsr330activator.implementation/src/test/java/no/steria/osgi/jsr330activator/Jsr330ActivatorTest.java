@@ -15,12 +15,15 @@ import no.steria.osgi.jsr330activator.testbundle.HelloService;
 import no.steria.osgi.jsr330activator.testbundle.HelloService2;
 import no.steria.osgi.jsr330activator.testbundle.implementation.AddInjectionsServiceProvider;
 import no.steria.osgi.jsr330activator.testbundle.implementation.HelloService2Provider;
+import no.steria.osgi.jsr330activator.testbundle.implementation.HelloService2Provider2;
 import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceImplementation;
 import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceProvider;
+import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceProvider2;
 import no.steria.osgi.mocks.MockBundle;
 import no.steria.osgi.mocks.MockBundleContext;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -140,6 +143,37 @@ public class Jsr330ActivatorTest {
     	Map<Type, Class<?>> providers = activator.findProviders(classesInBundle);
     	assertEquals(1, providers.size());
     	assertEquals(HelloServiceProvider.class, providers.get(HelloService.class));
+    }
+
+    /***
+     * Verify that the scanning code finds a provider that implements multiple
+     * interfaces, where the Provider<> interface is first in the list.
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testFindProvidersMultipleInterfacesWithProviderFirst() {
+        List<Class<?>> classesInBundle = Arrays.asList(HelloService2.class, HelloServiceImplementation.class, HelloServiceProvider2.class);
+
+        Jsr330Activator activator = new Jsr330Activator();
+        Map<Type, Class<?>> providers = activator.findProviders(classesInBundle);
+        assertEquals(1, providers.size());
+        assertEquals(HelloServiceProvider2.class, providers.get(HelloService.class));
+    }
+
+    /***
+     * Verify that the scanning code finds a provider that implements multiple
+     * interfaces, where the Provider<> interface is not first in the interface list.
+     */
+    @Ignore
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testFindProvidersMultipleInterfacesWithProviderNotFirst() {
+        List<Class<?>> classesInBundle = Arrays.asList(HelloService2.class, HelloServiceImplementation.class, HelloService2Provider2.class);
+
+        Jsr330Activator activator = new Jsr330Activator();
+        Map<Type, Class<?>> providers = activator.findProviders(classesInBundle);
+        assertEquals(1, providers.size());
+        assertEquals(HelloService2Provider2.class, providers.get(HelloService2.class));
     }
 
     @Test

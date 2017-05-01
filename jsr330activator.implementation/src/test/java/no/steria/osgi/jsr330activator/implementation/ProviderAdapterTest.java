@@ -4,6 +4,7 @@ import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.List;
 
 import no.steria.osgi.jsr330activator.mocks.providers.ProviderThrowsIllegalAccessException;
@@ -70,6 +71,19 @@ public class ProviderAdapterTest {
 
     	ProviderAdapter providerAdapter = new ProviderAdapter(String.class, ProviderThrowsIllegalAccessException.class);
     	assertEquals(String.class, providerAdapter.getProvidedServiceType());
+    }
+
+    @Test
+    public void testFindActivatorShutdownCallback() {
+        // A provider with no activator shutdown callback should find none
+        HelloServiceProvider helloServiceProvider = new HelloServiceProvider();
+        Method helloServiceProviderActivatorShutdownCallback = ProviderAdapter.findActivatorShutdownCallback(helloServiceProvider);
+        assertNull(helloServiceProviderActivatorShutdownCallback);
+
+        // A provider with an activator shutdown callback should have it found
+        HelloService2Provider helloServiceProvider2 = new HelloService2Provider();
+        Method helloServiceProvider2ActivatorShutdownCallback = ProviderAdapter.findActivatorShutdownCallback(helloServiceProvider2);
+        assertNotNull(helloServiceProvider2ActivatorShutdownCallback);
     }
 
     /**

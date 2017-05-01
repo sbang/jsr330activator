@@ -14,6 +14,7 @@ import javax.inject.Named;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
+import no.steria.osgi.jsr330activator.ActivatorShutdown;
 import no.steria.osgi.jsr330activator.Jsr330Activator;
 
 /**
@@ -32,6 +33,7 @@ public class ProviderAdapter {
     private static final Class<?>[] emptyArgumentTypes = new Class<?>[0];
     private Object provider;
     private Type providedServiceType;
+    private Method activatorShutdownCallback;
     private List<Injection> injections;
     private ServiceRegistration<?> serviceRegistration;
 
@@ -39,6 +41,7 @@ public class ProviderAdapter {
         try {
             providedServiceType = serviceType;
             provider = providerType.newInstance();
+            activatorShutdownCallback = findActivatorShutdownCallback(provider);
             injections = findInjections(provider);
         } catch (InstantiationException e) {
             throw new RuntimeException(e);
@@ -53,6 +56,18 @@ public class ProviderAdapter {
 
     public ServiceRegistration<?> getServiceRegistration() {
         return serviceRegistration;
+    }
+
+    static Method findActivatorShutdownCallback(Object provider) {
+        Class<? extends Object> providerType = provider.getClass();
+        Method[] methods = providerType.getDeclaredMethods();
+        for (Method method : methods) {
+            if (method.isAnnotationPresent(ActivatorShutdown.class)) {
+            	return method;
+            }
+        }
+
+        return null;
     }
 
     static List<Injection> findInjections(Object provider) {
@@ -94,11 +109,24 @@ public class ProviderAdapter {
     }
 
     public void stop(BundleContext context) {
-        for (Injection injection : injections) {
+    	callActivatorShutdownCallbackIfPresent(context);
+
+    	for (Injection injection : injections) {
             injection.unGet(context);
         }
 
         unregisterMyService();
+    }
+
+    private void callActivatorShutdownCallbackIfPresent(BundleContext context) {
+        if (activatorShutdownCallback != null) {
+            final Object[] args = { context };
+            try {
+                activatorShutdownCallback.invoke(provider, args);
+            } catch (Exception e) {
+                // Swallow exceptions quietly.
+            }
+    	}
     }
 
     private void unregisterMyService() {
