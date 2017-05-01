@@ -208,6 +208,7 @@ This is a Java project built by maven.  The maven projects, are:
 * Version history
 - 1.1.0
 - Fixes [[https://github.com/sbang/jsr330activator/issues/2][Issue #2 Need a way to get notified on activator shutdown (for pax-web unregistration)]]
+- Fixes [[https://github.com/sbang/jsr330activator/issues/4][Issue #4 Some way of handling multiple instances of the same service, and not require all of them to activate the Provider<>]]
 - 1.0.1 First successful release
 - 1.0.0 Failed deployment to OSSRH (aka. "maven central")
 * Development stuff
@@ -252,9 +253,8 @@ There should be no error messages during an orderly shutdown. Look specifically 
 * Future enhanchements
 The idea is to keep the Jsr330Activator as simple as possible, so I won't be adding all of the enhancements I can think of.
 
-But here are currently two things I would like to get in:
+But here is currently one thing I would like to get in:
 1. Some way of accessing the BundleContext from the activated code
-2. Some way of handling multiple instances of the same service, and not require all of them to activate the Provider<>
 
 If the Provider<> implementations that are activated by the Jsr330Activator [[http://www.eclipsezone.com/eclipse/forums/t101557.rhtml][needs to load resources]] other than constant resources in the bundles themselves, they will need to know the [[https://osgi.org/javadoc/r4v43/core/org/osgi/framework/BundleContext.html][BundleContext]].  One way this could be allowing @Inject of BundleContext, i.e.:
 #+BEGIN_SRC java
@@ -265,33 +265,7 @@ private BundleContext context;
 SomeService get() { return this; }
 }
 #+END_SRC
-
-One thing that I need for [[https://github.com/steinarb/modelstore][the project that prompted the existence of the Jsr330Activator]] and that is multiple injections of the same service, and start of the provided service without all of the instances present (several different storage backends in my case).
-
-I see two ways of doing it:
-1. Allow injections into a collection, as outlined [[http://stackoverflow.com/a/25327839][here]]
-2. Create an @Optional annotation in the Jsr330Activator jar itself, and use it together with @Named in addition to @Inject on dependencies, and put @Named on the Provider<T> implementations
-
-Alternative 2. would seem to be the most complete solution (because it lets the injection point determine which services are injected. It can also be used to require a particular implementation of a service and let the rest be optional), but alternative 1. is the simplest one to implement (it doesn't require an extra annotation and reflection code looking for two extra annotations).
-
-/Note/: Alternative 1 i.e. injection into a collection is now on master.
-/Note2/: I have discovered a need for @Optional in [[https://github.com/steinarb/modelstore][my project using the Jsr330Activator]]: I need logging and the logservice @Inject should probably be optional, so I will probably end up pulling all of the branches below in on master and making a release.  I will make tags on the branch points so that it will be possible to make slimmer versions (won't be made by me, though...).
-
-The behaviour is like this:
-- Add a List<Service> field to the provider class
-- All instances of "Service" that arrives are added to the collection (see CollectionInjectionCatcherProvider.java in jsr330activator.testbundle7 for an example)
-- All instances of "Service" that are retracted are removed from the collection
-- For the purposes of service activation, the field is seen as injected as long as it has at least one item
-- This means that an optional injection could be faked by inserting a dummy service into a collection injection
-
-There is now also an implementation of @Named injections. @Named annotations on @Inject members means that only those service Provider<> classes annotated with @Named with the same value will be matched.  Services from @Named Providers<> can be injected into @Inject members that has no @Named annotations.
-
-There are no clear semantics of what happens when a collection @Inject point gets a @Named annotation.
-
-The property name "id" has been picked for the service property holding the @Named.value().  This is the property name used by the [[http://aries.apache.org/modules/blueprint-maven-plugin.html][blueprint-maven-plugin]] for the same annotation, and if we're lucky they might be compatible.
-
-There is also an implementation of @Optional injections. Annotating an injection with @Optional means that the Provider<> can be started, and the service it provides registered with OSGi, before that dependency is injected.  It also means that even if that dependency is rejected the service will stay registered with OSGi.  It is the provider's job to keep track of the optional injections, which means that the optional injections should be property setters, so that the Provider can get notification when they are injected tand retracted.
-
+* Cost of the new features
 The primary use case of the Jsr330Activator is to embed it, and it's therefore important to keep it as small as possible.  And one of the ways of keeping it small is to not pull in features that aren't strictly necessary.
 
 So here is a little table to show what the extra costs for the new features are, wrt. to increasing the size of the jar (testbundle1 which embeds nothing is shown for comparison).  These are sizes in bytes of the jar files, testbundle3 is the one to track through all of the changes, the implementation also gives a good indication of the code growth:
@@ -312,32 +286,32 @@ The @Optional injections implementation introduced a felix runtime dependency on
 
 This provider is recognized:
 #+BEGIN_SRC java
-public class HelloServiceProvider2 implements Provider<HelloService>, HelloService {
+  public class HelloServiceProvider2 implements Provider<HelloService>, HelloService {
 
-public String getMessage() {
-return "Hello from HelloServiceProvider2";
-}
+      public String getMessage() {
+          return "Hello from HelloServiceProvider2";
+      }
 
-public HelloService get() {
-return this;
-}
+      public HelloService get() {
+          return this;
+      }
 
-}
+  }
 #+END_SRC
 
 This provider isn't recognized:
 #+BEGIN_SRC java
-public class HelloService2Provider2 implements  HelloService2, Provider<HelloService2> {
+  public class HelloService2Provider2 implements  HelloService2, Provider<HelloService2> {
 
-public String getMessage() {
-return "Hello from HelloService2Provider2";
-}
+      public String getMessage() {
+          return "Hello from HelloService2Provider2";
+      }
 
-public HelloService2 get() {
-return this;
-}
+      public HelloService2 get() {
+          return this;
+      }
 
-}
+  }
 #+END_SRC
 
 The unit test
