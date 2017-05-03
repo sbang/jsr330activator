@@ -20,8 +20,11 @@ import no.steria.osgi.jsr330activator.testbundle.implementation.CollectionCatche
 import no.steria.osgi.jsr330activator.testbundle.implementation.DummyStorageServiceProvider;
 import no.steria.osgi.jsr330activator.testbundle.implementation.HelloService2Provider;
 import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceProvider;
+import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceProviderEmptyPropertiesHello1;
+import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceProviderNamedAndPropertyHello2;
 import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceProviderNamedHello1;
 import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceProviderNamedHello2;
+import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceProviderPropertiesHello1;
 import no.steria.osgi.jsr330activator.testbundle.implementation.MemoryStorageServiceProvider;
 import no.steria.osgi.jsr330activator.testbundle.implementation.NamedInjectionCatcherServiceProvider;
 import no.steria.osgi.jsr330activator.testbundle.implementation.NamedOptionalInjectionCatcherServiceProvider;
@@ -620,6 +623,45 @@ public class ProviderAdapterTest {
 
         // Verify that the service is no longer available because all of the injections have gone away.
         assertNull(bundleContext.getServiceReference(CollectionCatcherService.class.getCanonicalName()));
+    }
+
+    @Test
+    public void testServiceWithMultipleServiceProperties() {
+        MockBundleContext bundleContext = new MockBundleContext();
+
+        // Register the service that is to be injected
+        ProviderAdapter hello1ProviderAdapter = new ProviderAdapter(HelloService.class, HelloServiceProviderPropertiesHello1.class);
+        hello1ProviderAdapter.start(bundleContext);
+
+        // Check that the properties from the property list has been found and set on the registration
+        ServiceReference<?> serviceReference = bundleContext.getServiceReference(HelloService.class.getCanonicalName());
+        assertEquals(2, serviceReference.getPropertyKeys().length);
+    }
+
+    @Test
+    public void testServiceWithSingleServicePropertyAndName() {
+        MockBundleContext bundleContext = new MockBundleContext();
+
+        // Register the service that is to be injected
+        ProviderAdapter hello2ProviderAdapter = new ProviderAdapter(HelloService.class, HelloServiceProviderNamedAndPropertyHello2.class);
+        hello2ProviderAdapter.start(bundleContext);
+
+        // Check that the single property and the named annotation has been found and set on the registration
+        ServiceReference<?> serviceReference = bundleContext.getServiceReference(HelloService.class.getCanonicalName());
+        assertEquals(2, serviceReference.getPropertyKeys().length);
+    }
+
+    @Test
+    public void testServiceWithEmptyServiceProperties() {
+        MockBundleContext bundleContext = new MockBundleContext();
+
+        // Register the service that is to be injected
+        ProviderAdapter hello2ProviderAdapter = new ProviderAdapter(HelloService.class, HelloServiceProviderEmptyPropertiesHello1.class);
+        hello2ProviderAdapter.start(bundleContext);
+
+        // Check that the single property and the named annotation has been found and set on the registration
+        ServiceReference<?> serviceReference = bundleContext.getServiceReference(HelloService.class.getCanonicalName());
+        assertEquals(0, serviceReference.getPropertyKeys().length);
     }
 
 }

@@ -16,6 +16,8 @@ import org.osgi.framework.ServiceRegistration;
 
 import no.steria.osgi.jsr330activator.ActivatorShutdown;
 import no.steria.osgi.jsr330activator.Jsr330Activator;
+import no.steria.osgi.jsr330activator.ServiceProperties;
+import no.steria.osgi.jsr330activator.ServiceProperty;
 
 /**
  * This class defines the operations done by the {@link Jsr330Activator}
@@ -145,21 +147,63 @@ public class ProviderAdapter {
     void registerService(BundleContext bundleContext) {
         try {
             Method getMethod = provider.getClass().getMethod("get", emptyArgumentTypes);
-            Named named = provider.getClass().getAnnotation(Named.class);
-            String name = (named!=null) ? named.value() : null;
             Object serviceImpl = getMethod.invoke(provider);
             if (providedServiceType instanceof Class) {
                 Class<?> service = (Class<?>)providedServiceType;
                 String serviceName = service.getCanonicalName();
-                Dictionary<String, String> properties = (name!=null) ? new Hashtable<String, String>() : null;
-                if (properties != null) {
-                    properties.put("id", name); // Use "id" as the service property: compatibility with apache aries blueprint blueprint-maven-plugin
-                }
+                Dictionary<String, String> properties = findServicePropertiesAndServiceName();
 
                 serviceRegistration = bundleContext.registerService(serviceName, serviceImpl, properties);
             }
         } catch (Exception e) {
         }
+    }
+
+    private Dictionary<String, String> findServicePropertiesAndServiceName() {
+        Dictionary<String, String> properties = findServicePropertyAnnotations();
+        Named named = provider.getClass().getAnnotation(Named.class);
+        String name = (named!=null) ? named.value() : null;
+        if (name != null) {
+            properties = (properties!=null) ? properties : new Hashtable<String, String>();
+            properties.put("id", name); // Use "id" as the service property: compatibility with apache aries blueprint blueprint-maven-plugin
+        }
+
+        return properties;
+    }
+
+    private Dictionary<String, String> findServicePropertyAnnotations() {
+        Dictionary<String, String> properties = findSingleServiceProperty();
+        if (properties != null) {
+            // If there is a single property, there can't be multiple properties
+            return properties;
+        }
+
+        return findMultipleServiceProperties();
+    }
+
+    private Dictionary<String, String> findSingleServiceProperty() {
+        ServiceProperty serviceProperty = provider.getClass().getAnnotation(ServiceProperty.class);
+        if (serviceProperty == null) {
+            return null;
+        }
+
+        Hashtable<String, String> properties = new Hashtable<String, String>();
+        properties.put(serviceProperty.name(), serviceProperty.value());
+        return properties;
+    }
+
+    private Dictionary<String, String> findMultipleServiceProperties() {
+        ServiceProperties serviceProperties = provider.getClass().getAnnotation(ServiceProperties.class);
+        if (serviceProperties == null || serviceProperties.value().length == 0) {
+            return null;
+        }
+
+        Hashtable<String, String> properties = new Hashtable<String, String>();
+        for (ServiceProperty property : serviceProperties.value()) {
+            properties.put(property.name(), property.value());
+        }
+
+        return properties;
     }
 
     void setupInjectionListeners(BundleContext bundleContext) {

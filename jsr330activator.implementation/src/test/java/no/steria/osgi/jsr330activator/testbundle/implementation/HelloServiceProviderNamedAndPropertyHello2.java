@@ -3,6 +3,7 @@ package no.steria.osgi.jsr330activator.testbundle.implementation;
 import javax.inject.Named;
 import javax.inject.Provider;
 
+import no.steria.osgi.jsr330activator.ServiceProperty;
 import no.steria.osgi.jsr330activator.testbundle.HelloService;
 
 /***
@@ -12,7 +13,8 @@ import no.steria.osgi.jsr330activator.testbundle.HelloService;
  *
  */
 @Named("hello2")
-public class HelloServiceProviderNamedHello2 implements Provider<HelloService>, HelloService {
+@ServiceProperty(name = "key", value = "keyedvalue")
+public class HelloServiceProviderNamedAndPropertyHello2 implements Provider<HelloService>, HelloService {
 
     public String getMessage() {
         return "Hello2 says hi!";
