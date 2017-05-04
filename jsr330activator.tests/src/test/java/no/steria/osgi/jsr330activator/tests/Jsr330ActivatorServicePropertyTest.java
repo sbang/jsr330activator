@@ -1,15 +1,22 @@
 package no.steria.osgi.jsr330activator.tests;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import javax.inject.Inject;
 
-import no.steria.osgi.jsr330activator.Jsr330Activator;
+import no.steria.osgi.jsr330activator.ServiceProperties;
+import no.steria.osgi.jsr330activator.ServiceProperty;
 import no.steria.osgi.jsr330activator.testbundle1.HelloService;
+import no.steria.osgi.jsr330activator.testbundle2.HelloService2;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,21 +25,23 @@ import org.ops4j.pax.exam.Option;
 import org.ops4j.pax.exam.junit.PaxExam;
 import org.ops4j.pax.exam.spi.reactors.ExamReactorStrategy;
 import org.ops4j.pax.exam.spi.reactors.PerClass;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 /**
- * Integration test that tests a bundle using a {@link Jsr330Activator}
- * as its bundle activator.  The Jsr330Activator is found and loaded
- * from a jsr330activator.implementation bundle in the OSGi runtime.
+ * Integration test that tests that verifies that the properties set with
+ * {@link ServiceProperty} annotations are available on injected services.
  *
  * @author Steinar Bang
  *
  */
 @RunWith(PaxExam.class)
 @ExamReactorStrategy(PerClass.class)
-public class Jsr330ActivatorIntegrationTest extends Jsr330ActivatorIntegrationtestBase {
+public class Jsr330ActivatorServicePropertyTest extends Jsr330ActivatorIntegrationtestBase {
+    final private static String[] keysAlwaysPresentOnService = { "objectClass", "service.id" };
 
     @Inject
-    private HelloService helloService;
+    private BundleContext bundleContext;
 
     @Configuration
     public Option[] config() {
@@ -43,17 +52,53 @@ public class Jsr330ActivatorIntegrationTest extends Jsr330ActivatorIntegrationte
             mavenBundle("ch.qos.logback", "logback-classic", "1.0.4"),
             mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.implementation", getMavenProjectVersion()),
             mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.testbundle1", getMavenProjectVersion()),
+            mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.testbundle2", getMavenProjectVersion()),
             junitBundles());
     }
 
     /**
-     * Verifies that the activator in testbundle1 starts, finds a
-     * service implementation, and registers it in the OSGi service
-     * registry
+     * Verifies that a single {@link ServiceProperty} annotation on a service provider
+     * is picked up and set as a property on the exposed OSGi service.
      */
     @Test
-    public void testbundle1ServiceFoundAndActivated() {
-    	assertEquals("Hello world!", helloService.getMessage());
+    public void testSingleServiceProperty() {
+    	ServiceReference<HelloService> helloServiceReference = bundleContext.getServiceReference(HelloService.class);
+    	String[] allKeys = helloServiceReference.getPropertyKeys();
+    	assertEquals(3, allKeys.length);
+
+        // Remove the keys that are always present on a service
+    	ArrayList<String> customKeys = new ArrayList<String>(Arrays.asList(allKeys));
+        customKeys.removeAll(Arrays.asList(keysAlwaysPresentOnService));
+
+        // Verify that the remaining property has the expected key and value
+        assertEquals(1, customKeys.size());
+        String customKey = customKeys.get(0);
+        String customValue = (String) helloServiceReference.getProperty(customKey);
+        assertEquals("someprop", customKey);
+        assertEquals("somevalue", customValue);
+    }
+
+    /**
+     * Verifies that a multiple {@link ServiceProperty} annotations inside a
+     * {@link ServiceProperties} on a service provider is picked up and set
+     * as a property on the exposed OSGi service.
+     */
+    @Test
+    public void testMultipleServiceProperties() {
+    	ServiceReference<HelloService2> helloService2Reference = bundleContext.getServiceReference(HelloService2.class);
+    	String[] allKeys = helloService2Reference.getPropertyKeys();
+    	assertEquals(5, allKeys.length);
+
+        // Remove the keys that are always present on a service
+    	ArrayList<String> customKeys = new ArrayList<String>(Arrays.asList(allKeys));
+        customKeys.removeAll(Arrays.asList(keysAlwaysPresentOnService));
+
+        // Verify that the remaining property has the expected keys and values
+        assertEquals(3, customKeys.size());
+        assertThat(customKeys, hasItems("someprop", "otherprop", "lastprop"));
+        assertEquals("somevalue", helloService2Reference.getProperty("someprop"));
+        assertEquals("othervalue", helloService2Reference.getProperty("otherprop"));
+        assertEquals("lastvalue", helloService2Reference.getProperty("lastprop"));
     }
 
 }

@@ -27,7 +27,6 @@
    <groupId>no.steria.osgi.jsr330activator</groupId>
    <artifactId>jsr330activator.implementation</artifactId>
    <version>${project.version}</version>
-   <scope>test</scope>
   </dependency>
   <dependency>
    <groupId>org.apache.servicemix.bundles</groupId>
