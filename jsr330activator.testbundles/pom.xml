@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+ <modelVersion>4.0.0</modelVersion>
+ <groupId>no.steria.osgi.jsr330activator</groupId>
+ <artifactId>jsr330activator</artifactId>
+ <version>1.1.0-SNAPSHOT</version>
+
+ <packaging>pom</packaging>
+
+ <name>jsr330activator</name>
+
+
+ <licenses>
+  <license>
+   <name>Eclipse Public License - v 1.0</name>
+   <url>LICENSE</url>
+  </license>
+ </licenses>
+
+ <developers>
+  <developer>
+   <name>Steinar Bang</name>
+   <email>steb@soprasteria.com</email>
+   <organization>steria</organization>
+   <organizationUrl>https://github.com/sbang</organizationUrl>
+  </developer>
+ </developers>
+
+ <properties>
+  <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+ </properties>
+
+ <dependencies>
+  <dependency>
+   <groupId>junit</groupId>
+   <artifactId>junit</artifactId>
+   <version>4.12</version>
+  </dependency>
+ </dependencies>
+
+ <modules>
+  <module>jsr330activator.gogoshell</module>
+  <module>jsr330activator.implementation</module>
+  <module>jsr330activator.mocks</module>
+  <module>jsr330activator.testbundle1</module>
+  <module>jsr330activator.testbundle2</module>
+  <module>jsr330activator.testbundle3</module>
+  <module>jsr330activator.testbundle4</module>
+  <module>jsr330activator.testbundle5</module>
+  <module>jsr330activator.testbundle6</module>
+  <module>jsr330activator.testbundle7</module>
+  <module>jsr330activator.testbundle8</module>
+  <module>jsr330activator.tests</module>
+ </modules>
+
+ <build>
+  <plugins>
+   <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-source-plugin</artifactId>
+    <version>2.4</version>
+    <executions>
+     <execution>
+      <id>attach-sources</id>
+      <goals>
+       <goal>jar</goal>
+      </goals>
+     </execution>
+    </executions>
+   </plugin>
+   <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-javadoc-plugin</artifactId>
+    <version>2.10.2</version>
+    <configuration>
+     <show>private</show>
+    </configuration>
+    <executions>
+     <execution>
+      <id>attach-javadocs</id>
+      <goals>
+       <goal>jar</goal>
+      </goals>
+      <configuration>
+       <failOnError>false</failOnError>
+      </configuration>
+     </execution>
+    </executions>
+   </plugin>
+   <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-gpg-plugin</artifactId>
+    <version>1.5</version>
+    <executions>
+     <execution>
+      <id>sign-artifacts</id>
+      <phase>verify</phase>
+      <goals>
+       <goal>sign</goal>
+      </goals>
+     </execution>
+    </executions>
+   </plugin>
+   <plugin>
+    <groupId>org.codehaus.mojo</groupId>
+    <artifactId>cobertura-maven-plugin</artifactId>
+    <version>2.7</version>
+    <configuration>
+     <outputDirectory>${basedir}/target</outputDirectory>
+     <formats>
+      <format>html</format>
+      <format>xml</format>
+     </formats>
+     <instrumentation>
+      <excludes>
+       <exclude>no/steria/osgi/mocks/**/*.class</exclude>
+       <exclude>no/steria/osgi/jsr330activator/testbundle1/**/*.class</exclude>
+       <exclude>no/steria/osgi/jsr330activator/testbundle2/**/*.class</exclude>
+       <exclude>no/steria/osgi/jsr330activator/testbundle3/**/*.class</exclude>
+       <exclude>no/steria/osgi/jsr330activator/testbundle4/**/*.class</exclude>
+       <exclude>no/steria/osgi/jsr330activator/testbundle5/**/*.class</exclude>
+       <exclude>no/steria/osgi/jsr330activator/testbundle6/**/*.class</exclude>
+       <exclude>no/steria/osgi/jsr330activator/testbundle7/**/*.class</exclude>
+       <exclude>no/steria/osgi/jsr330activator/testbundle8/**/*.class</exclude>
+      </excludes>
+     </instrumentation>
+     <aggregate>true</aggregate>
+    </configuration>
+   </plugin>
+   <plugin>
+    <groupId>org.eluder.coveralls</groupId>
+    <artifactId>coveralls-maven-plugin</artifactId>
+    <version>3.1.0</version>
+    <configuration>
+     <coberturaReports>
+      <coberturaReport>${basedir}/target/coverage.xml</coberturaReport>
+     </coberturaReports>
+    </configuration>
+   </plugin>
+   <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-release-plugin</artifactId>
+    <version>2.5.2</version>
+    <configuration>
+     <pushChanges>false</pushChanges>
+     <localCheckout>true</localCheckout>
+     <preparationGoals>clean install</preparationGoals>
+    </configuration>
+   </plugin>
+  </plugins>
+ </build>
+
+ <description>An OSGi bundle activator implementation that will scan the bundle for JSR330 Provider interface implementations instantiate the providers, and register the provided services with OSGi.</description>
+
+ <scm>
+  <url>https://github.com/sbang/jsr330activator</url>
+  <connection>scm:git:https://github.com/sbang/jsr330activator.git</connection>
+  <tag>HEAD</tag>
+ </scm>
+
+ <issueManagement>
+  <url>https://github.com/sbang/jsr330activator/issues</url>
+  <system>Github issue tracker</system>
+ </issueManagement>
+
+ <ciManagement>
+  <url>https://travis-ci.org/sbang/jsr330activator</url>
+  <system>travis-ci</system>
+ </ciManagement>
+
+ <distributionManagement>
+  <snapshotRepository>
+   <id>ossrh</id>
+   <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+  </snapshotRepository>
+  <repository>
+   <id>ossrh</id>
+   <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+  </repository>
+ </distributionManagement>
+
+ <url>http://sbang.github.io/jsr330activator/</url>
+</project>
