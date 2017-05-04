@@ -37,13 +37,13 @@ public class Jsr330ActivatorIntegrationTest extends Jsr330ActivatorIntegrationte
     @Configuration
     public Option[] config() {
         return options(
-                       systemProperty("logback.configurationFile").value("file:src/test/resources/logback.xml"),
-                       mavenBundle("org.slf4j", "slf4j-api", "1.7.2"),
-                       mavenBundle("ch.qos.logback", "logback-core", "1.0.4"),
-                       mavenBundle("ch.qos.logback", "logback-classic", "1.0.4"),
-                       mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.implementation", getMavenProjectVersion()),
-                       mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.testbundle1", getMavenProjectVersion()),
-                       junitBundles());
+            systemProperty("logback.configurationFile").value("file:src/test/resources/logback.xml"),
+            mavenBundle("org.slf4j", "slf4j-api", "1.7.2"),
+            mavenBundle("ch.qos.logback", "logback-core", "1.0.4"),
+            mavenBundle("ch.qos.logback", "logback-classic", "1.0.4"),
+            mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.implementation", getMavenProjectVersion()),
+            mavenBundle("no.steria.osgi.jsr330activator", "jsr330activator.testbundle1", getMavenProjectVersion()),
+            junitBundles());
     }
 
     /**
