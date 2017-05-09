@@ -151,7 +151,7 @@ public class ProviderAdapter {
             if (providedServiceType instanceof Class) {
                 Class<?> service = (Class<?>)providedServiceType;
                 String serviceName = service.getCanonicalName();
-                Dictionary<String, String> properties = findServicePropertiesAndServiceName();
+                Dictionary<String,Object> properties = findServicePropertiesAndServiceName();
 
                 serviceRegistration = bundleContext.registerService(serviceName, serviceImpl, properties);
             }
@@ -159,20 +159,20 @@ public class ProviderAdapter {
         }
     }
 
-    private Dictionary<String, String> findServicePropertiesAndServiceName() {
-        Dictionary<String, String> properties = findServicePropertyAnnotations();
+    private Dictionary<String, Object> findServicePropertiesAndServiceName() {
+        Dictionary<String, Object> properties = findServicePropertyAnnotations();
         Named named = provider.getClass().getAnnotation(Named.class);
         String name = (named!=null) ? named.value() : null;
         if (name != null) {
-            properties = (properties!=null) ? properties : new Hashtable<String, String>();
+            properties = (properties!=null) ? properties : new Hashtable<String, Object>();
             properties.put("id", name); // Use "id" as the service property: compatibility with apache aries blueprint blueprint-maven-plugin
         }
 
         return properties;
     }
 
-    private Dictionary<String, String> findServicePropertyAnnotations() {
-        Dictionary<String, String> properties = findSingleServiceProperty();
+    private Dictionary<String, Object> findServicePropertyAnnotations() {
+        Dictionary<String, Object> properties = findSingleServiceProperty();
         if (properties != null) {
             // If there is a single property, there can't be multiple properties
             return properties;
@@ -181,29 +181,37 @@ public class ProviderAdapter {
         return findMultipleServiceProperties();
     }
 
-    private Dictionary<String, String> findSingleServiceProperty() {
+    private Dictionary<String, Object> findSingleServiceProperty() {
         ServiceProperty serviceProperty = provider.getClass().getAnnotation(ServiceProperty.class);
         if (serviceProperty == null) {
             return null;
         }
 
-        Hashtable<String, String> properties = new Hashtable<String, String>();
-        properties.put(serviceProperty.name(), serviceProperty.value());
+        Hashtable<String, Object> properties = new Hashtable<String, Object>();
+        saveServiceProperty(properties, serviceProperty);
         return properties;
     }
 
-    private Dictionary<String, String> findMultipleServiceProperties() {
+    private Dictionary<String, Object> findMultipleServiceProperties() {
         ServiceProperties serviceProperties = provider.getClass().getAnnotation(ServiceProperties.class);
         if (serviceProperties == null || serviceProperties.value().length == 0) {
             return null;
         }
 
-        Hashtable<String, String> properties = new Hashtable<String, String>();
+        Hashtable<String, Object> properties = new Hashtable<String, Object>();
         for (ServiceProperty property : serviceProperties.value()) {
-            properties.put(property.name(), property.value());
+            saveServiceProperty(properties, property);
         }
 
         return properties;
+    }
+
+    private void saveServiceProperty(Hashtable<String, Object> properties, ServiceProperty serviceProperty) {
+    	if (serviceProperty.values().length > 0) {
+            properties.put(serviceProperty.name(), serviceProperty.values());
+    	} else {
+            properties.put(serviceProperty.name(), serviceProperty.value());
+    	}
     }
 
     void setupInjectionListeners(BundleContext bundleContext) {

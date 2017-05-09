@@ -1,7 +1,6 @@
 package no.steria.osgi.jsr330activator.tests;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.*;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
@@ -87,18 +86,30 @@ public class Jsr330ActivatorServicePropertyTest extends Jsr330ActivatorIntegrati
     public void testMultipleServiceProperties() {
     	ServiceReference<HelloService2> helloService2Reference = bundleContext.getServiceReference(HelloService2.class);
     	String[] allKeys = helloService2Reference.getPropertyKeys();
-    	assertEquals(5, allKeys.length);
+    	assertEquals(7, allKeys.length);
 
         // Remove the keys that are always present on a service
     	ArrayList<String> customKeys = new ArrayList<String>(Arrays.asList(allKeys));
         customKeys.removeAll(Arrays.asList(keysAlwaysPresentOnService));
 
         // Verify that the remaining property has the expected keys and values
-        assertEquals(3, customKeys.size());
-        assertThat(customKeys, hasItems("someprop", "otherprop", "lastprop"));
+        assertEquals(5, customKeys.size());
+        assertThat(customKeys, hasItems("someprop", "otherprop", "lastprop", "multiple", "multiplewithstring"));
         assertEquals("somevalue", helloService2Reference.getProperty("someprop"));
         assertEquals("othervalue", helloService2Reference.getProperty("otherprop"));
         assertEquals("lastvalue", helloService2Reference.getProperty("lastprop"));
+
+        // Verify that all values of a string array property value are present on the OSGi service property
+        String[] multipleValues = (String[]) helloService2Reference.getProperty("multiple");
+        assertEquals(2, multipleValues.length);
+        assertEquals("val1", multipleValues[0]);
+        assertEquals("val2", multipleValues[1]);
+
+        // Verify that a property with both a string value and a string array value gets the string array value
+        // as the property set on the OSGi service.
+        String[] multipleValuesWithString = (String[]) helloService2Reference.getProperty("multiplewithstring");
+        assertEquals(1, multipleValuesWithString.length);
+        assertEquals("found1", multipleValuesWithString[0]);
     }
 
 }

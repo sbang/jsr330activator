@@ -635,7 +635,19 @@ public class ProviderAdapterTest {
 
         // Check that the properties from the property list has been found and set on the registration
         ServiceReference<?> serviceReference = bundleContext.getServiceReference(HelloService.class.getCanonicalName());
-        assertEquals(2, serviceReference.getPropertyKeys().length);
+        assertEquals(4, serviceReference.getPropertyKeys().length);
+
+        // Verify that all values of a string array property value are present on the OSGi service property
+        String[] multipleValues = (String[]) serviceReference.getProperty("multiple");
+        assertEquals(2, multipleValues.length);
+        assertEquals("val1", multipleValues[0]);
+        assertEquals("val2", multipleValues[1]);
+
+        // Verify that a property with both a string value and a string array value gets the string array value
+        // as the property set on the OSGi service.
+        String[] multipleValuesWithString = (String[]) serviceReference.getProperty("multiplewithstring");
+        assertEquals(1, multipleValuesWithString.length);
+        assertEquals("found1", multipleValuesWithString[0]);
     }
 
     @Test
