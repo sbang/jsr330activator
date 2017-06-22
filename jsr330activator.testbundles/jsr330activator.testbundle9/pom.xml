@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+ <modelVersion>4.0.0</modelVersion>
+ <parent>
+  <artifactId>jsr330activator.testbundles</artifactId>
+  <groupId>no.steria.osgi.jsr330activator</groupId>
+  <version>1.1.0-SNAPSHOT</version>
+ </parent>
+
+ <artifactId>jsr330activator.testbundle9</artifactId>
+ <packaging>bundle</packaging>
+
+ <name>jsr330activator.testbundle9 OSGi Bundle</name>
+
+ <properties>
+  <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+ </properties>
+
+ <dependencies>
+  <dependency>
+   <groupId>org.osgi</groupId>
+   <artifactId>org.osgi.core</artifactId>
+   <version>4.3.0</version>
+   <scope>provided</scope>
+  </dependency>
+  <dependency>
+   <groupId>no.steria.osgi.jsr330activator</groupId>
+   <artifactId>jsr330activator.implementation</artifactId>
+   <version>${project.version}</version>
+   <scope>provided</scope>
+  </dependency>
+  <dependency>
+   <groupId>javax.inject</groupId>
+   <artifactId>javax.inject</artifactId>
+   <version>1</version>
+  </dependency>
+  <dependency>
+   <groupId>no.steria.osgi.jsr330activator</groupId>
+   <artifactId>jsr330activator.testbundle8</artifactId>
+   <version>${project.version}</version>
+   <scope>provided</scope>
+  </dependency>
+ </dependencies>
+
+ <build>
+  <plugins>
+   <plugin>
+    <groupId>org.apache.felix</groupId>
+    <artifactId>maven-bundle-plugin</artifactId>
+    <version>2.3.7</version>
+    <extensions>true</extensions>
+    <configuration>
+     <instructions>
+      <Bundle-Activator>no.steria.osgi.jsr330activator.Jsr330Activator</Bundle-Activator>
+      <Embed-Dependency>jsr330activator.implementation;inline=true,javax.inject;inline=true</Embed-Dependency>
+     </instructions>
+    </configuration>
+   </plugin>
+  </plugins>
+ </build>
+
+ <description>An OSGi bundle used in integration tests.  This bundle have two separate providers of the same service, that both should be registered as OSGi services.</description>
+</project>
