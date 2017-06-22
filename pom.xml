@@ -10,6 +10,8 @@
 
  <name>jsr330activator</name>
 
+ <description>An OSGi bundle activator implementation that will scan the bundle for JSR330 Provider interface implementations instantiate the providers, and register the provided services with OSGi.</description>
+
 
  <licenses>
   <license>
@@ -29,6 +31,7 @@
 
  <properties>
   <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  <maven.bundle.plugin.version>2.5.3</maven.bundle.plugin.version>
  </properties>
 
  <dependencies>
@@ -116,6 +119,7 @@
        <exclude>no/steria/osgi/jsr330activator/testbundle6/**/*.class</exclude>
        <exclude>no/steria/osgi/jsr330activator/testbundle7/**/*.class</exclude>
        <exclude>no/steria/osgi/jsr330activator/testbundle8/**/*.class</exclude>
+       <exclude>no/steria/osgi/jsr330activator/testbundle9/**/*.class</exclude>
       </excludes>
      </instrumentation>
      <aggregate>true</aggregate>
@@ -142,9 +146,16 @@
     </configuration>
    </plugin>
   </plugins>
+  <pluginManagement>
+   <plugins>
+    <plugin>
+     <groupId>org.apache.felix</groupId>
+     <artifactId>maven-bundle-plugin</artifactId>
+     <version>${maven.bundle.plugin.version}</version>
+    </plugin>
+   </plugins>
+  </pluginManagement>
  </build>
-
- <description>An OSGi bundle activator implementation that will scan the bundle for JSR330 Provider interface implementations instantiate the providers, and register the provided services with OSGi.</description>
 
  <scm>
   <url>https://github.com/sbang/jsr330activator</url>
