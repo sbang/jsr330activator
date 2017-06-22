@@ -42,14 +42,14 @@ public class Jsr330ActivatorTest {
      */
     @Test
     public void testScanBundleForClasses() {
-    	BundleWiring bundleWiring = mock(BundleWiring.class);
-    	// Names of 3 classes found in the test project, name of 1 class not found (to test the try/catch)
-    	List<String> classResources = Arrays.asList("no/steria/osgi/jsr330activator/testbundle/HelloService.class", "no/steria/osgi/jsr330activator/testbundle/implementation/HelloServiceImplementation.class", "no/steria/osgi/jsr330activator/testbundle/implementation/HelloServiceProvider.class", "no/steria/osgi/jsr330activator/testbundle/implementation/NotFoundClass.class");
-    	when(bundleWiring.listResources(anyString(), anyString(), anyInt())).thenReturn(classResources);
-    	when(bundleWiring.getClassLoader()).thenReturn(this.getClass().getClassLoader());
-    	Bundle bundle = new MockBundle(bundleWiring);
+        BundleWiring bundleWiring = mock(BundleWiring.class);
+        // Names of 3 classes found in the test project, name of 1 class not found (to test the try/catch)
+        List<String> classResources = Arrays.asList("no/steria/osgi/jsr330activator/testbundle/HelloService.class", "no/steria/osgi/jsr330activator/testbundle/implementation/HelloServiceImplementation.class", "no/steria/osgi/jsr330activator/testbundle/implementation/HelloServiceProvider.class", "no/steria/osgi/jsr330activator/testbundle/implementation/NotFoundClass.class");
+        when(bundleWiring.listResources(anyString(), anyString(), anyInt())).thenReturn(classResources);
+        when(bundleWiring.getClassLoader()).thenReturn(this.getClass().getClassLoader());
+        Bundle bundle = new MockBundle(bundleWiring);
 
-    	Jsr330Activator activator = new Jsr330Activator();
+        Jsr330Activator activator = new Jsr330Activator();
         List<Class<?>> bundleClasses = activator.scanBundleForClasses(bundle);
         assertEquals(3, bundleClasses.size());
     }
@@ -60,9 +60,9 @@ public class Jsr330ActivatorTest {
      */
     @Test
     public void testScanBundleForClassesNullBundleWiringFromAdapt() {
-    	Bundle bundle = mock(Bundle.class);
+        Bundle bundle = mock(Bundle.class);
 
-    	Jsr330Activator activator = new Jsr330Activator();
+        Jsr330Activator activator = new Jsr330Activator();
         List<Class<?>> bundleClasses = activator.scanBundleForClasses(bundle);
         assertEquals(0, bundleClasses.size());
     }
@@ -74,10 +74,10 @@ public class Jsr330ActivatorTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testScanBundleForClassesBundleWiringAdaptThrowsSecurityException() {
-    	Bundle bundle = mock(Bundle.class);
-    	when(bundle.adapt(eq(BundleWiring.class))).thenThrow(SecurityException.class);
+        Bundle bundle = mock(Bundle.class);
+        when(bundle.adapt(eq(BundleWiring.class))).thenThrow(SecurityException.class);
 
-    	Jsr330Activator activator = new Jsr330Activator();
+        Jsr330Activator activator = new Jsr330Activator();
         List<Class<?>> bundleClasses = activator.scanBundleForClasses(bundle);
         assertEquals(0, bundleClasses.size());
     }
@@ -88,13 +88,13 @@ public class Jsr330ActivatorTest {
      */
     @Test
     public void testScanBundleForClassesNullClassloaderFromBundleWiring() {
-    	Bundle bundle = mock(Bundle.class);
-    	BundleWiring bundleWiring = mock(BundleWiring.class);
-    	List<String> classnames = Arrays.asList("no.steria.osgi.jsr330activator.testbundle.HelloService", "no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceImplementation", "no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceProvider", "no.steria.osgi.jsr330activator.testbundle.implementation.NotFoundClass");
-    	when(bundleWiring.listResources(anyString(), anyString(), eq(BundleWiring.LISTRESOURCES_LOCAL))).thenReturn(classnames);
-    	when(bundle.adapt(eq(BundleWiring.class))).thenReturn(bundleWiring);
+        Bundle bundle = mock(Bundle.class);
+        BundleWiring bundleWiring = mock(BundleWiring.class);
+        List<String> classnames = Arrays.asList("no.steria.osgi.jsr330activator.testbundle.HelloService", "no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceImplementation", "no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceProvider", "no.steria.osgi.jsr330activator.testbundle.implementation.NotFoundClass");
+        when(bundleWiring.listResources(anyString(), anyString(), eq(BundleWiring.LISTRESOURCES_LOCAL))).thenReturn(classnames);
+        when(bundle.adapt(eq(BundleWiring.class))).thenReturn(bundleWiring);
 
-    	Jsr330Activator activator = new Jsr330Activator();
+        Jsr330Activator activator = new Jsr330Activator();
         List<Class<?>> bundleClasses = activator.scanBundleForClasses(bundle);
         assertEquals(0, bundleClasses.size());
     }
@@ -106,14 +106,14 @@ public class Jsr330ActivatorTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testScanBundleForClassesBundleWiringGetClassLoaderThrowsSecurityException() {
-    	Bundle bundle = mock(Bundle.class);
-    	BundleWiring bundleWiring = mock(BundleWiring.class);
-    	List<String> classnames = Arrays.asList("no.steria.osgi.jsr330activator.testbundle.HelloService", "no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceImplementation", "no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceProvider", "no.steria.osgi.jsr330activator.testbundle.implementation.NotFoundClass");
-    	when(bundleWiring.listResources(anyString(), anyString(), eq(BundleWiring.LISTRESOURCES_LOCAL))).thenReturn(classnames);
-    	when(bundleWiring.getClassLoader()).thenThrow(SecurityException.class);
-    	when(bundle.adapt(eq(BundleWiring.class))).thenReturn(bundleWiring);
+        Bundle bundle = mock(Bundle.class);
+        BundleWiring bundleWiring = mock(BundleWiring.class);
+        List<String> classnames = Arrays.asList("no.steria.osgi.jsr330activator.testbundle.HelloService", "no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceImplementation", "no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceProvider", "no.steria.osgi.jsr330activator.testbundle.implementation.NotFoundClass");
+        when(bundleWiring.listResources(anyString(), anyString(), eq(BundleWiring.LISTRESOURCES_LOCAL))).thenReturn(classnames);
+        when(bundleWiring.getClassLoader()).thenThrow(SecurityException.class);
+        when(bundle.adapt(eq(BundleWiring.class))).thenReturn(bundleWiring);
 
-    	Jsr330Activator activator = new Jsr330Activator();
+        Jsr330Activator activator = new Jsr330Activator();
         List<Class<?>> bundleClasses = activator.scanBundleForClasses(bundle);
         assertEquals(0, bundleClasses.size());
     }
@@ -124,12 +124,12 @@ public class Jsr330ActivatorTest {
      */
     @Test
     public void testScanBundleForClassesListResourcesReturnsNull() {
-    	Bundle bundle = mock(Bundle.class);
-    	BundleWiring bundleWiring = mock(BundleWiring.class);
-    	when(bundleWiring.listResources(anyString(), anyString(), eq(BundleWiring.LISTRESOURCES_LOCAL))).thenReturn(null);
-    	when(bundle.adapt(eq(BundleWiring.class))).thenReturn(bundleWiring);
+        Bundle bundle = mock(Bundle.class);
+        BundleWiring bundleWiring = mock(BundleWiring.class);
+        when(bundleWiring.listResources(anyString(), anyString(), eq(BundleWiring.LISTRESOURCES_LOCAL))).thenReturn(null);
+        when(bundle.adapt(eq(BundleWiring.class))).thenReturn(bundleWiring);
 
-    	Jsr330Activator activator = new Jsr330Activator();
+        Jsr330Activator activator = new Jsr330Activator();
         List<Class<?>> bundleClasses = activator.scanBundleForClasses(bundle);
         assertEquals(0, bundleClasses.size());
     }
@@ -137,12 +137,12 @@ public class Jsr330ActivatorTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testFindProviders() {
-    	List<Class<?>> classesInBundle = Arrays.asList(HelloService.class, HelloServiceImplementation.class, HelloServiceProvider.class);
+        List<Class<?>> classesInBundle = Arrays.asList(HelloService.class, HelloServiceImplementation.class, HelloServiceProvider.class);
 
-    	Jsr330Activator activator = new Jsr330Activator();
-    	Map<Type, Class<?>> providers = activator.findProviders(classesInBundle);
-    	assertEquals(1, providers.size());
-    	assertEquals(HelloServiceProvider.class, providers.get(HelloService.class));
+        Jsr330Activator activator = new Jsr330Activator();
+        Map<Type, Class<?>> providers = activator.findProviders(classesInBundle);
+        assertEquals(1, providers.size());
+        assertEquals(HelloServiceProvider.class, providers.get(HelloService.class));
     }
 
     /***
@@ -178,16 +178,16 @@ public class Jsr330ActivatorTest {
 
     @Test
     public void testCreateProviderAdapterList() throws InvalidSyntaxException {
-    	Map<Type, Class<?>> providers = new HashMap<Type, Class<?>>();
-    	providers.put(HelloService.class, HelloServiceProvider.class);
-    	providers.put(HelloService2.class, HelloService2Provider.class);
-    	providers.put(AddInjectionsService.class, AddInjectionsServiceProvider.class);
+        Map<Type, Class<?>> providers = new HashMap<Type, Class<?>>();
+        providers.put(HelloService.class, HelloServiceProvider.class);
+        providers.put(HelloService2.class, HelloService2Provider.class);
+        providers.put(AddInjectionsService.class, AddInjectionsServiceProvider.class);
 
-    	Jsr330Activator activator = new Jsr330Activator();
-    	List<ProviderAdapter> providerAdapters = activator.createProviderAdapterList(providers);
-    	assertEquals(3, providerAdapters.size());
+        Jsr330Activator activator = new Jsr330Activator();
+        List<ProviderAdapter> providerAdapters = activator.createProviderAdapterList(providers);
+        assertEquals(3, providerAdapters.size());
 
-    	for (ProviderAdapter providerAdapter : providerAdapters) {
+        for (ProviderAdapter providerAdapter : providerAdapters) {
             if (providerAdapter.getProvidedServiceType() == HelloService.class) {
                 // The HelloService provider has no injections
                 assertFalse(providerAdapter.hasInjections());
@@ -204,44 +204,44 @@ public class Jsr330ActivatorTest {
             }
         }
 
-    	// Start the provider adapters.
-    	BundleContext bundleContext = mock(BundleContext.class);
-    	when(bundleContext.getServiceReferences(anyString(), anyString())).thenReturn(new ServiceReference<?>[0]);
-    	for (ProviderAdapter providerAdapter : providerAdapters) {
+        // Start the provider adapters.
+        BundleContext bundleContext = mock(BundleContext.class);
+        when(bundleContext.getServiceReferences(anyString(), anyString())).thenReturn(new ServiceReference<?>[0]);
+        for (ProviderAdapter providerAdapter : providerAdapters) {
             providerAdapter.start(bundleContext);
         }
     }
 
     @Test
     public void testActivatorStartStop() throws Exception {
-    	BundleWiring bundleWiring = mock(BundleWiring.class);
-    	// Names of 3 classes found in the test project, name of 1 class not found (to test the try/catch)
-    	List<String> classResources = Arrays.asList("no/steria/osgi/jsr330activator/testbundle/HelloService.class", "no/steria/osgi/jsr330activator/testbundle/implementation/HelloServiceImplementation.class", "no/steria/osgi/jsr330activator/testbundle/implementation/HelloServiceProvider.class", "no/steria/osgi/jsr330activator/testbundle/implementation/NotFoundClass.class");
-    	when(bundleWiring.listResources(anyString(), anyString(), anyInt())).thenReturn(classResources);
-     	when(bundleWiring.getClassLoader()).thenReturn(this.getClass().getClassLoader());
-    	MockBundle bundle = new MockBundle(bundleWiring);
-    	BundleContext bundleContext = new MockBundleContext(bundle);
+        BundleWiring bundleWiring = mock(BundleWiring.class);
+        // Names of 3 classes found in the test project, name of 1 class not found (to test the try/catch)
+        List<String> classResources = Arrays.asList("no/steria/osgi/jsr330activator/testbundle/HelloService.class", "no/steria/osgi/jsr330activator/testbundle/implementation/HelloServiceImplementation.class", "no/steria/osgi/jsr330activator/testbundle/implementation/HelloServiceProvider.class", "no/steria/osgi/jsr330activator/testbundle/implementation/NotFoundClass.class");
+        when(bundleWiring.listResources(anyString(), anyString(), anyInt())).thenReturn(classResources);
+        when(bundleWiring.getClassLoader()).thenReturn(this.getClass().getClassLoader());
+        MockBundle bundle = new MockBundle(bundleWiring);
+        BundleContext bundleContext = new MockBundleContext(bundle);
 
-    	// Verify that there is no HelloService before the registration
-    	ServiceReference<?> helloBeforeActivation = bundleContext.getServiceReference(HelloService.class.getCanonicalName());
-    	assertNull(helloBeforeActivation);
+        // Verify that there is no HelloService before the registration
+        ServiceReference<?> helloBeforeActivation = bundleContext.getServiceReference(HelloService.class.getCanonicalName());
+        assertNull(helloBeforeActivation);
 
-    	// Register the found services
-    	Jsr330Activator activator = new Jsr330Activator();
-    	activator.start(bundleContext);
+        // Register the found services
+        Jsr330Activator activator = new Jsr330Activator();
+        activator.start(bundleContext);
 
-    	// Verify that the service can now be found
-    	ServiceReference<?> helloAfterActivation = bundleContext.getServiceReference(HelloService.class.getCanonicalName());
-    	assertNotNull(helloAfterActivation);
+        // Verify that the service can now be found
+        ServiceReference<?> helloAfterActivation = bundleContext.getServiceReference(HelloService.class.getCanonicalName());
+        assertNotNull(helloAfterActivation);
 
-    	// Get the service from the reference and call it
-    	HelloService helloService = (HelloService) bundleContext.getService(helloAfterActivation);
-    	assertEquals("Hello world!", helloService.getMessage());
+        // Get the service from the reference and call it
+        HelloService helloService = (HelloService) bundleContext.getService(helloAfterActivation);
+        assertEquals("Hello world!", helloService.getMessage());
 
-    	// Unregister the service and verify that there is no service of that type present
-    	activator.stop(bundleContext);
-    	ServiceReference<?> helloAfterDeactivation = bundleContext.getServiceReference(HelloService.class.getCanonicalName());
-    	assertNull(helloAfterDeactivation);
+        // Unregister the service and verify that there is no service of that type present
+        activator.stop(bundleContext);
+        ServiceReference<?> helloAfterDeactivation = bundleContext.getServiceReference(HelloService.class.getCanonicalName());
+        assertNull(helloAfterDeactivation);
     }
 
 }
