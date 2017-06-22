@@ -210,6 +210,7 @@ This is a Java project built by maven.  The maven projects, are:
    - Fixes [[https://github.com/sbang/jsr330activator/issues/2][Issue #2 Need a way to get notified on activator shutdown (for pax-web unregistration)]]
    - Fixes [[https://github.com/sbang/jsr330activator/issues/4][Issue #4 Some way of handling multiple instances of the same service, and not require all of them to activate the Provider<>]]
    - Fixes [[https://github.com/sbang/jsr330activator/issues/6][Issue #6 There should be some way of putting properties on provided services]]
+   - Fixes [[https://github.com/sbang/jsr330activator/issues/9][Issue #9 jsr330activator only supports a single provider for each type]]
  - 1.0.1 First successful release
  - 1.0.0 Failed deployment to OSSRH (aka. "maven central")
 * Development stuff

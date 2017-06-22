@@ -14,6 +14,7 @@ import no.steria.osgi.jsr330activator.testbundle.AddInjectionsService;
 import no.steria.osgi.jsr330activator.testbundle.HelloService;
 import no.steria.osgi.jsr330activator.testbundle.HelloService2;
 import no.steria.osgi.jsr330activator.testbundle.implementation.AddInjectionsServiceProvider;
+import no.steria.osgi.jsr330activator.testbundle.implementation.HelloService2Implementation;
 import no.steria.osgi.jsr330activator.testbundle.implementation.HelloService2Provider;
 import no.steria.osgi.jsr330activator.testbundle.implementation.HelloService2Provider2;
 import no.steria.osgi.jsr330activator.testbundle.implementation.HelloServiceImplementation;
@@ -140,9 +141,20 @@ public class Jsr330ActivatorTest {
         List<Class<?>> classesInBundle = Arrays.asList(HelloService.class, HelloServiceImplementation.class, HelloServiceProvider.class);
 
         Jsr330Activator activator = new Jsr330Activator();
-        Map<Type, Class<?>> providers = activator.findProviders(classesInBundle);
+        Map<Type, List<Class<?>>> providers = activator.findProviders(classesInBundle);
         assertEquals(1, providers.size());
-        assertEquals(HelloServiceProvider.class, providers.get(HelloService.class));
+        assertEquals(HelloServiceProvider.class, providers.get(HelloService.class).get(0));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testFindProvidersMultipleProvidersPerService() {
+        List<Class<?>> classesInBundle = Arrays.asList(HelloService2.class, HelloServiceImplementation.class, HelloServiceProvider.class, HelloService2Provider.class, HelloService2Implementation.class, HelloService2Provider2.class);
+
+        Jsr330Activator activator = new Jsr330Activator();
+        Map<Type, List<Class<?>>> providers = activator.findProviders(classesInBundle);
+        assertEquals(2, providers.size());
+        assertEquals(HelloServiceProvider.class, providers.get(HelloService.class).get(0));
     }
 
     /***
@@ -155,9 +167,9 @@ public class Jsr330ActivatorTest {
         List<Class<?>> classesInBundle = Arrays.asList(HelloService2.class, HelloServiceImplementation.class, HelloServiceProvider2.class);
 
         Jsr330Activator activator = new Jsr330Activator();
-        Map<Type, Class<?>> providers = activator.findProviders(classesInBundle);
+        Map<Type, List<Class<?>>> providers = activator.findProviders(classesInBundle);
         assertEquals(1, providers.size());
-        assertEquals(HelloServiceProvider2.class, providers.get(HelloService.class));
+        assertEquals(HelloServiceProvider2.class, providers.get(HelloService.class).get(0));
     }
 
     /***
@@ -171,21 +183,21 @@ public class Jsr330ActivatorTest {
         List<Class<?>> classesInBundle = Arrays.asList(HelloService2.class, HelloServiceImplementation.class, HelloService2Provider2.class);
 
         Jsr330Activator activator = new Jsr330Activator();
-        Map<Type, Class<?>> providers = activator.findProviders(classesInBundle);
+        Map<Type, List<Class<?>>> providers = activator.findProviders(classesInBundle);
         assertEquals(1, providers.size());
         assertEquals(HelloService2Provider2.class, providers.get(HelloService2.class));
     }
 
     @Test
     public void testCreateProviderAdapterList() throws InvalidSyntaxException {
-        Map<Type, Class<?>> providers = new HashMap<Type, Class<?>>();
-        providers.put(HelloService.class, HelloServiceProvider.class);
-        providers.put(HelloService2.class, HelloService2Provider.class);
-        providers.put(AddInjectionsService.class, AddInjectionsServiceProvider.class);
+        Map<Type, List<Class<?>>> providers = new HashMap<Type, List<Class<?>>>();
+        providers.put(HelloService.class, Arrays.asList(new Class<?>[] {HelloServiceProvider.class, HelloServiceProvider2.class}));
+        providers.put(HelloService2.class, Arrays.asList(new Class<?>[] {HelloService2Provider.class}));
+        providers.put(AddInjectionsService.class, Arrays.asList(new Class<?>[] {AddInjectionsServiceProvider.class}));
 
         Jsr330Activator activator = new Jsr330Activator();
         List<ProviderAdapter> providerAdapters = activator.createProviderAdapterList(providers);
-        assertEquals(3, providerAdapters.size());
+        assertEquals(4, providerAdapters.size());
 
         for (ProviderAdapter providerAdapter : providerAdapters) {
             if (providerAdapter.getProvidedServiceType() == HelloService.class) {

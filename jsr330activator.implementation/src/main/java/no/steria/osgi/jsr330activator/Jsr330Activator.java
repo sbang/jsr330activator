@@ -47,7 +47,7 @@ public class Jsr330Activator implements BundleActivator {
 
     public void start(BundleContext context) throws Exception {
         List<Class<?>> classes = scanBundleForClasses(context.getBundle());
-        Map<Type, Class<?>> providers = findProviders(classes);
+        Map<Type, List<Class<?>>> providers = findProviders(classes);
         serviceProviderAdapters = createProviderAdapterList(providers);
         for (ProviderAdapter serviceProviderAdapter : serviceProviderAdapters) {
             serviceProviderAdapter.start(context);
@@ -81,8 +81,8 @@ public class Jsr330Activator implements BundleActivator {
         return classes;
     }
 
-    Map<Type, Class<?>> findProviders(List<Class<?>> classesInBundle) {
-        Map<Type, Class<?>> providers = new HashMap<Type, Class<?>>();
+    Map<Type, List<Class<?>>> findProviders(List<Class<?>> classesInBundle) {
+        Map<Type, List<Class<?>>> providers = new HashMap<Type, List<Class<?>>>();
         for (Class<?> classInBundle : classesInBundle) {
             Type[] genericInterfaces = classInBundle.getGenericInterfaces();
             if (genericInterfaces.length > 0) {
@@ -94,7 +94,7 @@ public class Jsr330Activator implements BundleActivator {
                         Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
                         if (actualTypeArguments.length > 0) {
                             Type providedService = actualTypeArguments[0];
-                            providers.put(providedService, classInBundle);
+                            putBundleClassInMultimapKeyedOnService(providers, providedService, classInBundle);
                         }
                     }
                 }
@@ -104,11 +104,22 @@ public class Jsr330Activator implements BundleActivator {
         return providers;
     }
 
-    public List<ProviderAdapter> createProviderAdapterList(Map<Type, Class<?>> providers) {
+    private void putBundleClassInMultimapKeyedOnService(Map<Type, List<Class<?>>> providers, Type providedService, Class<?> classInBundle) {
+    	if (!providers.containsKey(providedService)) {
+    		providers.put(providedService, new ArrayList<Class<?>>());
+    	}
+    	
+    	List<Class<?>> providersForService = providers.get(providedService);
+    	providersForService.add(classInBundle);
+	}
+
+	public List<ProviderAdapter> createProviderAdapterList(Map<Type, List<Class<?>>> providers) {
         List<ProviderAdapter> providerAdapters = new ArrayList<ProviderAdapter>();
-        for (Entry<Type, Class<?>> providerEntry : providers.entrySet()) {
-            ProviderAdapter providerAdapter = new ProviderAdapter(providerEntry.getKey(), providerEntry.getValue());
-            providerAdapters.add(providerAdapter);
+        for (Entry<Type, List<Class<?>>> providerEntry : providers.entrySet()) {
+        	for (Class<?> provider : providerEntry.getValue()) {
+                ProviderAdapter providerAdapter = new ProviderAdapter(providerEntry.getKey(), provider);
+                providerAdapters.add(providerAdapter);
+			}
         }
 
         return providerAdapters;
