@@ -1,4 +1,8 @@
 * JSR330Activator - An OSGi BundleActivator implementing whiteboard based dependency injection
+** Status
+
+ [[https://travis-ci.org/sbang/jsr330activator][file:https://travis-ci.org/sbang/jsr330activator.png]] [[https://coveralls.io/r/sbang/jsr330activator][file:https://coveralls.io/repos/sbang/jsr330activator/badge.svg]] [[https://maven-badges.herokuapp.com/maven-central/no.steria.osgi.jsr330activator/jsr330activator.implementation][file:https://maven-badges.herokuapp.com/maven-central/no.steria.osgi.jsr330activator/jsr330activator.implementation/badge.svg]]
+
 ** What's this?
 
  This is an implementation of the [[https://osgi.org/javadoc/r4v43/core/org/osgi/framework/BundleActivator.html][OSGi BundleActivator interface]], that will scan the bundle for implementations of the [[http://atinject.googlecode.com/svn/trunk/javadoc/javax/inject/Provider.html][JSR 330 Provider<> interface]], instantiate the providers, and use them to register the provided interface as an OSGi service.
@@ -223,7 +227,6 @@
   - [[https://github.com/sbang/jsr330activator/issues][Issue tracker]]
   - [[https://issues.sonatype.org/browse/OSSRH-15092][OSSRH issue tracking deployment to OSSRH (formerly "maven central")]]
 
- [[https://travis-ci.org/sbang/jsr330activator][file:https://travis-ci.org/sbang/jsr330activator.png]] [[https://coveralls.io/r/sbang/jsr330activator][file:https://coveralls.io/repos/sbang/jsr330activator/badge.svg]] [[https://maven-badges.herokuapp.com/maven-central/no.steria.osgi.jsr330activator/jsr330activator.implementation][file:https://maven-badges.herokuapp.com/maven-central/no.steria.osgi.jsr330activator/jsr330activator.implementation/badge.svg]]
 *** Using the Apache Felix gogo shell for debugging
  The jsr330activator.gogoshell module isn't used for anything directly in the build process.  This module is used to start an OSGi shell, where the bundles and their behaviour can be examined.
 
