@@ -3,155 +3,156 @@
 
  [[https://travis-ci.org/sbang/jsr330activator][file:https://travis-ci.org/sbang/jsr330activator.png]] [[https://coveralls.io/r/sbang/jsr330activator][file:https://coveralls.io/repos/sbang/jsr330activator/badge.svg]] [[https://maven-badges.herokuapp.com/maven-central/no.steria.osgi.jsr330activator/jsr330activator.implementation][file:https://maven-badges.herokuapp.com/maven-central/no.steria.osgi.jsr330activator/jsr330activator.implementation/badge.svg]]
 
-** What's this?
+** FAQ
+*** What's this?
 
- This is an implementation of the [[https://osgi.org/javadoc/r4v43/core/org/osgi/framework/BundleActivator.html][OSGi BundleActivator interface]], that will scan the bundle for implementations of the [[http://atinject.googlecode.com/svn/trunk/javadoc/javax/inject/Provider.html][JSR 330 Provider<> interface]], instantiate the providers, and use them to register the provided interface as an OSGi service.
+  This is an implementation of the [[https://osgi.org/javadoc/r4v43/core/org/osgi/framework/BundleActivator.html][OSGi BundleActivator interface]], that will scan the bundle for implementations of the [[http://atinject.googlecode.com/svn/trunk/javadoc/javax/inject/Provider.html][JSR 330 Provider<> interface]], instantiate the providers, and use them to register the provided interface as an OSGi service.
 
- Its dependencies are:
- - The Java runtime
- - OSGi core
- - javax.inject
+  Its dependencies are:
+  - The Java runtime
+  - OSGi core
+  - javax.inject
 
-** Why does it exist?
+*** Why does it exist?
 
- [[https://osgi.org/javadoc/r4v43/core/org/osgi/framework/BundleActivator.html][BundleActivators]] exposing services and [[http://www.knopflerfish.org/osgi_service_tutorial.html#white][setting up service listeners for dependecies]], are the "four wheel drives" of OSGi plugins.  A bundle using a BundleActivator can be dropped in /any/ OSGi container using any (or none) component model, e.g. eclipse, Spring dynamic modules, iPOJO, and make its services available there.
+  [[https://osgi.org/javadoc/r4v43/core/org/osgi/framework/BundleActivator.html][BundleActivators]] exposing services and [[http://www.knopflerfish.org/osgi_service_tutorial.html#white][setting up service listeners for dependecies]], are the "four wheel drives" of OSGi plugins.  A bundle using a BundleActivator can be dropped in /any/ OSGi container using any (or none) component model, e.g. eclipse, Spring dynamic modules, iPOJO, and make its services available there.
 
- This project is an attempt at replacing the handwritten code with something that keeps the "four wheel drive" capability, but at the same time is much simpler to maintain.  To do so, it should be simple and small, and to stay small it has to limit what it can support.
+  This project is an attempt at replacing the handwritten code with something that keeps the "four wheel drive" capability, but at the same time is much simpler to maintain.  To do so, it should be simple and small, and to stay small it has to limit what it can support.
 
- So, in short, this is what you get:
- - Each type parameter to a [[http://docs.oracle.com/javaee/6/api/javax/inject/Provider.html][Provider<>]] implementation will be exposed as a service
- - Each Provider<> implementation found will be instantiated once
- - Each Provider<> implementation will be scanned for [[http://docs.oracle.com/javaee/6/api/javax/inject/Inject.html][@Inject]] annotations on fields and methods with a single argument, and service listeners will be set up for the types of the fields/types of the method argument
- - An implementation of the type parameter to each instantiated Provider<> will fetched from [[http://docs.oracle.com/javaee/6/api/javax/inject/Provider.html#get()][Provider<>.get()]] and registered as a service
- - Immediately after Provider<> instantiation if there are no injections
- - Once all Injections have been satisfied, if there are injections
+  So, in short, this is what you get:
+  - Each type parameter to a [[http://docs.oracle.com/javaee/6/api/javax/inject/Provider.html][Provider<>]] implementation will be exposed as a service
+  - Each Provider<> implementation found will be instantiated once
+  - Each Provider<> implementation will be scanned for [[http://docs.oracle.com/javaee/6/api/javax/inject/Inject.html][@Inject]] annotations on fields and methods with a single argument, and service listeners will be set up for the types of the fields/types of the method argument
+  - An implementation of the type parameter to each instantiated Provider<> will fetched from [[http://docs.oracle.com/javaee/6/api/javax/inject/Provider.html#get()][Provider<>.get()]] and registered as a service
+  - Immediately after Provider<> instantiation if there are no injections
+  - Once all Injections have been satisfied, if there are injections
 
- And that's it.  It's formed from what I did with bundle activators.
+  And that's it.  It's formed from what I did with bundle activators.
 
- If this is not enough for your requirements, you're probably better off with a real component framework.
-** How to use it?
+  If this is not enough for your requirements, you're probably better off with a real component framework.
+*** How to use it?
 
- The preferred way to use the Jsr330Activator, is to embed the Jsr330Activator together with javax.inject inside your bundle.  This makes your bundle work without any dependencies outside of OSGi itself and whatever it needs to do its work.  The jsr330activator.testbundle3 is an example of this.
+  The preferred way to use the Jsr330Activator, is to embed the Jsr330Activator together with javax.inject inside your bundle.  This makes your bundle work without any dependencies outside of OSGi itself and whatever it needs to do its work.  The jsr330activator.testbundle3 is an example of this.
 
- What's needed is:
-  1. Use the maven-bundle-plugin (the simplest way is to create a project using the Felix osgi-bundle archetype)
-  2. Add the required bundles as direct dependencies (if they arrive as transitive dependencies, they will not be embedded by the maven-bundle-plugin):
-     #+BEGIN_SRC nxml
-       <project>
-        <dependencies>
-         <dependency>
-          <groupId>javax.inject</groupId>
-          <artifactId>javax.inject</artifactId>
-          <version>1</version>
-         </dependency>
-         <dependency>
-          <groupId>no.steria.osgi.jsr330activator</groupId>
-          <artifactId>jsr330activator.implementation</artifactId>
-          <version>1.0.1</version>
-          <scope>test</scope>
-         </dependency>
-        </dependencies>
-       </project>
-     #+END_SRC
-     Note the "test" dependency of the Jsr330Activator itself.  Using "compile" or "provided" here would create a maven dependency to the Jsr330Activator, that would make a maven-provisioned OSGi runtime (e.g. gogo shell) pull in the Jsr330Activator bundle into the OSGi runtime.  This does no harm, but it isn't necessary when the Jsr330Activator has been embedded, and therefore shouldn't be there.
+  What's needed is:
+   1. Use the maven-bundle-plugin (the simplest way is to create a project using the Felix osgi-bundle archetype)
+   2. Add the required bundles as direct dependencies (if they arrive as transitive dependencies, they will not be embedded by the maven-bundle-plugin):
+      #+BEGIN_SRC nxml
+        <project>
+         <dependencies>
+          <dependency>
+           <groupId>javax.inject</groupId>
+           <artifactId>javax.inject</artifactId>
+           <version>1</version>
+          </dependency>
+          <dependency>
+           <groupId>no.steria.osgi.jsr330activator</groupId>
+           <artifactId>jsr330activator.implementation</artifactId>
+           <version>1.0.1</version>
+           <scope>test</scope>
+          </dependency>
+         </dependencies>
+        </project>
+      #+END_SRC
+      Note the "test" dependency of the Jsr330Activator itself.  Using "compile" or "provided" here would create a maven dependency to the Jsr330Activator, that would make a maven-provisioned OSGi runtime (e.g. gogo shell) pull in the Jsr330Activator bundle into the OSGi runtime.  This does no harm, but it isn't necessary when the Jsr330Activator has been embedded, and therefore shouldn't be there.
 
-     The javax.inject jar isn't a bundle and therefore is skipped by gogo shell and friends
-  3. Use the =Bundle-Activator= and =Embed-Dependency= settings in the maven-bundle-plugin configuration:
-     #+BEGIN_SRC nxml
-       <project>
-        <build>
-         <plugins>
-          <plugin>
-           <groupId>org.apache.felix</groupId>
-           <artifactId>maven-bundle-plugin</artifactId>
-           <version>2.3.7</version>
-           <extensions>true</extensions>
-           <configuration>
-            <instructions>
-             <Bundle-Activator>no.steria.osgi.jsr330activator.Jsr330Activator</Bundle-Activator>
-             <Export-Package>no.steria.osgi.jsr330activator.testbundle3</Export-Package>
-             <Embed-Dependency>jsr330activator.implementation;inline=true,javax.inject;inline=true</Embed-Dependency>
-            </instructions>
-           </configuration>
-          </plugin>
-         </plugins>
-        </build>
-       </project>
-     #+END_SRC
-  4. Implement a provider for your interface.  I have found a good pattern in letting the Provider also implement the service interface and return "this" from the get method, because it lets the Jsr330Activator completely manage the service implementation's life cycle:
-     #+BEGIN_SRC java
-       public class HelloService3aProvider implements Provider<HelloService3a>, HelloService3a {
-           private HelloService helloService;
+      The javax.inject jar isn't a bundle and therefore is skipped by gogo shell and friends
+   3. Use the =Bundle-Activator= and =Embed-Dependency= settings in the maven-bundle-plugin configuration:
+      #+BEGIN_SRC nxml
+        <project>
+         <build>
+          <plugins>
+           <plugin>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>maven-bundle-plugin</artifactId>
+            <version>2.3.7</version>
+            <extensions>true</extensions>
+            <configuration>
+             <instructions>
+              <Bundle-Activator>no.steria.osgi.jsr330activator.Jsr330Activator</Bundle-Activator>
+              <Export-Package>no.steria.osgi.jsr330activator.testbundle3</Export-Package>
+              <Embed-Dependency>jsr330activator.implementation;inline=true,javax.inject;inline=true</Embed-Dependency>
+             </instructions>
+            </configuration>
+           </plugin>
+          </plugins>
+         </build>
+        </project>
+      #+END_SRC
+   4. Implement a provider for your interface.  I have found a good pattern in letting the Provider also implement the service interface and return "this" from the get method, because it lets the Jsr330Activator completely manage the service implementation's life cycle:
+      #+BEGIN_SRC java
+        public class HelloService3aProvider implements Provider<HelloService3a>, HelloService3a {
+            private HelloService helloService;
 
-           @Inject
-           public void setHelloService(HelloService helloService) {
-               this.helloService = helloService;
-           }
+            @Inject
+            public void setHelloService(HelloService helloService) {
+                this.helloService = helloService;
+            }
 
-           // This is from the HelloService3a interface
-           public String getMessage() {
-               return helloService.getMessage();
-           }
+            // This is from the HelloService3a interface
+            public String getMessage() {
+                return helloService.getMessage();
+            }
 
-           // This is from the Provider<HelloService3a> interface
-           public HelloService3a get() {
-               return this;
-           }
-       }
-     #+END_SRC
+            // This is from the Provider<HelloService3a> interface
+            public HelloService3a get() {
+                return this;
+            }
+        }
+      #+END_SRC
 
- Both the Jsr330Activator and javax.bundle can be provided as OSGi dependencies instead of embedding them. The jsr330activator.testbundle1 project is an example of this.  Or one of the dependencies can be embedded and one can be provided as an OSGi dependency.  The jsr330activator.testbundle2 project is an example of this, it embeds the Jsr330Activator and gets javax.inject from the OSGi runtime.
+  Both the Jsr330Activator and javax.bundle can be provided as OSGi dependencies instead of embedding them. The jsr330activator.testbundle1 project is an example of this.  Or one of the dependencies can be embedded and one can be provided as an OSGi dependency.  The jsr330activator.testbundle2 project is an example of this, it embeds the Jsr330Activator and gets javax.inject from the OSGi runtime.
 
- The config of the maven-bundle-plugin in =jsr330activator.testbundle1/pom.xml= doesn't contain an =Embed-Dependency= setting, and the =Embed-Dependency= setting in =jsr330activator.testbundle2/pom.xml= only mentions the artifactId of the dependency that is to be embedded.
+  The config of the maven-bundle-plugin in =jsr330activator.testbundle1/pom.xml= doesn't contain an =Embed-Dependency= setting, and the =Embed-Dependency= setting in =jsr330activator.testbundle2/pom.xml= only mentions the artifactId of the dependency that is to be embedded.
 
-*** To embed or not to embed
+**** To embed or not to embed
 
- I haven't been able to think of a use case for not embedding the Jsr330Activator itself.  The Jsr330Activator's reason for existence, is to create self-contained service-providinng and service-listening bundles, that don't require anything from the run-time other than basic OSGi support.
+  I haven't been able to think of a use case for not embedding the Jsr330Activator itself.  The Jsr330Activator's reason for existence, is to create self-contained service-providinng and service-listening bundles, that don't require anything from the run-time other than basic OSGi support.
 
- There is a use-case for not embedding javax.inject, and that is if one wish to access the @Named annotation of an injected service.  If the javax.inject package is provided through OSGi, then one can access the name this way:
- #+BEGIN_SRC java
-   private String getNamedAnnotationValue(StorageService storageService) {
-       Named named = storageService.getClass().getAnnotation(Named.class);
-       if (named != null) {
-           return named.value();
-       }
+  There is a use-case for not embedding javax.inject, and that is if one wish to access the @Named annotation of an injected service.  If the javax.inject package is provided through OSGi, then one can access the name this way:
+  #+BEGIN_SRC java
+    private String getNamedAnnotationValue(StorageService storageService) {
+        Named named = storageService.getClass().getAnnotation(Named.class);
+        if (named != null) {
+            return named.value();
+        }
 
-       return null;
-   }
- #+END_SRC
+        return null;
+    }
+  #+END_SRC
 
- If javax.inject has been embedded in either the service-providing bundles or the service receiving bundles, or both, the @Named annotation has to be accessed using reflection on a dynamic proxy (that itself uses reflection):
- #+BEGIN_SRC java
-   private String getNamedAnnotationValue(StorageService storageService) {
-       Annotation[] annotations = storageService.getClass().getAnnotations();
-       for (Annotation annotation : annotations) {
-           Class<?>[] interfaces = annotation.getClass().getInterfaces();
-           for (Class<?> annotationInterface : interfaces) {
-               if (Named.class.getCanonicalName().equals(annotationInterface.getCanonicalName())) {
-                   try {
-                       Method valueMethod = annotationInterface.getMethod("value", new Class<?>[0]);
-                       String namedValue = (String) valueMethod.invoke(annotation, new Object[0]);
-                       return namedValue;
-                   } catch (Exception e) { }
-               }
-           }
-       }
+  If javax.inject has been embedded in either the service-providing bundles or the service receiving bundles, or both, the @Named annotation has to be accessed using reflection on a dynamic proxy (that itself uses reflection):
+  #+BEGIN_SRC java
+    private String getNamedAnnotationValue(StorageService storageService) {
+        Annotation[] annotations = storageService.getClass().getAnnotations();
+        for (Annotation annotation : annotations) {
+            Class<?>[] interfaces = annotation.getClass().getInterfaces();
+            for (Class<?> annotationInterface : interfaces) {
+                if (Named.class.getCanonicalName().equals(annotationInterface.getCanonicalName())) {
+                    try {
+                        Method valueMethod = annotationInterface.getMethod("value", new Class<?>[0]);
+                        String namedValue = (String) valueMethod.invoke(annotation, new Object[0]);
+                        return namedValue;
+                    } catch (Exception e) { }
+                }
+            }
+        }
 
-       return null;
-   }
- #+END_SRC
-*** Why is the Jsr330Activator a bundle if it's meant to be embedded
+        return null;
+    }
+  #+END_SRC
+**** Why is the Jsr330Activator a bundle if it's meant to be embedded
 
- Since this is an OSGi project it seemed wrong /not/ to make the Jsr330Activator a bundle.
+  Since this is an OSGi project it seemed wrong /not/ to make the Jsr330Activator a bundle.
 
-** Where do I find documentation?
- There's the [[https://github.com/sbang/jsr330activator/blob/master/README.org][README]] you're currently reading, written in [[http://orgmode.org/][org format]]
+*** Where do I find documentation?
+  There's the [[https://github.com/sbang/jsr330activator/blob/master/README.org][README]] you're currently reading, written in [[http://orgmode.org/][org format]]
 
- There are also javadocs:
- - [[http://www.javadoc.io/doc/no.steria.osgi.jsr330activator/jsr330activator.implementation][Released version javadocs]]
-** What License is this software distributed under?
+  There are also javadocs:
+  - [[http://www.javadoc.io/doc/no.steria.osgi.jsr330activator/jsr330activator.implementation][Released version javadocs]]
+*** What License is this software distributed under?
 
- The Jsr330Activator is under the Eclipse public license v. 1.0.  See the [[https://github.com/sbang/jsr330activator/blob/master/LICENSE][LICENSE]] file for the full license text.
+  The Jsr330Activator is under the Eclipse public license v. 1.0.  See the [[https://github.com/sbang/jsr330activator/blob/master/LICENSE][LICENSE]] file for the full license text.
 
 ** Description of the project
 
