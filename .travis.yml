@@ -1,11 +1,15 @@
 language: java
+addons:
+    sonarcloud:
+        organization: sbang-github
+        token: $SONAR_TOKEN
 env:
   global:
     - secure: "Zfr8M3yHDnWYLwNqEqvhgCJ8/Zleh/LtcG9loBhF3OXctWEUFSDC8Y6XPU7HfSRk7lGo6iQxEyXHL46166saqegwuwhoGPQWV4CWk0LvIt3/fBxZtoS6Ij30nxOnGiWSTWIadZBx8+4+Lp9dDlj3uJRzRb8yr/l/S/IHQ9MimNw="
 install: mvn install -DskipTests=true -Dgpg.skip=true
 
 script:
-  # Test coverage
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent package sonar:sonar
   - mvn cobertura:cobertura coveralls:report
 after_success:
   - .utilities/push-javadoc-to-gh-pages.sh
