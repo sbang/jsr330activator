@@ -153,6 +153,29 @@
 *** What License is this software distributed under?
 
   The Jsr330Activator is under the Eclipse public license v. 1.0.  See the [[https://github.com/sbang/jsr330activator/blob/master/LICENSE][LICENSE]] file for the full license text.
+*** Isn't this the same as Declarative Services (DS)?
+
+Both "No" and "Yes" are possible answers here.
+
+"No" because this use a different mechanism to DS, and "yes" because they basically do the same thing.
+
+The mechanism used by the JSR330Activator is the BundleActivator which is an old OSGi mechanism and available in all OSGi implementation.
+
+Declarative Services is a built-in capability of OSGi 6.
+
+*** Is the JSR330Activator necessary after Declarative Services arrived?
+
+I don't know...?  For my own sake, both places I might use an OSGi bundle (apache karaf and eclipse) now both support DS.
+
+When I wrote the JSR330Activator there were several component/dependency injection implementations for OSGi and no single implementation would work everywhere I would want to use it.
+
+I wanted something that would work everywhere a custom written BundleActivator would work, but with the development friendliness of dependency injection.
+
+But now there is DS everywhere I want to go.  And it's better to use a standard mechanism than rolling your own.
+
+On the other hand JSR330Activator has some capabilities don't have, like e.g. the capability to directly manage the life cycle of the objects implementing the services, rather than have OSGi manage the life cycle.
+
+There may be some use cases where this is useful.
 
 ** Description of the project
 
