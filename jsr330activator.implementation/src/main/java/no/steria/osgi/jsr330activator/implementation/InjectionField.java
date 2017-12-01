@@ -119,7 +119,7 @@ class InjectionField extends InjectionBase {
     }
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private boolean addServiceToCollectionField(Object service) throws IllegalAccessException {
+    private boolean addServiceToCollectionField(Object service) {
         if (getInjectedServiceType().isAssignableFrom(service.getClass())) {
             Collection fieldAsCollection = getFieldAsCollection();
             fieldAsCollection.add(service);
