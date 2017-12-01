@@ -54,6 +54,7 @@ abstract class InjectionBase implements Injection {
             bundleContext.addServiceListener(serviceListener, filter);
             fakeRegisteredServiceEventForExistingServices(bundleContext, serviceListener, filter);
         } catch (InvalidSyntaxException e) {
+            /* Eat exception and continue */
         }
     }
 

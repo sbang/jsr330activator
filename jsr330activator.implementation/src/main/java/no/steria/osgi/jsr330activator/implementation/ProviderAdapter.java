@@ -157,6 +157,7 @@ public class ProviderAdapter {
                 serviceRegistration = bundleContext.registerService(serviceName, serviceImpl, properties);
             }
         } catch (Exception e) {
+            /* Eat exception and continue */
         }
     }
 

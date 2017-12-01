@@ -72,11 +72,15 @@ public class Jsr330Activator implements BundleActivator {
                             String classname = resource.substring(0, resource.length() - ".class".length()).replaceAll("/", ".");
                             Class<?> clazz = bundle.loadClass(classname);
                             classes.add(clazz);
-                        } catch (ClassNotFoundException e) { }
+                        } catch (ClassNotFoundException e) {
+                            /* Eat exception and continue */
+                        }
                     }
                 }
             }
-        } catch (SecurityException e) { }
+        } catch (SecurityException e) {
+            /* Eat exception and continue */
+        }
 
         return classes;
     }

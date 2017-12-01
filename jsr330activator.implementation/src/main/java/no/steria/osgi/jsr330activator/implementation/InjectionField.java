@@ -97,6 +97,7 @@ class InjectionField extends InjectionBase {
         try {
             return field.get(provider);
         } catch (Exception e) {
+            /* Eat exception and continue */
         }
 
         return null;
@@ -113,6 +114,7 @@ class InjectionField extends InjectionBase {
 
             field.set(provider, service);
         } catch (Exception e) {
+            /* Eat exception and continue */
         }
     }
 
@@ -137,7 +139,9 @@ class InjectionField extends InjectionBase {
                     return fieldAsCollection;
                 }
             } catch (IllegalArgumentException e) {
+                /* Eat exception and continue */
             } catch (IllegalAccessException e) {
+                /* Eat exception and continue */
             }
         }
 
@@ -155,7 +159,9 @@ class InjectionField extends InjectionBase {
                     field.set(provider, newCollection);
                     return;
                 } catch (IllegalArgumentException e) {
+                    /* Eat exception and continue */
                 } catch (InstantiationException e) {
+                    /* Eat exception and continue */
                 }
             }
 

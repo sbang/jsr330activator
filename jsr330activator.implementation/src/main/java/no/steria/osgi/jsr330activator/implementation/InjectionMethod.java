@@ -55,6 +55,7 @@ class InjectionMethod extends InjectionBase {
             method.invoke(provider, service);
             currentService = service;
         } catch (Exception e) {
+            /* Eat exception and continue */
         }
     }
 
@@ -63,6 +64,7 @@ class InjectionMethod extends InjectionBase {
             method.invoke(provider, (String)null);
             currentService = null;
         } catch (Exception e) {
+            /* Eat exception and continue */
         }
     }
 
