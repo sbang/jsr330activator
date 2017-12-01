@@ -16,6 +16,7 @@ import org.osgi.framework.ServiceRegistration;
 
 import no.steria.osgi.jsr330activator.ActivatorShutdown;
 import no.steria.osgi.jsr330activator.Jsr330Activator;
+import no.steria.osgi.jsr330activator.Jsr330ActivatorException;
 import no.steria.osgi.jsr330activator.ServiceProperties;
 import no.steria.osgi.jsr330activator.ServiceProperty;
 
@@ -46,9 +47,9 @@ public class ProviderAdapter {
             activatorShutdownCallback = findActivatorShutdownCallback(provider);
             injections = findInjections(provider);
         } catch (InstantiationException e) {
-            throw new RuntimeException(e);
+            throw new Jsr330ActivatorException(e);
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new Jsr330ActivatorException(e);
         }
     }
 
