@@ -60,11 +60,7 @@ class InjectionField extends InjectionBase {
 
     public boolean isOptional() {
         Optional optionalAnnotation = field.getAnnotation(Optional.class);
-        if (optionalAnnotation != null) {
-            return true;
-        }
-
-        return false;
+        return (optionalAnnotation != null);
     }
 
     @SuppressWarnings("rawtypes")
@@ -181,11 +177,7 @@ class InjectionField extends InjectionBase {
             return false;
         }
 
-        if (Modifier.isAbstract(modifiers)) {
-            return false;
-        }
-
-        return true;
+        return !(Modifier.isAbstract(modifiers));
     }
 
     private boolean fieldIsCollection() {

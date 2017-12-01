@@ -39,11 +39,7 @@ class InjectionMethod extends InjectionBase {
 
     public boolean isOptional() {
         Optional optionalAnnotation = method.getAnnotation(Optional.class);
-        if (optionalAnnotation != null) {
-            return true;
-        }
-
-        return false;
+        return (optionalAnnotation != null);
     }
 
     public boolean isInjected() {
