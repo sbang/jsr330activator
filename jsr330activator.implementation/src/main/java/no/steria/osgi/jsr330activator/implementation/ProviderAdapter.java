@@ -97,7 +97,7 @@ public class ProviderAdapter {
     }
 
     public boolean hasInjections() {
-        return injections.size() > 0;
+        return !injections.isEmpty();
     }
 
     public void start(BundleContext bundleContext) {

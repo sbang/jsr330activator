@@ -71,7 +71,7 @@ class InjectionField extends InjectionBase {
     public boolean isInjected() {
         if (fieldIsCollection()) {
             Collection fieldAsCollection = getFieldAsCollection();
-            return fieldAsCollection.size() > 0;
+            return !fieldAsCollection.isEmpty();
         }
 
         Object injectedService = getInjectedService();
