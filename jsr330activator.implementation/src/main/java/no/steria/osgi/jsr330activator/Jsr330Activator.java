@@ -68,13 +68,7 @@ public class Jsr330Activator implements BundleActivator {
                 Collection<String> resources = bundleWiring.listResources("/", "*.class", BundleWiring.LISTRESOURCES_RECURSE | BundleWiring.LISTRESOURCES_LOCAL);
                 if (null != resources) {
                     for (String resource : resources) {
-                        try {
-                            String classname = resource.substring(0, resource.length() - ".class".length()).replaceAll("/", ".");
-                            Class<?> clazz = bundle.loadClass(classname);
-                            classes.add(clazz);
-                        } catch (ClassNotFoundException e) {
-                            /* Eat exception and continue */
-                        }
+                        findClassMatchingResourceFilenameInBundle(bundle, classes, resource);
                     }
                 }
             }
@@ -106,6 +100,16 @@ public class Jsr330Activator implements BundleActivator {
         }
 
         return providers;
+    }
+
+    private void findClassMatchingResourceFilenameInBundle(Bundle bundle, List<Class<?>> classes, String resource) {
+        try {
+            String classname = resource.substring(0, resource.length() - ".class".length()).replaceAll("/", ".");
+            Class<?> clazz = bundle.loadClass(classname);
+            classes.add(clazz);
+        } catch (ClassNotFoundException e) {
+            /* Eat exception and continue */
+        }
     }
 
     private void putBundleClassInMultimapKeyedOnService(Map<Type, List<Class<?>>> providers, Type providedService, Class<?> classInBundle) {
