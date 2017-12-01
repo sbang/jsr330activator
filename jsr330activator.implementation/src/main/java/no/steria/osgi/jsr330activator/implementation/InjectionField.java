@@ -189,9 +189,7 @@ class InjectionField extends InjectionBase {
     }
 
     private boolean fieldIsCollection() {
-        boolean isAssignableFromCollection = Collection.class.isAssignableFrom(field.getType());
-
-        return isAssignableFromCollection;
+        return Collection.class.isAssignableFrom(field.getType());
     }
 
 }
