@@ -85,15 +85,19 @@ public class ProviderAdapter {
 
         Method[] methods = providerType.getDeclaredMethods();
         for (Method method : methods) {
-            if (method.isAnnotationPresent(Inject.class)) {
+            if (method.isAnnotationPresent(Inject.class) &&
+                methodTakesExactlyOneArgument(method))
+            {
                 // Only interested in methods that take exactly one argument
-                if (method.getGenericParameterTypes().length == 1) {
-                    injections.add(new InjectionMethod(provider, method));
-                }
+                injections.add(new InjectionMethod(provider, method));
             }
         }
 
         return injections;
+    }
+
+    private static boolean methodTakesExactlyOneArgument(Method method) {
+        return method.getGenericParameterTypes().length == 1;
     }
 
     public boolean hasInjections() {

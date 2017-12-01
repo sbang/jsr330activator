@@ -33,15 +33,15 @@ class InjectionField extends InjectionBase {
     }
 
     public Class<?> getInjectedServiceType() {
-        if (fieldIsCollection()) {
-            if (field.getGenericType() instanceof ParameterizedType) {
-                ParameterizedType fieldTypeAsParameterizedType = (ParameterizedType) field.getGenericType();
-                Type[] actualTypeArguments = fieldTypeAsParameterizedType.getActualTypeArguments();
-                if (actualTypeArguments.length > 0) {
-                    Type collectionTypeArgument = actualTypeArguments[0];
-                    if (collectionTypeArgument instanceof Class<?>) {
-                        return (Class<?>) collectionTypeArgument;
-                    }
+        if (fieldIsCollection() &&
+            field.getGenericType() instanceof ParameterizedType)
+        {
+            ParameterizedType fieldTypeAsParameterizedType = (ParameterizedType) field.getGenericType();
+            Type[] actualTypeArguments = fieldTypeAsParameterizedType.getActualTypeArguments();
+            if (actualTypeArguments.length > 0) {
+                Type collectionTypeArgument = actualTypeArguments[0];
+                if (collectionTypeArgument instanceof Class<?>) {
+                    return (Class<?>) collectionTypeArgument;
                 }
             }
         }
