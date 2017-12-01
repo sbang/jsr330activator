@@ -29,12 +29,12 @@ abstract class InjectionBase implements Injection {
                     Object service = bundleContext.getService(sr);
                     switch(event.getType()) {
                       case ServiceEvent.REGISTERED:
-                    	if (!serviceReferences.contains(sr)) { serviceReferences.add(sr); }
+                        if (!serviceReferences.contains(sr)) { serviceReferences.add(sr); }
                         doInject(service);
                         providerAdapter.checkInjectionsAndRegisterServiceIfSatisfied(bundleContext);
                         break;
                       case ServiceEvent.UNREGISTERING:
-                    	serviceReferences.remove(sr);
+                        serviceReferences.remove(sr);
                         doRetract(service);
                         providerAdapter.checkInjectionsAndUnregisterServiceIfNotSatisfied(bundleContext);
                         break;

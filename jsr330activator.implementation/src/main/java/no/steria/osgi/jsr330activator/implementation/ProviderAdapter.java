@@ -65,7 +65,7 @@ public class ProviderAdapter {
         Method[] methods = providerType.getDeclaredMethods();
         for (Method method : methods) {
             if (method.isAnnotationPresent(ActivatorShutdown.class)) {
-            	return method;
+                return method;
             }
         }
 
@@ -111,9 +111,9 @@ public class ProviderAdapter {
     }
 
     public void stop(BundleContext context) {
-    	callActivatorShutdownCallbackIfPresent(context);
+        callActivatorShutdownCallbackIfPresent(context);
 
-    	for (Injection injection : injections) {
+        for (Injection injection : injections) {
             injection.unGet(context);
         }
 
@@ -128,7 +128,7 @@ public class ProviderAdapter {
             } catch (Exception e) {
                 // Swallow exceptions quietly.
             }
-    	}
+        }
     }
 
     private void unregisterMyService() {
@@ -207,11 +207,11 @@ public class ProviderAdapter {
     }
 
     private void saveServiceProperty(Hashtable<String, Object> properties, ServiceProperty serviceProperty) {
-    	if (serviceProperty.values().length > 0) {
+        if (serviceProperty.values().length > 0) {
             properties.put(serviceProperty.name(), serviceProperty.values());
-    	} else {
+        } else {
             properties.put(serviceProperty.name(), serviceProperty.value());
-    	}
+        }
     }
 
     void setupInjectionListeners(BundleContext bundleContext) {
@@ -221,18 +221,18 @@ public class ProviderAdapter {
     }
 
     void checkInjectionsAndRegisterServiceIfSatisfied(BundleContext bundleContext) {
-    	if (getServiceRegistration() == null &&
+        if (getServiceRegistration() == null &&
             allInjectionsHaveBeenInjected())
-    	{
+        {
             registerService(bundleContext);
-    	}
+        }
     }
 
     void checkInjectionsAndUnregisterServiceIfNotSatisfied(BundleContext bundleContext) {
-    	// Check for service already unregistered first because that is quickest
-    	if (!serviceAlreadyUnregistered() && !allInjectionsHaveBeenInjected()) {
+        // Check for service already unregistered first because that is quickest
+        if (!serviceAlreadyUnregistered() && !allInjectionsHaveBeenInjected()) {
             unregisterMyService();
-    	}
+        }
     }
 
     private boolean allInjectionsHaveBeenInjected() {

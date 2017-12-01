@@ -19,9 +19,9 @@ class InjectionMethod extends InjectionBase {
     private Object currentService;
 
     public InjectionMethod(Object provider, Method method) {
-    	this.provider = provider;
-    	this.method = method;
-    	this.method.setAccessible(true);
+        this.provider = provider;
+        this.method = method;
+        this.method.setAccessible(true);
     }
 
     public Class<?> getInjectedServiceType() {
@@ -29,21 +29,21 @@ class InjectionMethod extends InjectionBase {
     }
 
     public String getNamedValue() {
-    	Named namedAnnotation = method.getAnnotation(Named.class);
-    	if (namedAnnotation != null) {
+        Named namedAnnotation = method.getAnnotation(Named.class);
+        if (namedAnnotation != null) {
             return namedAnnotation.value();
-    	}
+        }
 
-    	return null;
+        return null;
     }
 
     public boolean isOptional() {
-    	Optional optionalAnnotation = method.getAnnotation(Optional.class);
-    	if (optionalAnnotation != null) {
+        Optional optionalAnnotation = method.getAnnotation(Optional.class);
+        if (optionalAnnotation != null) {
             return true;
-    	}
+        }
 
-    	return false;
+        return false;
     }
 
     public boolean isInjected() {
@@ -51,7 +51,7 @@ class InjectionMethod extends InjectionBase {
     }
 
     public void doInject(Object service) {
-    	try {
+        try {
             method.invoke(provider, service);
             currentService = service;
         } catch (Exception e) {

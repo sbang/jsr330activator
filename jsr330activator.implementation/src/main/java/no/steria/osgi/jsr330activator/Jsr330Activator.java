@@ -55,14 +55,14 @@ public class Jsr330Activator implements BundleActivator {
     }
 
     public void stop(BundleContext context) throws Exception {
-    	for (ProviderAdapter serviceProviderAdapter : serviceProviderAdapters) {
+        for (ProviderAdapter serviceProviderAdapter : serviceProviderAdapters) {
             serviceProviderAdapter.stop(context);
         }
     }
 
     List<Class<?>> scanBundleForClasses(Bundle bundle) {
-    	List<Class<?>> classes = new ArrayList<Class<?>>();
-    	try {
+        List<Class<?>> classes = new ArrayList<Class<?>>();
+        try {
             BundleWiring bundleWiring = bundle.adapt(BundleWiring.class);
             if (null != bundleWiring) {
                 Collection<String> resources = bundleWiring.listResources("/", "*.class", BundleWiring.LISTRESOURCES_RECURSE | BundleWiring.LISTRESOURCES_LOCAL);
@@ -76,7 +76,7 @@ public class Jsr330Activator implements BundleActivator {
                     }
                 }
             }
-    	} catch (SecurityException e) { }
+        } catch (SecurityException e) { }
 
         return classes;
     }
@@ -105,21 +105,21 @@ public class Jsr330Activator implements BundleActivator {
     }
 
     private void putBundleClassInMultimapKeyedOnService(Map<Type, List<Class<?>>> providers, Type providedService, Class<?> classInBundle) {
-    	if (!providers.containsKey(providedService)) {
-    		providers.put(providedService, new ArrayList<Class<?>>());
-    	}
-    	
-    	List<Class<?>> providersForService = providers.get(providedService);
-    	providersForService.add(classInBundle);
-	}
+        if (!providers.containsKey(providedService)) {
+            providers.put(providedService, new ArrayList<Class<?>>());
+        }
 
-	public List<ProviderAdapter> createProviderAdapterList(Map<Type, List<Class<?>>> providers) {
+        List<Class<?>> providersForService = providers.get(providedService);
+        providersForService.add(classInBundle);
+    }
+
+    public List<ProviderAdapter> createProviderAdapterList(Map<Type, List<Class<?>>> providers) {
         List<ProviderAdapter> providerAdapters = new ArrayList<ProviderAdapter>();
         for (Entry<Type, List<Class<?>>> providerEntry : providers.entrySet()) {
-        	for (Class<?> provider : providerEntry.getValue()) {
+            for (Class<?> provider : providerEntry.getValue()) {
                 ProviderAdapter providerAdapter = new ProviderAdapter(providerEntry.getKey(), provider);
                 providerAdapters.add(providerAdapter);
-			}
+            }
         }
 
         return providerAdapters;

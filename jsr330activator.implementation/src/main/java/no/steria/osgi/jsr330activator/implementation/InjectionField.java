@@ -33,7 +33,7 @@ class InjectionField extends InjectionBase {
     }
 
     public Class<?> getInjectedServiceType() {
-    	if (fieldIsCollection()) {
+        if (fieldIsCollection()) {
             if (field.getGenericType() instanceof ParameterizedType) {
                 ParameterizedType fieldTypeAsParameterizedType = (ParameterizedType) field.getGenericType();
                 Type[] actualTypeArguments = fieldTypeAsParameterizedType.getActualTypeArguments();
@@ -44,37 +44,37 @@ class InjectionField extends InjectionBase {
                     }
                 }
             }
-    	}
+        }
 
         return field.getType();
     }
 
     public String getNamedValue() {
-    	Named namedAnnotation = field.getAnnotation(Named.class);
-    	if (namedAnnotation != null) {
+        Named namedAnnotation = field.getAnnotation(Named.class);
+        if (namedAnnotation != null) {
             return namedAnnotation.value();
-    	}
+        }
 
-    	return null;
+        return null;
     }
 
     public boolean isOptional() {
-    	Optional optionalAnnotation = field.getAnnotation(Optional.class);
-    	if (optionalAnnotation != null) {
+        Optional optionalAnnotation = field.getAnnotation(Optional.class);
+        if (optionalAnnotation != null) {
             return true;
-    	}
+        }
 
-    	return false;
+        return false;
     }
 
     @SuppressWarnings("rawtypes")
     public boolean isInjected() {
-    	if (fieldIsCollection()) {
+        if (fieldIsCollection()) {
             Collection fieldAsCollection = getFieldAsCollection();
             return fieldAsCollection.size() > 0;
-    	}
+        }
 
-    	Object injectedService = getInjectedService();
+        Object injectedService = getInjectedService();
         return injectedService != null;
     }
 
@@ -84,13 +84,13 @@ class InjectionField extends InjectionBase {
 
     @SuppressWarnings("rawtypes")
     public void doRetract(Object service) {
-    	if (fieldIsCollection()) {
+        if (fieldIsCollection()) {
             Collection fieldAsCollection = getFieldAsCollection();
             fieldAsCollection.remove(service);
             return;
-    	}
+        }
 
-    	setInjectedService(null);
+        setInjectedService(null);
     }
 
     private Object getInjectedService() {
@@ -170,16 +170,16 @@ class InjectionField extends InjectionBase {
     }
 
     private boolean isInstantiable(Class<?> type) {
-    	int modifiers = type.getModifiers();
-    	if (Modifier.isInterface(modifiers)) {
+        int modifiers = type.getModifiers();
+        if (Modifier.isInterface(modifiers)) {
             return false;
-    	}
+        }
 
-    	if (Modifier.isAbstract(modifiers)) {
+        if (Modifier.isAbstract(modifiers)) {
             return false;
-    	}
+        }
 
-    	return true;
+        return true;
     }
 
     private boolean fieldIsCollection() {
