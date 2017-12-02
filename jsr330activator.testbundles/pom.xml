@@ -14,6 +14,10 @@
 
  <name>jsr330activator testbundles parent</name>
 
+ <properties>
+  <sonar.exclusions>**/*</sonar.exclusions>
+ </properties>
+
  <modules>
   <module>jsr330activator.testbundle1</module>
   <module>jsr330activator.testbundle2</module>
