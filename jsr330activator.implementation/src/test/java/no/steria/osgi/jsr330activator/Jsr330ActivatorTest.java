@@ -176,7 +176,7 @@ public class Jsr330ActivatorTest {
      * Verify that the scanning code finds a provider that implements multiple
      * interfaces, where the Provider<> interface is not first in the interface list.
      */
-    @Ignore
+    @Ignore("This test triggers issue #7 and is ignored until the issue is fixed")
     @SuppressWarnings("unchecked")
     @Test
     public void testFindProvidersMultipleInterfacesWithProviderNotFirst() {
