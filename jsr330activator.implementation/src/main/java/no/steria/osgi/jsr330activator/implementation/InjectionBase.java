@@ -36,7 +36,7 @@ abstract class InjectionBase implements Injection {
                       case ServiceEvent.UNREGISTERING:
                         serviceReferences.remove(sr);
                         doRetract(service);
-                        providerAdapter.checkInjectionsAndUnregisterServiceIfNotSatisfied(bundleContext);
+                        providerAdapter.checkInjectionsAndUnregisterServiceIfNotSatisfied();
                         break;
                       default:
                         break;

@@ -234,7 +234,7 @@ public class ProviderAdapter {
         }
     }
 
-    void checkInjectionsAndUnregisterServiceIfNotSatisfied(BundleContext bundleContext) {
+    void checkInjectionsAndUnregisterServiceIfNotSatisfied() {
         // Check for service already unregistered first because that is quickest
         if (!serviceAlreadyUnregistered() && !allInjectionsHaveBeenInjected()) {
             unregisterMyService();
