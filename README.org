@@ -177,7 +177,7 @@ I wanted something that would work everywhere a custom written BundleActivator w
 
 But now there is DS everywhere I want to go.  And it's better to use a standard mechanism than rolling your own.
 
-On the other hand JSR330Activator has some capabilities don't have, like e.g. the capability to directly manage the life cycle of the objects implementing the services, rather than have OSGi manage the life cycle.
+On the other hand JSR330Activator has some capabilities DS doesn't have, like e.g. the capability to directly manage the life cycle of the objects implementing the services, rather than have OSGi manage the life cycle.
 
 There may be some use cases where this is useful.
 
