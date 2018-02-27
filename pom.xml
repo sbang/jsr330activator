@@ -127,6 +127,7 @@
     <version>2.5.3</version>
     <configuration>
      <releaseProfiles>release-sign-artifact</releaseProfiles>
+     <preparationGoals>clean install</preparationGoals>
     </configuration>
    </plugin>
    <plugin>
