@@ -15,7 +15,7 @@
 -docencoding
 'UTF-8'
 -doctitle
-'jsr330activator.implementation OSGi Bundle 1.1.1-SNAPSHOT API'
+'jsr330activator.implementation OSGi Bundle 1.1.0 API'
 -linkoffline
 'http://docs.oracle.com/javase/8/docs/api' '/home/travis/build/sbang/jsr330activator/jsr330activator.implementation/target/javadoc-bundle-options'
 -linkoffline
@@ -23,4 +23,4 @@
 -use
 -version
 -windowtitle
-'jsr330activator.implementation OSGi Bundle 1.1.1-SNAPSHOT API'
+'jsr330activator.implementation OSGi Bundle 1.1.0 API'
