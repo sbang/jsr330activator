@@ -15,10 +15,10 @@
 -docencoding
 'UTF-8'
 -doctitle
-'jsr330activator.mocks 1.1.0 API'
+'jsr330activator.mocks 1.1.1-SNAPSHOT API'
 -linkoffline
 'http://docs.oracle.com/javase/8/docs/api' '/home/travis/build/sbang/jsr330activator/jsr330activator.mocks/target/javadoc-bundle-options'
 -use
 -version
 -windowtitle
-'jsr330activator.mocks 1.1.0 API'
+'jsr330activator.mocks 1.1.1-SNAPSHOT API'
