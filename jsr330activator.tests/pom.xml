@@ -17,6 +17,13 @@
  <dependencies>
   <dependency>
    <groupId>org.ops4j.pax.exam</groupId>
+   <artifactId>pax-exam-invoker-junit</artifactId>
+   <version>${pax.exam.version}</version>
+   <scope>test</scope>
+  </dependency>
+
+  <dependency>
+   <groupId>org.ops4j.pax.exam</groupId>
    <artifactId>pax-exam-junit4</artifactId>
    <version>${pax.exam.version}</version>
    <scope>test</scope>
@@ -26,6 +33,41 @@
    <groupId>org.ops4j.pax.exam</groupId>
    <artifactId>pax-exam-link-mvn</artifactId>
    <version>${pax.exam.version}</version>
+   <scope>test</scope>
+  </dependency>
+
+  <dependency>
+   <groupId>org.ops4j.pax.exam</groupId>
+   <artifactId>pax-exam-inject</artifactId>
+   <version>${pax.exam.version}</version>
+   <scope>test</scope>
+  </dependency>
+
+  <dependency>
+   <groupId>org.ops4j.pax.exam</groupId>
+   <artifactId>pax-exam-extender-service</artifactId>
+   <version>${pax.exam.version}</version>
+   <scope>test</scope>
+  </dependency>
+
+  <dependency>
+   <groupId>org.ops4j.base</groupId>
+   <artifactId>ops4j-base</artifactId>
+   <version>1.4.0</version>
+   <scope>test</scope>
+  </dependency>
+
+  <dependency>
+   <groupId>org.slf4j</groupId>
+   <artifactId>slf4j-api</artifactId>
+   <version>1.7.2</version>
+   <scope>test</scope>
+  </dependency>
+
+  <dependency>
+   <groupId>org.ops4j.pax.tipi</groupId>
+   <artifactId>org.ops4j.pax.tipi.junit</artifactId>
+   <version>4.11.0.1</version>
    <scope>test</scope>
   </dependency>
 
